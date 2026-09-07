@@ -2,7 +2,7 @@
 
 ## Current state
 
-Five OpenSpec changes are complete and archived:
+Six OpenSpec changes are complete and archived:
 
 - `project-foundation` — source-first domain contract (`docs/domain-contract.md`),
   promoted to `openspec/specs/project-foundation/spec.md` as the acceptance baseline.
@@ -11,31 +11,32 @@ Five OpenSpec changes are complete and archived:
   promoted to `openspec/specs/historical-data-model/spec.md`.
 - `timeline-exploration` — read-only timeline read path (`src/Dharmatlas.Timeline`);
   promoted to `openspec/specs/timeline-exploration/spec.md`.
-- `historical-map` — read-only time-filtered map read path (`src/Dharmatlas.Map`):
-  `MapQuery`/`MapFeature` contracts, pure `MapEngine` (activity-interval overlap
-  filtering with unknown-activity opt-in), `MapQueryService`, `MapClusterer`,
-  `MapSelectionNavigator`, and `MapViewState` list fallback. `Place` gained
-  `PlaceKind`/`Region`/`Activity`/`Certainty`/`SourceIds` and `Institution` gained
-  `PlaceId`/`Activity`/`Certainty`/`SourceIds`. Promoted to
-  `openspec/specs/historical-map/spec.md`.
+- `historical-map` — read-only time-filtered map read path (`src/Dharmatlas.Map`);
+  promoted to `openspec/specs/historical-map/spec.md`.
 - `entity-discovery-and-search` — multilingual entity search and entity detail read
-  path (`src/Dharmatlas.Search`): `SearchQuery`/`SearchResult`/`EntitySearchHit`
-  and `EntityDetail`/`RelatedEntity`/`SourceView` contracts, pure `SearchEngine`
-  (canonical/alternate-script/romanization matching with ranking, one stable
-  identity per entity, type and region filters, provenance), pure
-  `EntityDetailAssembler` (relationships, sources, type-grouped relations, missing
-  fields omitted), `SearchQueryService` and `EntityDetailService` over
-  `DharmatlasDbContext`. Added PostgreSQL indexes on `EntityName` `Script` and
-  `Romanization`. Promoted to `openspec/specs/entity-discovery-and-search/spec.md`.
+  path (`src/Dharmatlas.Search`); promoted to
+  `openspec/specs/entity-discovery-and-search/spec.md`.
+- `contribution-review-and-revisions` — contribution workflow and audit trail
+  (`src/Dharmatlas.Contributions`): `Submission`/`ReviewDecision` contracts and
+  `SubmissionStatus`/`SubmissionType`/`ReviewDecisionType` enums in
+  `Dharmatlas.Domain`, pure `SubmissionValidator` (supported types + required source
+  references) and `ReviewEngine` (approve/request-changes/reject transitions, conflict
+  surfacing, immutable field-level `Revision` with contributor, reviewer, reason,
+  sources, and changed fields). `ContributionService` routes drafts to pending only
+  (no direct publication), applies approved changes to the published record, and
+  exposes history, contributor, and reviewer views. `Revision` gained `ReviewerId`,
+  `ChangedFieldsJson`, and `SourceIds`; `Submission`/`ReviewDecision` got owned
+  persistence. Promoted to
+  `openspec/specs/contribution-review-and-revisions/spec.md`.
 
-Three implementation-ready OpenSpec changes remain unimplemented and unarchived
-(contribution-review-and-revisions, open-api-and-data-export, ai-assisted-curation).
+Two implementation-ready OpenSpec changes remain unimplemented and unarchived
+(open-api-and-data-export, ai-assisted-curation).
 
 ## Next change
 
-`contribution-review-and-revisions` is the next active change in the ROADMAP queue
-(item 5). It adds contribution submission, review, and revision history on top of
-the completed read paths. Select it with:
+`open-api-and-data-export` is the next active change in the ROADMAP queue (item 6).
+It adds a read-only public API and data export on top of the completed read paths.
+Select it with:
 
 ```bash
 openspec list
@@ -55,18 +56,22 @@ openspec list
 
 ## Verification evidence
 
-- `entity-discovery-and-search` focused tests: **82 passed, 0 failed** (xUnit,
-  cumulative suite including prior changes). New coverage: multilingual alias/diacritic
-  matching, one-stable-identity-per-entity, ranking (exact primary > exact alias >
-  substring), type and region filters, institution region inheritance, ambiguous
-  names distinguished by type, empty-term handling, limit, and entity detail
-  (relationship grouping, missing-field omission, source visibility).
+- `contribution-review-and-revisions` focused tests: **95 passed, 0 failed**
+  (xUnit, cumulative suite including prior changes). New coverage: submission
+  validation (missing sources, malformed payloads), decision transitions
+  (approve/request-changes/reject), conflict detection against approved changes,
+  field-level diff, immutable revision provenance, no-direct-publication gate
+  (draft stays pending until review), approved date correction updating the
+  published record, rejected submissions leaving records unchanged, and
+  contributor/reviewer queue views.
 - `openspec validate --all --strict --no-interactive` -> **8 passed, 0 failed**
   (project-foundation + historical-data-model + timeline-exploration +
-  historical-map + entity-discovery-and-search specs plus the three pending changes).
+  historical-map + entity-discovery-and-search + contribution-review-and-revisions
+  specs plus the two pending changes).
 - `git diff --check` and `git status --short`: clean within the committed scope.
-- `entity-discovery-and-search` archived as `2026-09-07-entity-discovery-and-search`;
-  its spec promoted to `openspec/specs/entity-discovery-and-search/spec.md`.
+- `contribution-review-and-revisions` archived as
+  `2026-09-07-contribution-review-and-revisions`; its spec promoted to
+  `openspec/specs/contribution-review-and-revisions/spec.md`.
 
 ## Blocker reporting
 
