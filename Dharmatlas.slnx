@@ -6,6 +6,7 @@
     <Project Path="src/Dharmatlas.Search/Dharmatlas.Search.csproj" />
     <Project Path="src/Dharmatlas.Contributions/Dharmatlas.Contributions.csproj" />
     <Project Path="src/Dharmatlas.Timeline/Dharmatlas.Timeline.csproj" />
+    <Project Path="src/Dharmatlas.AI/Dharmatlas.AI.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Dharmatlas.Domain.Tests/Dharmatlas.Domain.Tests.csproj" />

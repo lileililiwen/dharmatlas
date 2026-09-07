@@ -20,6 +20,7 @@ internal static class SubmissionPayloads
     public sealed record NamePayload(string Language, string Script, string Romanization, string Value, bool IsPrimary);
     public sealed record EventPayload(string? Summary, string? Category, string? Region, DatePayload? When);
     public sealed record InstitutionPayload(string? Summary, string? InstitutionalForm, string? Region, DatePayload? Activity);
+    public sealed record PersonPayload(string? Summary);
     public sealed record RelationshipPayload(Guid FromEntityId, Guid ToEntityId, string Type, string Certainty, Guid[] SourceIds);
 
     public static HistoricalDate ReadDate(string json)
@@ -85,6 +86,12 @@ internal static class SubmissionPayloads
             InstitutionalForm = p.InstitutionalForm,
             Activity = p.Activity is null ? null : ReadDate(JsonSerializer.Serialize(p.Activity, Options))
         };
+    }
+
+    public static Person ReadPerson(string json)
+    {
+        var p = JsonSerializer.Deserialize<PersonPayload>(json, Options)!;
+        return new Person { Summary = p.Summary };
     }
 
     public static Relationship ReadRelationship(string json)

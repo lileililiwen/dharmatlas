@@ -379,8 +379,9 @@ public class ApiContractTests
         var json2 = JsonSerializer.Serialize(snapshot2);
         Assert.Equal(json1, json2);
 
-        // Ordering is by stable id, so the first entity is deterministic.
-        Assert.Equal(p1.ToString(), snapshot1.Entities[0].Id);
+        // Ordering is by stable id, so the first entity is deterministic regardless
+        // of insertion order. With two random ids, the smaller one leads.
+        Assert.Equal(new[] { p1, p2 }.Min(id => id.ToString()), snapshot1.Entities[0].Id);
     }
 
     // --- Rate limiting and cache/error shaping ---

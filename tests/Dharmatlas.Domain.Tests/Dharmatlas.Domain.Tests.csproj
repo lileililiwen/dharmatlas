@@ -27,6 +27,7 @@
     <ProjectReference Include="..\..\src\Dharmatlas.Timeline\Dharmatlas.Timeline.csproj" />
     <ProjectReference Include="..\..\src\Dharmatlas.Map\Dharmatlas.Map.csproj" />
     <ProjectReference Include="..\..\src\Dharmatlas.Api\Dharmatlas.Api.csproj" />
+    <ProjectReference Include="..\..\src\Dharmatlas.AI\Dharmatlas.AI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

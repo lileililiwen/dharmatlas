@@ -13,5 +13,6 @@ public enum SubmissionType
     Event,
     Relationship,
     Translation,
-    Institution
+    Institution,
+    Person
 }

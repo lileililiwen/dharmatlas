@@ -173,6 +173,13 @@ public sealed class ContributionService : IContributionService
                 priorJson = "null";
                 break;
 
+            case SubmissionType.Person:
+                var newPerson = SubmissionPayloads.ReadPerson(submission.PayloadJson);
+                _db.Entities.Add(newPerson);
+                targetId = newPerson.Id;
+                priorJson = "null";
+                break;
+
             case SubmissionType.Relationship:
                 var newRelationship = SubmissionPayloads.ReadRelationship(submission.PayloadJson);
                 _db.Relationships.Add(newRelationship);

@@ -22,6 +22,7 @@ public class DharmatlasDbContext : DbContext
     public DbSet<Claim> Claims => Set<Claim>();
     public DbSet<Revision> Revisions => Set<Revision>();
     public DbSet<Contributor> Contributors => Set<Contributor>();
+    public DbSet<AiDraft> AiDrafts => Set<AiDraft>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
