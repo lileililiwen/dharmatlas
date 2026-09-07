@@ -1,3 +1,5 @@
+using Dharmatlas.Domain.ValueObjects;
+
 namespace Dharmatlas.Domain.Entities;
 
 /// <summary>
@@ -61,12 +63,33 @@ public sealed record Place : Entity
     public double? Longitude { get; init; }
     public string? ModernName { get; init; }
 
+    /// <summary>Map feature kind: city, monastery, archaeological site, region, etc.</summary>
+    public PlaceKind Kind { get; init; } = PlaceKind.City;
+
+    public string? Region { get; init; }
+
+    /// <summary>Recorded activity interval for the place (when it was active).</summary>
+    public HistoricalDate? Activity { get; init; }
+
+    public Certainty Certainty { get; init; } = Certainty.Unknown;
+
+    public IReadOnlyList<EntityId> SourceIds { get; init; } = Array.Empty<EntityId>();
+
     public Place() : base(EntityType.Place) { }
 }
 
 public sealed record Institution : Entity
 {
     public string? InstitutionalForm { get; init; }
+
+    /// <summary>Georeferenced location of the institution, if known.</summary>
+    public EntityId? PlaceId { get; init; }
+
+    public HistoricalDate? Activity { get; init; }
+
+    public Certainty Certainty { get; init; } = Certainty.Unknown;
+
+    public IReadOnlyList<EntityId> SourceIds { get; init; } = Array.Empty<EntityId>();
 
     public Institution() : base(EntityType.Institution) { }
 }

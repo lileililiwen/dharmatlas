@@ -39,7 +39,22 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
 
 public class InstitutionConfiguration : IEntityTypeConfiguration<Institution>
 {
-    public void Configure(EntityTypeBuilder<Institution> builder) => builder.HasBaseType<Entity>().ToTable("entities");
+    public void Configure(EntityTypeBuilder<Institution> builder)
+    {
+        builder.HasBaseType<Entity>().ToTable("entities");
+        builder.Property(e => e.PlaceId).HasColumnName("place_id").HasConversion(new EntityIdConverter());
+        builder.Property(e => e.Certainty).HasColumnName("certainty").HasConversion<string>();
+        builder.Property(e => e.SourceIds).HasColumnName("source_ids")
+            .HasColumnType("text").HasConversion(new SourceIdsConverter());
+        builder.OwnsOne(e => e.Activity, nav =>
+        {
+            nav.Property(d => d.Kind).HasColumnName("activity_kind").HasConversion<string>();
+            nav.Property(d => d.DisplayExpression).HasColumnName("activity_display");
+            nav.Property(d => d.NormalizedLowerBound).HasColumnName("activity_lower");
+            nav.Property(d => d.NormalizedUpperBound).HasColumnName("activity_upper");
+            nav.HasIndex(d => new { d.NormalizedLowerBound, d.NormalizedUpperBound }, "ix_institutions_activity_range");
+        });
+    }
 }
 
 public class TextConfiguration : IEntityTypeConfiguration<Text>
@@ -68,7 +83,21 @@ public class PlaceConfiguration : IEntityTypeConfiguration<Place>
         builder.Property(e => e.Latitude).HasColumnName("latitude");
         builder.Property(e => e.Longitude).HasColumnName("longitude");
         builder.Property(e => e.ModernName).HasColumnName("modern_name");
+        builder.Property(e => e.Kind).HasColumnName("kind").HasConversion<string>();
+        builder.Property(e => e.Region).HasColumnName("region");
+        builder.Property(e => e.Certainty).HasColumnName("certainty").HasConversion<string>();
+        builder.Property(e => e.SourceIds).HasColumnName("source_ids")
+            .HasColumnType("text").HasConversion(new SourceIdsConverter());
+        builder.OwnsOne(e => e.Activity, nav =>
+        {
+            nav.Property(d => d.Kind).HasColumnName("activity_kind").HasConversion<string>();
+            nav.Property(d => d.DisplayExpression).HasColumnName("activity_display");
+            nav.Property(d => d.NormalizedLowerBound).HasColumnName("activity_lower");
+            nav.Property(d => d.NormalizedUpperBound).HasColumnName("activity_upper");
+            nav.HasIndex(d => new { d.NormalizedLowerBound, d.NormalizedUpperBound }, "ix_places_activity_range");
+        });
         builder.HasIndex(e => new { e.Latitude, e.Longitude }, "ix_places_coords");
+        builder.HasIndex(e => e.Kind, "ix_places_kind");
     }
 }
 
