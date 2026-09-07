@@ -78,6 +78,10 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
     {
         builder.HasBaseType<Entity>().ToTable("entities");
         builder.Property(e => e.PlaceId).HasColumnName("place_id").HasConversion(new EntityIdConverter());
+        builder.Property(e => e.Category).HasColumnName("category");
+        builder.Property(e => e.Region).HasColumnName("region");
+        builder.Property(e => e.Certainty).HasColumnName("certainty").HasConversion<string>();
+        builder.HasIndex(e => new { e.Category, e.Region }, "ix_events_category_region");
 
         builder.OwnsOne(e => e.When, nav =>
         {
