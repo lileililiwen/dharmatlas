@@ -24,5 +24,9 @@ public class EntityNameConfiguration : IEntityTypeConfiguration<EntityName>
 
         builder.HasIndex(n => new { n.Language, n.Value }, "ix_entity_names_lang_value");
         builder.HasIndex(n => n.Value, "ix_entity_names_value");
+        // Support multilingual search: lookups by writing system and romanization
+        // scheme let the engine match alternate scripts and transliterations.
+        builder.HasIndex(n => n.Script, "ix_entity_names_script");
+        builder.HasIndex(n => n.Romanization, "ix_entity_names_romanization");
     }
 }
