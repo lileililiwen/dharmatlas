@@ -2,29 +2,30 @@
 
 ## Current state
 
-Two OpenSpec changes are complete and archived:
+Three OpenSpec changes are complete and archived:
 
 - `project-foundation` — source-first domain contract (`docs/domain-contract.md`),
   promoted to `openspec/specs/project-foundation/spec.md` as the acceptance baseline.
-- `historical-data-model` — the durable data model is implemented: a dependency-free
-  domain library (`src/Dharmatlas.Domain`) with entities, multilingual names,
-  typed sourceable relationships, sources, source-linked claims, revisions, and
-  contributors; uncertainty-aware date and certainty value objects with
-  domain-boundary validation; and an EF Core persistence layer
-  (`src/Dharmatlas.Persistence`) with TPH entities, normalized date-bound columns
-  plus a timeline range index, and indexes for name search, relationship
-  endpoints, and claim certainty/status. The spec is promoted to
-  `openspec/specs/historical-data-model/spec.md`.
+- `historical-data-model` — the durable data model is implemented (dependency-free
+  domain library `src/Dharmatlas.Domain`, EF Core persistence `src/Dharmatlas.Persistence`);
+  promoted to `openspec/specs/historical-data-model/spec.md`.
+- `timeline-exploration` — the read-only timeline read path is implemented
+  (`src/Dharmatlas.Timeline`): `TimelineQuery`/`EventSummary` contracts, a pure
+  `TimelineEngine` (overlap + category/region filtering, unknown-date opt-in),
+  `TimelineQueryService`, zoom presets, keyboard `EventFocusNavigator`, and
+  `TimelineViewState`. The `Event` entity gained `Category`, `Region`, and
+  `Certainty` to support filtering and certainty display. Promoted to
+  `openspec/specs/timeline-exploration/spec.md`.
 
-Six implementation-ready OpenSpec changes remain unimplemented and unarchived
-(timeline-exploration, historical-map, entity-discovery-and-search,
-contribution-review-and-revisions, open-api-and-data-export, ai-assisted-curation).
+Five implementation-ready OpenSpec changes remain unimplemented and unarchived
+(historical-map, entity-discovery-and-search, contribution-review-and-revisions,
+open-api-and-data-export, ai-assisted-curation).
 
 ## Next change
 
-`timeline-exploration` is the next active change in the ROADMAP queue. It builds
-on the `historical-data-model` to provide timeline querying and filtering over
-the 500 BCE–1000 CE MVP. Select it with:
+`historical-map` is the next active change in the ROADMAP queue. It builds on the
+data model and timeline to provide a time-filtered historical map for places,
+institutions, routes, and archaeological sites. Select it with:
 
 ```bash
 openspec list
@@ -44,12 +45,14 @@ openspec list
 
 ## Verification evidence
 
-- `historical-data-model` focused tests: **31 passed, 0 failed** (xUnit).
+- `timeline-exploration` focused tests: **51 passed, 0 failed** (xUnit, cumulative
+  suite including prior changes).
 - `openspec validate --all --strict --no-interactive` -> **8 passed, 0 failed**
-  (project-foundation + historical-data-model specs plus the six pending changes).
+  (project-foundation + historical-data-model + timeline-exploration specs plus
+  the five pending changes).
 - `git diff --check` and `git status --short`: clean within the committed scope.
-- `historical-data-model` archived as `2026-09-07-historical-data-model`; its spec
-  promoted to `openspec/specs/historical-data-model/spec.md`.
+- `timeline-exploration` archived as `2026-09-07-timeline-exploration`; its spec
+  promoted to `openspec/specs/timeline-exploration/spec.md`.
 
 ## Blocker reporting
 
