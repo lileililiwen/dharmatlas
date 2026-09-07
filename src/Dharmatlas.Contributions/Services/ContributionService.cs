@@ -1,0 +1,221 @@
+using System.Diagnostics.CodeAnalysis;
+using Dharmatlas.Contributions.Engine;
+using Dharmatlas.Contributions.Models;
+using Dharmatlas.Domain;
+using Dharmatlas.Domain.Entities;
+using Dharmatlas.Domain.ValueObjects;
+using Dharmatlas.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace Dharmatlas.Contributions.Services;
+
+/// <summary>
+/// Applies the pure review engine to the data model. Contributors submit through
+/// <see cref="SubmitAsync"/>; reviewers decide through <see cref="ReviewAsync"/>,
+/// which is the only path that mutates published data and records an immutable,
+/// field-level revision. Conflicts with an existing approved change are surfaced
+/// (status <see cref="SubmissionStatus.Conflict"/>) rather than silently merged.
+/// </summary>
+public sealed class ContributionService : IContributionService
+{
+    private readonly DharmatlasDbContext _db;
+
+    public ContributionService(DharmatlasDbContext db) => _db = db;
+
+    public async Task<Submission> SubmitAsync(
+        EntityId contributorId,
+        SubmissionType type,
+        string summary,
+        string payloadJson,
+        IReadOnlyList<EntityId>? sourceIds = null,
+        EntityId? targetId = null,
+        CancellationToken cancellationToken = default)
+    {
+        var draft = new Submission(contributorId, type, summary, payloadJson, sourceIds, targetId);
+
+        var validation = SubmissionValidator.Validate(draft);
+        if (!validation.IsValid)
+        {
+            throw new DomainValidationException(
+                "Invalid submission: " + string.Join("; ", validation.Errors));
+        }
+
+        var pending = draft.Submit();
+        _db.Submissions.Add(pending);
+        await _db.SaveChangesAsync(cancellationToken);
+        return pending;
+    }
+
+    public async Task<Submission> ReviewAsync(
+        EntityId submissionId,
+        EntityId reviewerId,
+        ReviewDecisionType decision,
+        string reason,
+        CancellationToken cancellationToken = default)
+    {
+        var tracked = await _db.Submissions.FirstOrDefaultAsync(s => s.Id == submissionId, cancellationToken)
+            ?? throw new InvalidReferenceException($"Submission {submissionId} not found.");
+
+        if (tracked.Status is not (SubmissionStatus.PendingReview or SubmissionStatus.ChangesRequested))
+        {
+            throw new DomainValidationException($"Submission is not awaiting review (status: {tracked.Status}).");
+        }
+
+        var reviewDecision = new ReviewDecision(reviewerId, decision, reason, DateTimeOffset.UtcNow);
+
+        // Approve: first check for a conflicting already-approved change on the same target.
+        if (decision == ReviewDecisionType.Approve && tracked.TargetId is { } target)
+        {
+            var approved = await _db.Submissions
+                .Where(s => s.TargetId == target && s.Status == SubmissionStatus.Approved && s.Id != tracked.Id)
+                .ToListAsync(cancellationToken);
+
+            if (ReviewEngine.HasConflictWithApproved(approved, tracked))
+            {
+                _db.Entry(tracked).Property(s => s.Status).CurrentValue = SubmissionStatus.Conflict;
+                await _db.SaveChangesAsync(cancellationToken);
+                return tracked;
+            }
+        }
+
+        var decided = ReviewEngine.RecordDecision(tracked, reviewDecision);
+
+        if (decision == ReviewDecisionType.Approve)
+        {
+            await ApplyApprovedAsync(tracked, reviewDecision, cancellationToken);
+        }
+
+        // Persist the status and decision trail onto the tracked submission rather
+        // than replacing the instance, which keeps the owned decision rows consistent.
+        _db.Entry(tracked).Property(s => s.Status).CurrentValue = decided.Status;
+        _db.Entry(tracked).Collection(s => s.Decisions).CurrentValue = decided.Decisions.ToList();
+        await _db.SaveChangesAsync(cancellationToken);
+        return decided;
+    }
+
+    public async Task<ContributionHistoryView?> GetHistoryAsync(EntityId targetId, CancellationToken cancellationToken = default)
+    {
+        var revisions = await _db.Revisions
+            .Where(r => r.TargetId == targetId)
+            .OrderByDescending(r => r.Timestamp)
+            .ToListAsync(cancellationToken);
+
+        if (revisions.Count == 0)
+        {
+            return null;
+        }
+
+        return new ContributionHistoryView { TargetId = targetId, Revisions = revisions };
+    }
+
+    public async Task<IReadOnlyList<SubmissionView>> GetContributorSubmissionsAsync(
+        EntityId contributorId, CancellationToken cancellationToken = default)
+    {
+        var submissions = await _db.Submissions
+            .Where(s => s.ContributorId == contributorId)
+            .OrderByDescending(s => s.CreatedAt)
+            .ToListAsync(cancellationToken);
+
+        return submissions.Select(ToView).ToList();
+    }
+
+    public async Task<IReadOnlyList<SubmissionView>> GetReviewerQueueAsync(CancellationToken cancellationToken = default)
+    {
+        var submissions = await _db.Submissions
+            .Where(s => s.Status == SubmissionStatus.PendingReview || s.Status == SubmissionStatus.Conflict)
+            .OrderByDescending(s => s.CreatedAt)
+            .ToListAsync(cancellationToken);
+
+        return submissions.Select(ToView).ToList();
+    }
+
+    private async Task ApplyApprovedAsync(Submission submission, ReviewDecision decision, CancellationToken cancellationToken)
+    {
+        string priorJson;
+        var targetId = submission.TargetId;
+
+        switch (submission.Type)
+        {
+            case SubmissionType.Date:
+                var ev = await _db.Entities.OfType<Event>()
+                    .FirstOrDefaultAsync(e => e.Id == targetId, cancellationToken)
+                    ?? throw new InvalidReferenceException($"Target event {targetId} not found.");
+                priorJson = SubmissionPayloads.WriteDate(ev.When);
+                var updatedEvent = ev with { When = SubmissionPayloads.ReadDate(submission.PayloadJson) };
+                _db.Entry(ev).State = EntityState.Detached;
+                _db.Entities.Update(updatedEvent);
+                break;
+
+            case SubmissionType.Name:
+            case SubmissionType.Translation:
+                priorJson = "null";
+                _db.EntityNames.Add(SubmissionPayloads.ReadName(targetId!.Value, submission.PayloadJson));
+                break;
+
+            case SubmissionType.Event:
+                var newEvent = SubmissionPayloads.ReadEvent(submission.PayloadJson);
+                _db.Entities.Add(newEvent);
+                targetId = newEvent.Id;
+                priorJson = "null";
+                break;
+
+            case SubmissionType.Source:
+                var newSource = SubmissionPayloads.ReadSource(submission.PayloadJson);
+                _db.Sources.Add(newSource);
+                targetId = newSource.Id;
+                priorJson = "null";
+                break;
+
+            case SubmissionType.Institution:
+                var newInstitution = SubmissionPayloads.ReadInstitution(submission.PayloadJson);
+                _db.Entities.Add(newInstitution);
+                targetId = newInstitution.Id;
+                priorJson = "null";
+                break;
+
+            case SubmissionType.Relationship:
+                var newRelationship = SubmissionPayloads.ReadRelationship(submission.PayloadJson);
+                _db.Relationships.Add(newRelationship);
+                targetId = newRelationship.Id;
+                priorJson = "null";
+                break;
+
+            default:
+                throw new DomainValidationException($"Unsupported submission type {submission.Type}.");
+        }
+
+        var changed = ComputeChangedFields(submission, priorJson);
+
+        var revision = ReviewEngine.BuildRevision(
+            targetId!.Value,
+            priorJson,
+            submission.ContributorId,
+            decision.ReviewerId,
+            decision.Reason,
+            submission.SourceIds,
+            ReviewEngine.SerializeChangedFields(changed),
+            decision.Timestamp);
+
+        _db.Revisions.Add(revision);
+        // The submission status update is persisted by the caller after this returns.
+    }
+
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+    private static IReadOnlyList<string> ComputeChangedFields(Submission submission, string priorJson) =>
+        submission.Type == SubmissionType.Date
+            ? ReviewEngine.DiffFields(priorJson, submission.PayloadJson)
+            : new[] { submission.Type is SubmissionType.Name or SubmissionType.Translation ? "name" : "created" };
+
+    private static SubmissionView ToView(Submission s) => new()
+    {
+        Id = s.Id,
+        ContributorId = s.ContributorId,
+        Type = s.Type,
+        TargetId = s.TargetId,
+        Summary = s.Summary,
+        Status = s.Status,
+        CreatedAt = s.CreatedAt,
+        SourceCount = s.SourceIds.Count,
+        LastDecisionReason = s.Decisions.LastOrDefault()?.Reason
+    };
+}

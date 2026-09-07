@@ -18,6 +18,10 @@ public class RevisionConfiguration : IEntityTypeConfiguration<Revision>
         builder.Property(r => r.PriorValueJson).HasColumnName("prior_value_json").IsRequired();
         builder.Property(r => r.ContributorId).HasColumnName("contributor_id").HasConversion(new EntityIdConverter());
         builder.Property(r => r.Reason).HasColumnName("reason").IsRequired();
+        builder.Property(r => r.ReviewerId).HasColumnName("reviewer_id").HasConversion(new EntityIdConverter());
+        builder.Property(r => r.ChangedFieldsJson).HasColumnName("changed_fields_json");
+        builder.Property(r => r.SourceIds).HasColumnName("source_ids")
+            .HasColumnType("text").HasConversion(new SourceIdsConverter());
         builder.Property(r => r.Timestamp).HasColumnName("timestamp");
         builder.HasIndex(r => r.TargetId, "ix_revisions_target");
     }

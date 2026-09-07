@@ -18,6 +18,7 @@ public class DharmatlasDbContext : DbContext
     public DbSet<EntityName> EntityNames => Set<EntityName>();
     public DbSet<Relationship> Relationships => Set<Relationship>();
     public DbSet<Source> Sources => Set<Source>();
+    public DbSet<Submission> Submissions => Set<Submission>();
     public DbSet<Claim> Claims => Set<Claim>();
     public DbSet<Revision> Revisions => Set<Revision>();
     public DbSet<Contributor> Contributors => Set<Contributor>();
