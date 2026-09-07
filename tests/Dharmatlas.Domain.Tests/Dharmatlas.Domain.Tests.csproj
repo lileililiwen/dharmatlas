@@ -16,12 +16,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Dharmatlas.Domain\Dharmatlas.Domain.csproj" />
     <ProjectReference Include="..\..\src\Dharmatlas.Persistence\Dharmatlas.Persistence.csproj" />
     <ProjectReference Include="..\..\src\Dharmatlas.Search\Dharmatlas.Search.csproj" />
     <ProjectReference Include="..\..\src\Dharmatlas.Contributions\Dharmatlas.Contributions.csproj" />
     <ProjectReference Include="..\..\src\Dharmatlas.Timeline\Dharmatlas.Timeline.csproj" />
     <ProjectReference Include="..\..\src\Dharmatlas.Map\Dharmatlas.Map.csproj" />
+    <ProjectReference Include="..\..\src\Dharmatlas.Api\Dharmatlas.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>
