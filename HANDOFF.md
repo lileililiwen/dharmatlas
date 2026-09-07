@@ -2,7 +2,7 @@
 
 ## Current state
 
-Six OpenSpec changes are complete and archived:
+Seven OpenSpec changes are complete and archived:
 
 - `project-foundation` — source-first domain contract (`docs/domain-contract.md`),
   promoted to `openspec/specs/project-foundation/spec.md` as the acceptance baseline.
@@ -28,15 +28,25 @@ Six OpenSpec changes are complete and archived:
   `ChangedFieldsJson`, and `SourceIds`; `Submission`/`ReviewDecision` got owned
   persistence. Promoted to
   `openspec/specs/contribution-review-and-revisions/spec.md`.
+- `open-api-and-data-export` — versioned read-only public API and reproducible
+  bulk export (`src/Dharmatlas.Api`): versioned `/api/v1` endpoints for persons,
+  events, places, texts, relationships, sources, export, and meta; bounded cursor
+  pagination, cache-control, and per-key rate limiting; pure engine
+  (`ApiQueryService`, `BulkExporter`, `Paginator`, `RateLimiter`, `ApiMeta`)
+  with xUnit contract tests over an in-memory `DbContext`. The published-data
+  boundary is enforced structurally — only `Entities`, `EntityNames`,
+  `Relationships`, and `Sources` are read, so drafts, rejected contributions, and
+  private contributor data never surface. Promoted to
+  `openspec/specs/open-api-and-data-export/spec.md`.
 
-Two implementation-ready OpenSpec changes remain unimplemented and unarchived
-(open-api-and-data-export, ai-assisted-curation).
+One implementation-ready OpenSpec change remains unimplemented and unarchived
+(ai-assisted-curation).
 
 ## Next change
 
-`open-api-and-data-export` is the next active change in the ROADMAP queue (item 6).
-It adds a read-only public API and data export on top of the completed read paths.
-Select it with:
+`ai-assisted-curation` is the next active change in the ROADMAP queue (item 7).
+It adds AI draft-assistance for contributions under human review, limited to
+non-publication draft suggestions with explicit source provenance. Select it with:
 
 ```bash
 openspec list
@@ -67,11 +77,16 @@ openspec list
 - `openspec validate --all --strict --no-interactive` -> **8 passed, 0 failed**
   (project-foundation + historical-data-model + timeline-exploration +
   historical-map + entity-discovery-and-search + contribution-review-and-revisions
-  specs plus the two pending changes).
+  + open-api-and-data-export specs).
 - `git diff --check` and `git status --short`: clean within the committed scope.
-- `contribution-review-and-revisions` archived as
-  `2026-09-07-contribution-review-and-revisions`; its spec promoted to
-  `openspec/specs/contribution-review-and-revisions/spec.md`.
+- `open-api-and-data-export` focused tests: **111 passed, 0 failed** (xUnit, full
+  cumulative suite). New coverage: versioned endpoint shapes (person/event/place/
+  text), unknown-id nulls, list filters (year-range overlap, min-certainty, type),
+  cursor pagination + limit clamping, published-data boundary (pending and rejected
+  submissions excluded), export schema/license/reproducibility, fixed-window rate
+  limiter, `ApiException` -> `ProblemDetails`, and `/meta` description.
+- `open-api-and-data-export` archived as `2026-09-07-open-api-and-data-export`; its
+  spec promoted to `openspec/specs/open-api-and-data-export/spec.md`.
 
 ## Blocker reporting
 
