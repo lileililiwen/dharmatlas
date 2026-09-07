@@ -1,0 +1,3 @@
+# Design: Open API and data export
+
+Expose versioned read-only endpoints such as `/api/v1/persons/{id}`, `/api/v1/events`, `/api/v1/places/{id}`, and `/api/v1/texts/{id}`. Responses use stable IDs, canonical and alternate names, date expressions plus bounds, certainty, relationship links, and source citations. List endpoints support bounded pagination and explicit filters. Bulk snapshots use a documented machine-readable format, include schema/version/license metadata, and exclude private contributor information. Rate limits and cache headers protect the service without restricting ordinary research use.

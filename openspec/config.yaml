@@ -1,0 +1,18 @@
+schema: spec-driven
+
+context: |
+  Project: Dharmatlas, an open historical atlas of Buddhism.
+  Planned stack: ASP.NET Core, PostgreSQL, React/Next.js, MapLibre, D3, Cytoscape.js.
+  Product invariant: source-first, non-sectarian, uncertainty-aware historical data.
+  MVP: 500 BCE–1000 CE; India, Central Asia, China, Sri Lanka, Tibet, Korea, Japan.
+  Keep changes small and follow the one-change workflow in AGENTS.md.
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours

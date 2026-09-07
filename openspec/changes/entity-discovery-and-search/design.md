@@ -1,0 +1,3 @@
+# Design: Entity discovery and search
+
+Use PostgreSQL full-text and normalized alias fields first. Search results return entity type, canonical name, matched alias, region, active period, and certainty indicators. A canonical entity route provides type-specific fields plus related events, sources, and typed relationships. Person pages include birth/death and teachers/students; place pages include historical names and political context; institution pages include founding/decline and teachers/students; text pages include names, formation window, translators, transmission, and scholarship. Missing fields are omitted or labeled unknown rather than inferred.

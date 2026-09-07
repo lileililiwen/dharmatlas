@@ -1,0 +1,21 @@
+# Generated and dependency directories
+node_modules/
+bin/
+obj/
+dist/
+build/
+.next/
+coverage/
+
+# Local-only state
+.env*
+*.log
+tmp/
+storage/
+data/local/
+
+# Machine metadata
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
