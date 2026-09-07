@@ -33,7 +33,22 @@ ASP.NET Core, PostgreSQL, React/Next.js, OpenStreetMap with MapLibre, custom Rea
 
 ## Status
 
-Project documentation and the first OpenSpec change are initialized. No product runtime has been implemented yet. See [ROADMAP.md](ROADMAP.md) for sequence and [HANDOFF.md](HANDOFF.md) for the next actionable change.
+The backend is implemented as a set of .NET class libraries delivered through the
+OpenSpec workflow:
+
+- A source-first domain model and EF Core persistence layer.
+- Read paths for the timeline, time-filtered map, and multilingual entity search.
+- A contribution-review workflow with immutable, field-level revisions.
+- A versioned read-only public API (`/api/v1`) with bounded pagination, cache and
+  rate-limit behavior, and reproducible bulk export (schema version + license).
+- AI-assisted curation that produces immutable, provenanced drafts under a human
+  publication gate (acceptance only promotes a draft into the contribution-review
+  queue; duplicate and date-conflict suggestions never merge records).
+
+All eight OpenSpec changes are archived. The interactive UI and runtime host
+(React/Next.js, MapLibre, D3, Cytoscape.js) are not yet built. See
+[ROADMAP.md](ROADMAP.md) for sequence and [HANDOFF.md](HANDOFF.md) for current
+state.
 
 ## Scope boundary
 

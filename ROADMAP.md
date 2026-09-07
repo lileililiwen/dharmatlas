@@ -15,15 +15,20 @@ Target: repository and data contract ready for implementation.
 
 OpenSpec change: `project-foundation`.
 
-The next implementation queue is:
+The Phase 0 implementation queue (all complete; backend only):
 
-1. `historical-data-model`
-2. `timeline-exploration`
-3. `historical-map`
-4. `entity-discovery-and-search`
-5. `contribution-review-and-revisions`
-6. `open-api-and-data-export`
-7. `ai-assisted-curation`
+1. `historical-data-model` ✅
+2. `timeline-exploration` ✅
+3. `historical-map` ✅
+4. `entity-discovery-and-search` ✅
+5. `contribution-review-and-revisions` ✅
+6. `open-api-and-data-export` ✅
+7. `ai-assisted-curation` ✅
+
+The first five changes establish the MVP read path and contribution governance;
+`open-api-and-data-export` adds the public read-only API and reproducible bulk
+export; `ai-assisted-curation` adds human-gated AI drafts. The interactive UI and
+runtime host (Phase 1) follow once a change explicitly pulls them forward.
 
 ## Phase 1 — MVP: 500 BCE–1000 CE
 
