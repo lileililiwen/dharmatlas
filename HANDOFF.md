@@ -2,30 +2,32 @@
 
 ## Current state
 
-Three OpenSpec changes are complete and archived:
+Four OpenSpec changes are complete and archived:
 
 - `project-foundation` — source-first domain contract (`docs/domain-contract.md`),
   promoted to `openspec/specs/project-foundation/spec.md` as the acceptance baseline.
-- `historical-data-model` — the durable data model is implemented (dependency-free
-  domain library `src/Dharmatlas.Domain`, EF Core persistence `src/Dharmatlas.Persistence`);
+- `historical-data-model` — durable data model (dependency-free domain library
+  `src/Dharmatlas.Domain`, EF Core persistence `src/Dharmatlas.Persistence`);
   promoted to `openspec/specs/historical-data-model/spec.md`.
-- `timeline-exploration` — the read-only timeline read path is implemented
-  (`src/Dharmatlas.Timeline`): `TimelineQuery`/`EventSummary` contracts, a pure
-  `TimelineEngine` (overlap + category/region filtering, unknown-date opt-in),
-  `TimelineQueryService`, zoom presets, keyboard `EventFocusNavigator`, and
-  `TimelineViewState`. The `Event` entity gained `Category`, `Region`, and
-  `Certainty` to support filtering and certainty display. Promoted to
-  `openspec/specs/timeline-exploration/spec.md`.
+- `timeline-exploration` — read-only timeline read path (`src/Dharmatlas.Timeline`);
+  promoted to `openspec/specs/timeline-exploration/spec.md`.
+- `historical-map` — read-only time-filtered map read path (`src/Dharmatlas.Map`):
+  `MapQuery`/`MapFeature` contracts, pure `MapEngine` (activity-interval overlap
+  filtering with unknown-activity opt-in), `MapQueryService`, `MapClusterer`,
+  `MapSelectionNavigator`, and `MapViewState` list fallback. `Place` gained
+  `PlaceKind`/`Region`/`Activity`/`Certainty`/`SourceIds` and `Institution` gained
+  `PlaceId`/`Activity`/`Certainty`/`SourceIds`. Promoted to
+  `openspec/specs/historical-map/spec.md`.
 
-Five implementation-ready OpenSpec changes remain unimplemented and unarchived
-(historical-map, entity-discovery-and-search, contribution-review-and-revisions,
+Four implementation-ready OpenSpec changes remain unimplemented and unarchived
+(entity-discovery-and-search, contribution-review-and-revisions,
 open-api-and-data-export, ai-assisted-curation).
 
 ## Next change
 
-`historical-map` is the next active change in the ROADMAP queue. It builds on the
-data model and timeline to provide a time-filtered historical map for places,
-institutions, routes, and archaeological sites. Select it with:
+`entity-discovery-and-search` is the next active change in the ROADMAP queue. It
+builds on the data model to provide person/place/text discovery and search across
+canonical and alternative names. Select it with:
 
 ```bash
 openspec list
@@ -45,14 +47,14 @@ openspec list
 
 ## Verification evidence
 
-- `timeline-exploration` focused tests: **51 passed, 0 failed** (xUnit, cumulative
+- `historical-map` focused tests: **68 passed, 0 failed** (xUnit, cumulative
   suite including prior changes).
 - `openspec validate --all --strict --no-interactive` -> **8 passed, 0 failed**
-  (project-foundation + historical-data-model + timeline-exploration specs plus
-  the five pending changes).
+  (project-foundation + historical-data-model + timeline-exploration +
+  historical-map specs plus the four pending changes).
 - `git diff --check` and `git status --short`: clean within the committed scope.
-- `timeline-exploration` archived as `2026-09-07-timeline-exploration`; its spec
-  promoted to `openspec/specs/timeline-exploration/spec.md`.
+- `historical-map` archived as `2026-09-07-historical-map`; its spec promoted to
+  `openspec/specs/historical-map/spec.md`.
 
 ## Blocker reporting
 
