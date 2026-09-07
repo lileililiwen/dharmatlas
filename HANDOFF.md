@@ -2,23 +2,29 @@
 
 ## Current state
 
-The `project-foundation` change is complete, archived, and promoted to the
-project spec baseline (`openspec/specs/project-foundation/spec.md`). The source-first
-domain contract is written in `docs/domain-contract.md`, covering the entity and
-relationship vocabulary, uncertainty-aware date model, historical-certainty
-values, source-linking requirements, and the validation/one-change workflow.
+Two OpenSpec changes are complete and archived:
 
-Seven implementation-ready OpenSpec changes remain unimplemented and unarchived
-(historical-data-model, timeline-exploration, historical-map,
-entity-discovery-and-search, contribution-review-and-revisions,
-open-api-and-data-export, ai-assisted-curation).
+- `project-foundation` — source-first domain contract (`docs/domain-contract.md`),
+  promoted to `openspec/specs/project-foundation/spec.md` as the acceptance baseline.
+- `historical-data-model` — the durable data model is implemented: a dependency-free
+  domain library (`src/Dharmatlas.Domain`) with entities, multilingual names,
+  typed sourceable relationships, sources, source-linked claims, revisions, and
+  contributors; uncertainty-aware date and certainty value objects with
+  domain-boundary validation; and an EF Core persistence layer
+  (`src/Dharmatlas.Persistence`) with TPH entities, normalized date-bound columns
+  plus a timeline range index, and indexes for name search, relationship
+  endpoints, and claim certainty/status. The spec is promoted to
+  `openspec/specs/historical-data-model/spec.md`.
+
+Six implementation-ready OpenSpec changes remain unimplemented and unarchived
+(timeline-exploration, historical-map, entity-discovery-and-search,
+contribution-review-and-revisions, open-api-and-data-export, ai-assisted-curation).
 
 ## Next change
 
-`historical-data-model` is the next active change in the ROADMAP queue. It builds
-on the `project-foundation` contract to define the concrete data model
-(entities, names, relationships, events, sources, claims, revisions,
-contributors) for the 500 BCE–1000 CE MVP. Select it with:
+`timeline-exploration` is the next active change in the ROADMAP queue. It builds
+on the `historical-data-model` to provide timeline querying and filtering over
+the 500 BCE–1000 CE MVP. Select it with:
 
 ```bash
 openspec list
@@ -38,13 +44,12 @@ openspec list
 
 ## Verification evidence
 
-- `project-foundation` validation: `openspec validate --all --strict --no-interactive`
-  -> **8 passed, 0 failed** (project-foundation plus the seven pending changes).
+- `historical-data-model` focused tests: **31 passed, 0 failed** (xUnit).
+- `openspec validate --all --strict --no-interactive` -> **8 passed, 0 failed**
+  (project-foundation + historical-data-model specs plus the six pending changes).
 - `git diff --check` and `git status --short`: clean within the committed scope.
-- `project-foundation` archived as `2026-09-07-project-foundation`; its spec
-  promoted to `openspec/specs/project-foundation/spec.md` as the acceptance baseline.
-- No runtime tests for this documentation/contract change; runtime tests begin
-  with `historical-data-model`.
+- `historical-data-model` archived as `2026-09-07-historical-data-model`; its spec
+  promoted to `openspec/specs/historical-data-model/spec.md`.
 
 ## Blocker reporting
 
