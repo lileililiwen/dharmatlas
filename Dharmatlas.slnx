@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Dharmatlas.Domain/Dharmatlas.Domain.csproj" />
+    <Project Path="src/Dharmatlas.Persistence/Dharmatlas.Persistence.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Dharmatlas.Domain.Tests/Dharmatlas.Domain.Tests.csproj" />
+  </Folder>
+</Solution>
