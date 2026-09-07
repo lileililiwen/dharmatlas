@@ -2,7 +2,7 @@
 
 ## Current state
 
-Four OpenSpec changes are complete and archived:
+Five OpenSpec changes are complete and archived:
 
 - `project-foundation` — source-first domain contract (`docs/domain-contract.md`),
   promoted to `openspec/specs/project-foundation/spec.md` as the acceptance baseline.
@@ -18,16 +18,24 @@ Four OpenSpec changes are complete and archived:
   `PlaceKind`/`Region`/`Activity`/`Certainty`/`SourceIds` and `Institution` gained
   `PlaceId`/`Activity`/`Certainty`/`SourceIds`. Promoted to
   `openspec/specs/historical-map/spec.md`.
+- `entity-discovery-and-search` — multilingual entity search and entity detail read
+  path (`src/Dharmatlas.Search`): `SearchQuery`/`SearchResult`/`EntitySearchHit`
+  and `EntityDetail`/`RelatedEntity`/`SourceView` contracts, pure `SearchEngine`
+  (canonical/alternate-script/romanization matching with ranking, one stable
+  identity per entity, type and region filters, provenance), pure
+  `EntityDetailAssembler` (relationships, sources, type-grouped relations, missing
+  fields omitted), `SearchQueryService` and `EntityDetailService` over
+  `DharmatlasDbContext`. Added PostgreSQL indexes on `EntityName` `Script` and
+  `Romanization`. Promoted to `openspec/specs/entity-discovery-and-search/spec.md`.
 
-Four implementation-ready OpenSpec changes remain unimplemented and unarchived
-(entity-discovery-and-search, contribution-review-and-revisions,
-open-api-and-data-export, ai-assisted-curation).
+Three implementation-ready OpenSpec changes remain unimplemented and unarchived
+(contribution-review-and-revisions, open-api-and-data-export, ai-assisted-curation).
 
 ## Next change
 
-`entity-discovery-and-search` is the next active change in the ROADMAP queue. It
-builds on the data model to provide person/place/text discovery and search across
-canonical and alternative names. Select it with:
+`contribution-review-and-revisions` is the next active change in the ROADMAP queue
+(item 5). It adds contribution submission, review, and revision history on top of
+the completed read paths. Select it with:
 
 ```bash
 openspec list
@@ -47,14 +55,18 @@ openspec list
 
 ## Verification evidence
 
-- `historical-map` focused tests: **68 passed, 0 failed** (xUnit, cumulative
-  suite including prior changes).
+- `entity-discovery-and-search` focused tests: **82 passed, 0 failed** (xUnit,
+  cumulative suite including prior changes). New coverage: multilingual alias/diacritic
+  matching, one-stable-identity-per-entity, ranking (exact primary > exact alias >
+  substring), type and region filters, institution region inheritance, ambiguous
+  names distinguished by type, empty-term handling, limit, and entity detail
+  (relationship grouping, missing-field omission, source visibility).
 - `openspec validate --all --strict --no-interactive` -> **8 passed, 0 failed**
   (project-foundation + historical-data-model + timeline-exploration +
-  historical-map specs plus the four pending changes).
+  historical-map + entity-discovery-and-search specs plus the three pending changes).
 - `git diff --check` and `git status --short`: clean within the committed scope.
-- `historical-map` archived as `2026-09-07-historical-map`; its spec promoted to
-  `openspec/specs/historical-map/spec.md`.
+- `entity-discovery-and-search` archived as `2026-09-07-entity-discovery-and-search`;
+  its spec promoted to `openspec/specs/entity-discovery-and-search/spec.md`.
 
 ## Blocker reporting
 
