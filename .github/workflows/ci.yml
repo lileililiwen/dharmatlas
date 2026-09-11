@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: dharmatlas_test
+          POSTGRES_USER: dharmatlas
+          POSTGRES_PASSWORD: dharmatlas-test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dharmatlas -d dharmatlas_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      DHARMATLAS_DATABASE_CONNECTION: Host=localhost;Port=5432;Database=dharmatlas_test;Username=dharmatlas;Password=dharmatlas-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet restore Dharmatlas.slnx --ignore-failed-sources -p:NuGetAudit=false --nologo
+      - run: dotnet build Dharmatlas.slnx --no-restore --nologo -m:1
+      - run: dotnet test tests/Dharmatlas.Domain.Tests/Dharmatlas.Domain.Tests.csproj --no-build --no-restore --nologo -m:1
+      - run: dotnet ef database update --project src/Dharmatlas.Persistence/Dharmatlas.Persistence.csproj --startup-project src/Dharmatlas.Host/Dharmatlas.Host.csproj
+      - run: openspec validate --all --strict --no-interactive
+      - run: git diff --check

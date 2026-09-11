@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: dharmatlas
+      POSTGRES_USER: dharmatlas
+      POSTGRES_PASSWORD: dharmatlas-local-only
+    ports:
+      - "55434:5432"
+    volumes:
+      - dharmatlas-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dharmatlas -d dharmatlas"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  host:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__Dharmatlas: Host=postgres;Port=5432;Database=dharmatlas;Username=dharmatlas;Password=dharmatlas-local-only
+      Dharmatlas__ApplyMigrations: "true"
+    ports:
+      - "18080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  dharmatlas-postgres:

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Dharmatlas.Host</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Dharmatlas.Api\Dharmatlas.Api.csproj" />
+    <ProjectReference Include="..\Dharmatlas.Map\Dharmatlas.Map.csproj" />
+    <ProjectReference Include="..\Dharmatlas.Persistence\Dharmatlas.Persistence.csproj" />
+    <ProjectReference Include="..\Dharmatlas.Search\Dharmatlas.Search.csproj" />
+    <ProjectReference Include="..\Dharmatlas.Timeline\Dharmatlas.Timeline.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.19">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>
