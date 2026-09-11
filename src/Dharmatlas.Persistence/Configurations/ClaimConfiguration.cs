@@ -23,8 +23,11 @@ public class ClaimConfiguration : IEntityTypeConfiguration<Claim>
             .HasColumnType("text").HasConversion(new SourceIdsConverter());
         builder.Property(c => c.SubjectEntityId).HasColumnName("subject_entity_id")
             .HasConversion(new EntityIdConverter());
+        builder.Property(c => c.Interpretation).HasColumnName("interpretation").HasConversion<string>();
+        builder.Property(c => c.SourceLocator).HasColumnName("source_locator").HasMaxLength(256);
 
         builder.HasIndex(c => new { c.Certainty, c.Status }, "ix_claims_certainty_status");
         builder.HasIndex(c => c.SubjectEntityId, "ix_claims_subject");
+        builder.HasIndex(c => new { c.SubjectEntityId, c.Status }, "ix_claims_subject_publication");
     }
 }

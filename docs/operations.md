@@ -64,3 +64,19 @@ DHARMATLAS_DATABASE_CONNECTION='Host=localhost;Port=55434;Database=dharmatlas;Us
 The importer validates the complete manifest before writing and replaces only
 records carrying IDs from that manifest. It does not delete unrelated records.
 Review source licensing and attribution metadata before adding records.
+
+## Claims and evidence
+
+Every published claim must cite one or more inspectable `Source` records. Use
+`SourceLocator` for a page, folio, chapter, inscription entry, or stable URL;
+do not replace a locator with an uncited free-text bibliography. A claim with
+`TraditionalAccount` interpretation or certainty must retain that label in
+editorial and public views. Scholarly interpretations and disagreements are
+added as separate claims, with their own sources and certainty, rather than
+overwriting an earlier claim.
+
+Only `Published` claims are included in public entity responses and exports.
+Draft, rejected, and private claims remain moderation data. Before publication,
+editors must confirm that every source reference exists, the source may be
+redistributed under its recorded license/attribution terms, and the statement
+does not present a traditional account as documented historical fact.

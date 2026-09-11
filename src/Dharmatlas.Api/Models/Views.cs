@@ -22,6 +22,17 @@ public sealed record SourceView
     public string? Identifier { get; init; }
 }
 
+/// <summary>Public evidence attached to a published historical assertion.</summary>
+public sealed record ClaimView
+{
+    public required string Id { get; init; }
+    public required string Statement { get; init; }
+    public required string Certainty { get; init; }
+    public required string Interpretation { get; init; }
+    public string? SourceLocator { get; init; }
+    public required IReadOnlyList<SourceView> Sources { get; init; }
+}
+
 /// <summary>Uncertainty-aware date with its authored expression preserved.</summary>
 public sealed record DateView
 {
@@ -67,6 +78,7 @@ public sealed record PersonView : EntityRef
     public string Certainty { get; init; } = Dharmatlas.Domain.ValueObjects.Certainty.Unknown.ToString();
     public string? ActivePeriod { get; init; }
     public required IReadOnlyList<SourceView> Sources { get; init; }
+    public required IReadOnlyList<ClaimView> Claims { get; init; }
     public required IReadOnlyList<RelatedRef> Relationships { get; init; }
 }
 
@@ -82,6 +94,7 @@ public sealed record EventView : EntityRef
     public EntityRef? Place { get; init; }
     public required IReadOnlyList<RelatedRef> Participants { get; init; }
     public required IReadOnlyList<SourceView> Sources { get; init; }
+    public required IReadOnlyList<ClaimView> Claims { get; init; }
 }
 
 /// <summary>Read-only place payload with geography, kind, activity, and sources.</summary>
@@ -97,6 +110,7 @@ public sealed record PlaceView : EntityRef
     public DateView? Activity { get; init; }
     public string Certainty { get; init; } = Dharmatlas.Domain.ValueObjects.Certainty.Unknown.ToString();
     public required IReadOnlyList<SourceView> Sources { get; init; }
+    public required IReadOnlyList<ClaimView> Claims { get; init; }
 }
 
 /// <summary>Read-only text payload with language and sources.</summary>
@@ -106,6 +120,7 @@ public sealed record TextView : EntityRef
     public string? Summary { get; init; }
     public string? OriginalLanguage { get; init; }
     public required IReadOnlyList<SourceView> Sources { get; init; }
+    public required IReadOnlyList<ClaimView> Claims { get; init; }
 }
 
 /// <summary>Read-only relationship payload with resolved endpoints and sources.</summary>

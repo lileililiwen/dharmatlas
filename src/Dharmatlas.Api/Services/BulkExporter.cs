@@ -22,6 +22,7 @@ public static class BulkExporter
         IReadOnlyList<Relationship> relationships,
         IReadOnlyList<Source> sources,
         DateTimeOffset generatedAt,
+        IReadOnlyList<Claim>? claims = null,
         string schemaVersion = ApiConstants.SchemaVersion,
         string license = ApiConstants.License,
         string licenseUrl = ApiConstants.LicenseUrl)
@@ -50,6 +51,10 @@ public static class BulkExporter
             .Select(ToExportSource)
             .ToList();
 
+        var exportClaims = ClaimReadModel.Published(claims ?? Array.Empty<Claim>())
+            .Select(ToExportClaim)
+            .ToList();
+
         var byType = exportEntities
             .GroupBy(e => e.Type)
             .ToDictionary(g => g.Key, g => g.Count());
@@ -65,11 +70,13 @@ public static class BulkExporter
                 Entities = exportEntities.Count,
                 Relationships = exportRelationships.Count,
                 Sources = exportSources.Count,
+                Claims = exportClaims.Count,
                 ByType = byType
             },
             Entities = exportEntities,
             Relationships = exportRelationships,
-            Sources = exportSources
+            Sources = exportSources,
+            Claims = exportClaims
         };
     }
 
@@ -138,6 +145,17 @@ public static class BulkExporter
         Author = s.Author,
         Date = s.Date,
         Identifier = s.Identifier
+    };
+
+    private static ExportClaim ToExportClaim(Claim claim) => new()
+    {
+        Id = claim.Id.ToString(),
+        SubjectEntityId = claim.SubjectEntityId?.ToString(),
+        Statement = claim.Statement,
+        Certainty = claim.Certainty.ToString(),
+        Interpretation = claim.Interpretation.ToString(),
+        SourceLocator = claim.SourceLocator,
+        SourceIds = claim.SourceIds.Select(s => s.ToString()).ToList()
     };
 
     private static string? ResolveRegion(Entity entity, IReadOnlyDictionary<EntityId, string> placeRegions) => entity switch

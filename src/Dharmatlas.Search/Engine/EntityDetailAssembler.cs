@@ -25,7 +25,8 @@ public static class EntityDetailAssembler
         IReadOnlyList<SourceView> sources,
         IReadOnlyDictionary<EntityId, RelatedInfo> relatedLookup,
         string? region,
-        string? activePeriod)
+        string? activePeriod,
+        IReadOnlyList<Claim>? claims = null)
     {
         var orderedNames = EntityNameReadModel.Order(names);
         var canonical = EntityNameReadModel.CanonicalName(orderedNames) ?? entity.Id.ToString();
@@ -74,6 +75,7 @@ public static class EntityDetailAssembler
             ActivePeriod = activePeriod,
             Region = region,
             Sources = sources,
+            Claims = ClaimReadModel.Published(claims ?? Array.Empty<Claim>()),
             Relationships = related,
             RelatedPeople = Group(related, EntityType.Person),
             RelatedPlaces = Group(related, EntityType.Place),

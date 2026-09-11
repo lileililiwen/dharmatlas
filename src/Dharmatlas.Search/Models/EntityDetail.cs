@@ -29,6 +29,7 @@ public sealed record EntityDetail
     public string? Region { get; init; }
 
     public required IReadOnlyList<SourceView> Sources { get; init; }
+    public IReadOnlyList<Claim> Claims { get; init; } = Array.Empty<Claim>();
 
     /// <summary>All typed relationships touching this entity.</summary>
     public required IReadOnlyList<RelatedEntity> Relationships { get; init; }

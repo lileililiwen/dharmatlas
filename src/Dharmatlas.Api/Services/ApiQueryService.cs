@@ -46,6 +46,7 @@ public sealed class ApiQueryService
             Certainty = detail.Certainty.ToString(),
             ActivePeriod = detail.ActivePeriod,
             Sources = detail.Sources.Select(ToSourceView).ToList(),
+            Claims = ToClaimViews(detail.Claims, detail.Sources),
             Relationships = detail.Relationships.Select(ToRelatedRef).ToList()
         };
     }
@@ -79,7 +80,8 @@ public sealed class ApiQueryService
             When = DateView.From(entity.When),
             Place = place,
             Participants = detail.Relationships.Select(ToRelatedRef).ToList(),
-            Sources = detail.Sources.Select(ToSourceView).ToList()
+            Sources = detail.Sources.Select(ToSourceView).ToList(),
+            Claims = ToClaimViews(detail.Claims, detail.Sources)
         };
     }
 
@@ -106,7 +108,8 @@ public sealed class ApiQueryService
             Longitude = entity.Longitude,
             Activity = DateView.From(entity.Activity),
             Certainty = entity.Certainty.ToString(),
-            Sources = detail.Sources.Select(ToSourceView).ToList()
+            Sources = detail.Sources.Select(ToSourceView).ToList(),
+            Claims = ToClaimViews(detail.Claims, detail.Sources)
         };
     }
 
@@ -127,7 +130,8 @@ public sealed class ApiQueryService
             Names = MapNames(detail.Names),
             Summary = entity.Summary,
             OriginalLanguage = entity.OriginalLanguage,
-            Sources = detail.Sources.Select(ToSourceView).ToList()
+            Sources = detail.Sources.Select(ToSourceView).ToList(),
+            Claims = ToClaimViews(detail.Claims, detail.Sources)
         };
     }
 
@@ -258,8 +262,9 @@ public sealed class ApiQueryService
         var names = await _db.EntityNames.ToListAsync(cancellationToken);
         var relationships = await _db.Relationships.ToListAsync(cancellationToken);
         var sources = await _db.Sources.ToListAsync(cancellationToken);
+        var claims = await _db.Claims.ToListAsync(cancellationToken);
 
-        return BulkExporter.Build(entities, names, relationships, sources, generatedAt);
+        return BulkExporter.Build(entities, names, relationships, sources, generatedAt, claims);
     }
 
     public ApiMetaView GetMeta() => ApiMeta.Describe();
@@ -411,6 +416,25 @@ public sealed class ApiQueryService
         Date = s.Date,
         Identifier = s.Identifier
     };
+
+    private static IReadOnlyList<Models.ClaimView> ToClaimViews(
+        IReadOnlyList<Claim> claims,
+        IReadOnlyList<Search.Models.SourceView> sources)
+    {
+        var sourceLookup = sources.ToDictionary(s => s.Id);
+        return claims.Select(claim => new Models.ClaimView
+        {
+            Id = claim.Id.ToString(),
+            Statement = claim.Statement,
+            Certainty = claim.Certainty.ToString(),
+            Interpretation = claim.Interpretation.ToString(),
+            SourceLocator = claim.SourceLocator,
+            Sources = claim.SourceIds
+                .Where(sourceLookup.ContainsKey)
+                .Select(sourceId => ToSourceView(sourceLookup[sourceId]))
+                .ToList()
+        }).ToList();
+    }
 
     private static Search.Models.SourceView ToSearchSourceView(Source s) => new()
     {

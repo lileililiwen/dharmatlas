@@ -17,6 +17,7 @@ public sealed record ExportSnapshot
     public required IReadOnlyList<ExportEntity> Entities { get; init; }
     public required IReadOnlyList<ExportRelationship> Relationships { get; init; }
     public required IReadOnlyList<ExportSource> Sources { get; init; }
+    public required IReadOnlyList<ExportClaim> Claims { get; init; }
 }
 
 /// <summary>Counts summarizing the snapshot contents.</summary>
@@ -25,6 +26,7 @@ public sealed record ExportIndex
     public int Entities { get; init; }
     public int Relationships { get; init; }
     public int Sources { get; init; }
+    public int Claims { get; init; }
     public required IReadOnlyDictionary<string, int> ByType { get; init; }
 }
 
@@ -36,6 +38,18 @@ public sealed record ExportSource
     public string? Author { get; init; }
     public string? Date { get; init; }
     public string? Identifier { get; init; }
+}
+
+/// <summary>A published source-backed assertion in a bulk export.</summary>
+public sealed record ExportClaim
+{
+    public required string Id { get; init; }
+    public string? SubjectEntityId { get; init; }
+    public required string Statement { get; init; }
+    public required string Certainty { get; init; }
+    public required string Interpretation { get; init; }
+    public string? SourceLocator { get; init; }
+    public required IReadOnlyList<string> SourceIds { get; init; }
 }
 
 /// <summary>An edge between two entities in the export.</summary>

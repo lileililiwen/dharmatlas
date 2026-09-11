@@ -37,6 +37,10 @@ public sealed class EntityDetailService : IEntityDetailService
             .Where(r => r.FromEntityId == id || r.ToEntityId == id)
             .ToListAsync(cancellationToken);
 
+        var claims = await _db.Claims
+            .Where(c => c.SubjectEntityId == id)
+            .ToListAsync(cancellationToken);
+
         var entitySourceIds = entity switch
         {
             Place p => p.SourceIds,
@@ -46,6 +50,7 @@ public sealed class EntityDetailService : IEntityDetailService
 
         var sourceIds = entitySourceIds
             .Concat(relationships.SelectMany(r => r.SourceIds))
+            .Concat(claims.Where(c => c.Status == ClaimStatus.Published).SelectMany(c => c.SourceIds))
             .Distinct()
             .ToList();
 
@@ -77,7 +82,7 @@ public sealed class EntityDetailService : IEntityDetailService
         };
 
         return EntityDetailAssembler.Build(
-            entity, names, relationships, sources, relatedLookup, region, activePeriod);
+            entity, names, relationships, sources, relatedLookup, region, activePeriod, claims);
     }
 
     private async Task<IReadOnlyDictionary<EntityId, EntityDetailAssembler.RelatedInfo>> BuildRelatedLookupAsync(

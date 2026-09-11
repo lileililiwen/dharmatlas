@@ -51,5 +51,10 @@ public class DharmatlasDbContext : DbContext
         {
             EntityNameReadModel.Validate(group);
         }
+
+        foreach (var claim in Claims.Local)
+        {
+            claim.Validate();
+        }
     }
 }
