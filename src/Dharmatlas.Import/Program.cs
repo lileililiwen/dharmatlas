@@ -32,11 +32,11 @@ try
         .Options;
     await using var db = new DharmatlasDbContext(options);
     var result = await SeedImporter.ImportAsync(db, manifest);
-    Console.WriteLine($"Imported {result.Entities} entities, {result.Names} names, {result.Sources} sources, {result.Claims} claims, and {result.Relationships} relationships.");
+    Console.WriteLine($"event=seed_import_completed entities={result.Entities} names={result.Names} sources={result.Sources} claims={result.Claims} relationships={result.Relationships}");
     return 0;
 }
 catch (Exception ex) when (ex is SeedManifestException or IOException or DbUpdateException)
 {
-    Console.Error.WriteLine(ex.Message);
+    Console.Error.WriteLine($"event=seed_import_rejected error_type={ex.GetType().Name}");
     return 1;
 }

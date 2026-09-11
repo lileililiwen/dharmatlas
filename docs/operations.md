@@ -44,6 +44,51 @@ rollout, restore the previous application version, and follow the database
 provider's tested rollback/restore procedure; migrations are not automatically
 down-migrated.
 
+## Observability
+
+Every request receives an `X-Correlation-ID` response header. If a valid
+`X-Correlation-ID` request header is supplied, it is preserved; otherwise the
+host generates one. Structured request logs include only method, route, status,
+duration, and correlation ID. They must not include source text, contributor
+email, authentication claims, or private payloads.
+
+The `/metrics` endpoint exposes vendor-neutral counters. The stable metric names
+are `dharmatlas_http_requests_total`, `dharmatlas_http_request_duration_ms`,
+`dharmatlas_readiness_failures_total`, `dharmatlas_slow_queries_total`,
+`dharmatlas_import_rejections_total`, `dharmatlas_moderation_decisions_total`,
+`dharmatlas_ai_drafts_total`, and `dharmatlas_export_jobs_total`. Scrape or
+forward these metrics using the deployment's approved monitoring system, with
+short retention for request metrics and longer retention for aggregate release
+and failure counters.
+
+## Backup, restore, and rollback verification
+
+Use a disposable PostgreSQL instance for a repeatable restore drill. Create a
+logical backup, restore it into an empty database, apply the current migrations,
+and verify `/health/ready`, `/api/v1/meta`, and one published entity response:
+
+```bash
+pg_dump --format=custom "$DHARMATLAS_DATABASE_CONNECTION" --file=/tmp/dharmatlas.verify.dump
+createdb dharmatlas_restore_verify
+pg_restore --exit-on-error --dbname=dharmatlas_restore_verify /tmp/dharmatlas.verify.dump
+```
+
+Keep the previous application image available during rollout. If readiness,
+migration, import, export, or public journey checks fail, stop promotion and
+restore the previous image. Do not automatically down-migrate production; use
+the reviewed migration's `Down` path only in the disposable verification
+database, then repeat the restore drill before resuming deployment.
+
+## Release checklist
+
+- Run the .NET suite, PostgreSQL migration gate, web tests/build, browser smoke
+  journey, accessibility review, export checksum test, and strict OpenSpec
+  validation.
+- Confirm readiness and `/metrics` after deployment; retain the release commit,
+  migration ID, test output, and backup/restore drill result.
+- Confirm source attribution and uncertainty labels remain present in public
+  responses after the migration.
+
 ## CI
 
 CI restores and builds the solution, runs tests against the repository test

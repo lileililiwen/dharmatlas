@@ -8,6 +8,7 @@ using Dharmatlas.Domain.ValueObjects;
 using Dharmatlas.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 
 namespace Dharmatlas.Contributions.Services;
 
@@ -21,8 +22,13 @@ namespace Dharmatlas.Contributions.Services;
 public sealed class ContributionService : IContributionService
 {
     private readonly DharmatlasDbContext _db;
+    private readonly ILogger<ContributionService>? _logger;
 
-    public ContributionService(DharmatlasDbContext db) => _db = db;
+    public ContributionService(DharmatlasDbContext db, ILogger<ContributionService>? logger = null)
+    {
+        _db = db;
+        _logger = logger;
+    }
 
     public Task<Submission> SubmitAsync(
         ContributionActor actor,
@@ -34,7 +40,14 @@ public sealed class ContributionService : IContributionService
         CancellationToken cancellationToken = default)
     {
         if (!actor.IsContributor) throw new DomainValidationException("The authenticated actor is not a contributor.");
-        return SubmitCoreAsync(actor.ContributorId, type, summary, payloadJson, sourceIds, targetId, true, cancellationToken);
+        return SubmitAuthenticatedAsync(actor.ContributorId, type, summary, payloadJson, sourceIds, targetId, cancellationToken);
+    }
+
+    private async Task<Submission> SubmitAuthenticatedAsync(EntityId contributorId, SubmissionType type, string summary, string payloadJson, IReadOnlyList<EntityId>? sourceIds, EntityId? targetId, CancellationToken cancellationToken)
+    {
+        var submission = await SubmitCoreAsync(contributorId, type, summary, payloadJson, sourceIds, targetId, true, cancellationToken);
+        _logger?.LogInformation("Contribution submitted {SubmissionId} by contributor {ContributorId} for type {SubmissionType}", submission.Id, contributorId, type);
+        return submission;
     }
 
     public async Task<Submission> SubmitAsync(
@@ -112,7 +125,9 @@ public sealed class ContributionService : IContributionService
         string? correlationId = null,
         CancellationToken cancellationToken = default)
     {
-        return await ReviewCoreAsync(submissionId, reviewerId, decision, reason, correlationId, cancellationToken);
+        var submission = await ReviewCoreAsync(submissionId, reviewerId, decision, reason, correlationId, cancellationToken);
+        _logger?.LogInformation("Moderation decision recorded for {SubmissionId} by reviewer {ReviewerId}: {Decision}", submissionId, reviewerId, decision);
+        return submission;
     }
 
     private async Task<Submission> ReviewCoreAsync(

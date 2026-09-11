@@ -7,6 +7,7 @@ using Dharmatlas.Domain.Entities;
 using Dharmatlas.Domain.ValueObjects;
 using Dharmatlas.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Dharmatlas.AI.Services;
 
@@ -22,11 +23,13 @@ public sealed class AiCurationService
 {
     private readonly DharmatlasDbContext _db;
     private readonly IContributionService _contributions;
+    private readonly ILogger<AiCurationService>? _logger;
 
-    public AiCurationService(DharmatlasDbContext db, IContributionService contributions)
+    public AiCurationService(DharmatlasDbContext db, IContributionService contributions, ILogger<AiCurationService>? logger = null)
     {
         _db = db;
         _contributions = contributions;
+        _logger = logger;
     }
 
     /// <summary>Extract a person mention from supplied source text and store it as a draft.</summary>
@@ -38,10 +41,11 @@ public sealed class AiCurationService
         var extraction = AiJobs.ExtractPerson(transcript)
             ?? throw new DomainValidationException("No person mention found in the supplied text.");
 
-        return await StoreDraftAsync(
+        var draft = await StoreDraftAsync(
             AiDraftKind.EntityExtraction, sourceId, transcript,
             AiJobs.DefaultModel, AiJobs.DefaultVersion, extraction.SuggestionJson, extraction.Confidence,
             "entity-extraction/v1", cancellationToken);
+        return draft;
     }
 
     /// <summary>Suggest a romanized name from supplied material and store it as a draft.</summary>
@@ -200,6 +204,7 @@ public sealed class AiCurationService
         var draft = new AiDraft(kind, inputReferenceId, inputText, model, modelVersion, suggestionJson, confidence, DateTimeOffset.UtcNow, promptRef);
         _db.AiDrafts.Add(draft);
         await _db.SaveChangesAsync(cancellationToken);
+        _logger?.LogInformation("AI draft created {DraftId} with kind {DraftKind} for reference {ReferenceId}", draft.Id, draft.Kind, inputReferenceId);
         return draft;
     }
 

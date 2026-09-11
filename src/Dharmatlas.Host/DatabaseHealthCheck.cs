@@ -1,5 +1,6 @@
 using Dharmatlas.Persistence;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Dharmatlas.Host.Observability;
 
 namespace Dharmatlas.Host;
 
@@ -17,11 +18,17 @@ public sealed class DatabaseHealthCheck : IHealthCheck
         {
             return await _db.Database.CanConnectAsync(cancellationToken)
                 ? HealthCheckResult.Healthy("PostgreSQL is reachable.")
-                : HealthCheckResult.Unhealthy("PostgreSQL is not reachable.");
+                : Unhealthy("PostgreSQL is not reachable.");
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            return HealthCheckResult.Unhealthy("PostgreSQL connectivity check failed.", ex);
+            return Unhealthy("PostgreSQL connectivity check failed.", ex);
         }
+    }
+
+    private static HealthCheckResult Unhealthy(string message, Exception? exception = null)
+    {
+        TelemetryMetrics.RecordReadinessFailure();
+        return HealthCheckResult.Unhealthy(message, exception);
     }
 }

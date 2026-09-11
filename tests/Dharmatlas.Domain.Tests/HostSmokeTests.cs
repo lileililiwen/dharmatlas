@@ -77,6 +77,20 @@ public sealed class HostSmokeTests : IClassFixture<HostSmokeTests.TestHostFactor
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
+    [Fact]
+    public async Task Requests_return_a_correlation_id_and_metrics_are_available()
+    {
+        using var client = _factory.CreateClient();
+        using var request = new HttpRequestMessage(HttpMethod.Get, "/api/v1/meta");
+        request.Headers.Add("X-Correlation-ID", "2f9f1e54-2f20-4d9c-8e3b-4b9ebd7a7d31");
+
+        var response = await client.SendAsync(request);
+        Assert.Equal("2f9f1e54-2f20-4d9c-8e3b-4b9ebd7a7d31", response.Headers.GetValues("X-Correlation-ID").Single());
+
+        var metrics = await client.GetStringAsync("/metrics");
+        Assert.Contains("dharmatlas_http_requests_total", metrics, StringComparison.Ordinal);
+    }
+
     public sealed class TestHostFactory : WebApplicationFactory<Program>
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)

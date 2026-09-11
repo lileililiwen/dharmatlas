@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Dharmatlas.Api.Endpoints;
 
@@ -279,9 +280,11 @@ public static class PublicApiEndpoints
             return source is null ? NotFound(id) : Results.Ok(source);
         }));
 
-        group.MapGet("/export", async (ApiQueryService svc, HttpContext http, string? format) => await Guard(async () =>
+        group.MapGet("/export", async (ApiQueryService svc, HttpContext http, ILoggerFactory loggerFactory, string? format) => await Guard(async () =>
         {
             var snapshot = await svc.BuildExportAsync(DateTimeOffset.UtcNow);
+            var logger = loggerFactory.CreateLogger("Dharmatlas.Api.Export");
+            logger.LogInformation("Export snapshot generated {Checksum} with revision {DatasetRevision}", snapshot.Checksum, snapshot.DatasetRevision);
             if (string.Equals(format, "gzip", StringComparison.OrdinalIgnoreCase))
             {
                 http.Response.ContentType = "application/gzip";

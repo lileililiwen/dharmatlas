@@ -6,6 +6,7 @@ using Dharmatlas.Search.Services;
 using Dharmatlas.Timeline.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using Dharmatlas.Host.Observability;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +38,7 @@ var app = builder.Build();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
+app.UseMiddleware<RequestTelemetryMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -48,6 +50,7 @@ app.MapHealthChecks("/health/ready", new Microsoft.AspNetCore.Diagnostics.Health
 {
     Predicate = check => check.Tags.Contains("ready")
 });
+app.MapObservability();
 app.MapPublicApi();
 app.MapFallbackToFile("index.html");
 
