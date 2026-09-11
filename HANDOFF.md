@@ -2,7 +2,7 @@
 
 ## Current state
 
-Eleven OpenSpec changes are complete and archived:
+Twelve OpenSpec changes are complete and archived:
 
 - `project-foundation` — source-first domain contract (`docs/domain-contract.md`),
   promoted to `openspec/specs/project-foundation/spec.md` as the acceptance baseline.
@@ -63,8 +63,8 @@ was authored as nine changes:
 8. `query-performance-and-export-delivery`
 9. `observability-and-release-quality`
 
-They cover the gaps identified in the product maturity audit. The first five
-changes have now been implemented and archived; four remain as planning
+They cover the gaps identified in the product maturity audit. The first six
+changes have now been implemented and archived; three remain as planning
 artifacts.
 
 `provenance-claims-and-evidence` was archived as
@@ -79,6 +79,25 @@ conflicting published claims remain separate.
 - PostgreSQL migration `20260911092229_ClaimEvidenceMetadata` applied.
 - PostgreSQL `claims.interpretation` and `claims.source_locator` columns verified.
 - Rejected claims were excluded from API/export projections; competing published claims remained visible.
+- `openspec validate --all --strict --no-interactive` -> **15 passed, 0 failed**.
+- `git diff --check` passed.
+
+`public-atlas-web-experience` was archived as
+`2026-09-11-public-atlas-web-experience`. It adds a React/Vite public client
+served by the ASP.NET host and included in the production container build. The
+first-visit surface includes multilingual search, stable entity navigation,
+uncertainty-aware dates and labels, claim/source inspection, timeline and
+map/list exploration, loading/empty/error states, responsive keyboard-visible
+controls, and reduced-motion support. Map features retain an accessible list
+fallback instead of depending on tiles alone.
+
+- Frontend formatter tests: **3 passed, 0 failed**.
+- Frontend production build: passed with Vite **6.4.3**.
+- Frontend production dependency audit: **0 vulnerabilities**.
+- Headless Chrome smoke render confirmed the public landmarks, search label,
+  uncertainty guidance, timeline entry point, map/list entry point, and API link.
+- Full .NET test suite: passed with no reported failures.
+- Production Docker image build: passed as `dharmatlas:web-experience`.
 - `openspec validate --all --strict --no-interactive` -> **15 passed, 0 failed**.
 - `git diff --check` passed.
 
@@ -111,7 +130,7 @@ search, detail, API, export, and seed validation paths.
 
 ## Next change
 
-The next implementation change is `public-atlas-web-experience`. Select it with:
+The next implementation change is `authenticated-contribution-governance`. Select it with:
 
 ```bash
 openspec list
