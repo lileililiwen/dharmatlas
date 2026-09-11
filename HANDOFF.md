@@ -51,7 +51,7 @@ Eight OpenSpec changes are complete and archived:
   human gate. Promoted to `openspec/specs/ai-assisted-curation/spec.md`.
 
 The original implementation queue is archived. A new maturity remediation queue
-has now been authored as nine active OpenSpec changes:
+was authored as nine changes:
 
 1. `runtime-host-and-deployment`
 2. `curated-seed-data-and-import`
@@ -63,13 +63,13 @@ has now been authored as nine active OpenSpec changes:
 8. `query-performance-and-export-delivery`
 9. `observability-and-release-quality`
 
-They cover the gaps identified in the product maturity audit. The first change
-has now been implemented and archived; the remaining eight are still planning
+They cover the gaps identified in the product maturity audit. The first two
+changes have now been implemented and archived; seven remain as planning
 artifacts.
 
 ## Next change
 
-The next implementation change is `curated-seed-data-and-import`. Select it with:
+The next implementation change is `entity-name-persistence-and-read-model`. Select it with:
 
 ```bash
 openspec list
@@ -94,6 +94,22 @@ by other services; container-internal ports remain `5432` and `8080`.
 - Docker image build and `docker compose config --quiet` passed.
 - `dotnet build Dharmatlas.slnx --no-restore --nologo -m:1` passed with 0 warnings and 0 errors.
 - `openspec validate --all --strict --no-interactive` -> **17 passed, 0 failed**.
+- `git diff --check` passed.
+
+`curated-seed-data-and-import` was archived as
+`2026-09-11-curated-seed-data-and-import`. It adds the versioned seed manifest,
+representative source-linked corpus, pure validation, transactional/idempotent
+importer, import CLI, and editorial operations guidance.
+
+- Seed corpus: **14 entities, 10 names, 3 sources, 3 claims, 3 relationships**.
+- Coverage: all six entity types and all seven MVP regions.
+- Focused seed-import tests: **5 passed, 0 failed**.
+- Full test suite after import implementation: **131 passed, 0 failed**.
+- PostgreSQL CLI import succeeded twice with identical counts; the second run
+  did not duplicate records.
+- Invalid-reference and no-partial-write tests passed.
+- `dotnet build Dharmatlas.slnx --no-restore --nologo -m:1` passed with 0 warnings and 0 errors.
+- `openspec validate --all --strict --no-interactive` -> **16 passed, 0 failed**.
 - `git diff --check` passed.
 
 ## Exact delivery workflow
