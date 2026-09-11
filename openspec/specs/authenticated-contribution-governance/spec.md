@@ -1,7 +1,9 @@
 # authenticated-contribution-governance Specification
 
 ## Purpose
-TBD - created by archiving change authenticated-contribution-governance. Update Purpose after archive.
+Defines provider-neutral authenticated contribution and review governance: map
+verified subjects to persisted contributor roles, protect write routes, validate
+references, prevent self-approval, and record concurrency-safe audit metadata.
 ## Requirements
 ### Requirement: Verified actor identity
 Contribution and review operations MUST use an authenticated principal mapped server-side to a contributor and role; request bodies MUST NOT select the effective actor.

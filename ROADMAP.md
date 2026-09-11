@@ -15,7 +15,7 @@ Target: repository and data contract ready for implementation.
 
 OpenSpec change: `project-foundation`.
 
-The Phase 0 implementation queue (all complete; backend only):
+The Phase 0 implementation queue is complete:
 
 1. `historical-data-model` ✅
 2. `timeline-exploration` ✅
@@ -27,8 +27,9 @@ The Phase 0 implementation queue (all complete; backend only):
 
 The first five changes establish the MVP read path and contribution governance;
 `open-api-and-data-export` adds the public read-only API and reproducible bulk
-export; `ai-assisted-curation` adds human-gated AI drafts. The interactive UI and
-runtime host (Phase 1) follow once a change explicitly pulls them forward.
+export; `ai-assisted-curation` adds human-gated AI drafts. The runtime host,
+public UI, and operational verification were delivered through the maturity
+remediation queue below.
 
 ## Phase 1 — MVP: 500 BCE–1000 CE
 
@@ -44,6 +45,34 @@ Target: first useful public atlas.
 The first four changes establish the MVP read path. Contribution review, open data, and AI assistance follow after the read path is useful; they remain separately scoped to avoid coupling publication governance and automation to the first UI release.
 
 The MVP should prefer a small, beautiful, inspectable dataset over broad coverage. Institutions, traditions, contribution review, revision history, graph exploration, and public read-only API are sequenced behind the first usable atlas unless a change explicitly pulls one forward.
+
+## Maturity remediation queue
+
+The backend contracts, runnable host, source-populated public product, and release
+quality foundations are complete. The nine changes below are archived delivery
+records, retained as the verified maturity sequence:
+
+1. `runtime-host-and-deployment` — executable host, PostgreSQL migrations,
+   health checks, local stack, CI, and smoke tests.
+2. `curated-seed-data-and-import` — versioned, source-linked representative
+   corpus and deterministic importer.
+3. `entity-name-persistence-and-read-model` — durable aliases and shared
+   canonical/read projections.
+4. `provenance-claims-and-evidence` — public claims, evidence, certainty, and
+   competing-interpretation visibility.
+5. `public-read-api-completion` — timeline, map, search, institution,
+   tradition, and claim routes.
+6. `public-atlas-web-experience` — responsive accessible public UI.
+7. `authenticated-contribution-governance` — authenticated moderation and
+   transactional publication safety.
+8. `query-performance-and-export-delivery` — database-side queries and
+   reliable large exports.
+9. `observability-and-release-quality` — real-infrastructure release gates,
+   telemetry, backup/restore, and operational runbooks. ✅
+
+The order was deliberate: establish a runnable system and trusted data before
+optimizing scale or exposing contribution writes. All nine changes are archived;
+future improvements require a new audited OpenSpec proposal.
 
 ## Phase 2 — 1000–1800 CE
 

@@ -16,7 +16,7 @@ The first release covers approximately 500 BCE–1000 CE across India, Central A
 - Search across entities
 - Source records and historical certainty
 
-The initial target is curated, source-linked data rather than a large volume of articles. Planned seed scale is 150 people, 300 events, 100 places, 50 institutions, 100 texts, 30 traditions, and 300 sources.
+The initial target is curated, source-linked data rather than a large volume of articles. The repository currently includes a representative reviewed seed manifest; its exact counts are recorded in `HANDOFF.md` and should not be confused with the future coverage target.
 
 ## Principles
 
@@ -27,28 +27,29 @@ The initial target is curated, source-linked data rather than a large volume of 
 - Human review: AI may extract, normalize, translate, summarize, or flag conflicts, but cannot invent citations or publish historical claims automatically.
 - Open continuity: design for exportable data so the knowledge can survive the project.
 
-## Planned stack
+## Stack
 
-ASP.NET Core, PostgreSQL, React/Next.js, OpenStreetMap with MapLibre, custom React/D3 timeline, Cytoscape.js graph exploration, and PostgreSQL full-text search. Elasticsearch is deferred until real usage requires it.
+ASP.NET Core, PostgreSQL, React/Vite, and provider-neutral PostgreSQL-backed queries. The public UI is served by the ASP.NET host. MapLibre, D3, Cytoscape.js, and Elasticsearch remain deferred until separately justified by an approved change and real usage evidence.
 
 ## Status
 
-The backend is implemented as a set of .NET class libraries delivered through the
-OpenSpec workflow:
+The product is implemented and verified incrementally through the OpenSpec workflow:
 
-- A source-first domain model and EF Core persistence layer.
-- Read paths for the timeline, time-filtered map, and multilingual entity search.
-- A contribution-review workflow with immutable, field-level revisions.
-- A versioned read-only public API (`/api/v1`) with bounded pagination, cache and
-  rate-limit behavior, and reproducible bulk export (schema version + license).
+- Source-first domain and EF Core persistence layers, with PostgreSQL migrations.
+- Curated seed data and an idempotent import CLI.
+- Timeline, map, multilingual search, claims/evidence, and entity read paths.
+- A versioned read-only public API (`/api/v1`) with bounded pagination, cache,
+  rate-limit behavior, and checksummed gzip export delivery.
+- Authenticated contribution review with immutable revisions, optimistic
+  concurrency, and provider-neutral subject mapping.
 - AI-assisted curation that produces immutable, provenanced drafts under a human
-  publication gate (acceptance only promotes a draft into the contribution-review
-  queue; duplicate and date-conflict suggestions never merge records).
+  publication gate.
+- A React/Vite public atlas with accessible list fallbacks, plus host health,
+  correlation IDs, structured logs, metrics, CI gates, and operational runbooks.
 
-All eight OpenSpec changes are archived. The interactive UI and runtime host
-(React/Next.js, MapLibre, D3, Cytoscape.js) are not yet built. See
-[ROADMAP.md](ROADMAP.md) for sequence and [HANDOFF.md](HANDOFF.md) for current
-state.
+All fifteen OpenSpec changes are archived. There are no active OpenSpec changes;
+future work should begin with a new audited proposal. See [ROADMAP.md](ROADMAP.md)
+for product direction and [HANDOFF.md](HANDOFF.md) for verified current state.
 
 ## Scope boundary
 

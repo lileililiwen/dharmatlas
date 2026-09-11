@@ -238,7 +238,7 @@ importer, import CLI, and editorial operations guidance.
 
 ## Planning evidence
 
-- The nine active changes each contain `proposal.md`, `design.md`, `tasks.md`,
+- The nine maturity changes each contain archived `proposal.md`, `design.md`, `tasks.md`,
   and `specs/<capability>/spec.md`.
 - The dependency sequence is recorded in `ROADMAP.md`; implementation must
   continue through the one-change workflow below.

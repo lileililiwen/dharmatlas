@@ -1,7 +1,9 @@
 # provenance-claims-and-evidence Specification
 
 ## Purpose
-TBD - created by archiving change provenance-claims-and-evidence. Update Purpose after archive.
+Defines publication-safe claims and evidence: every material assertion exposes
+inspectable sources, certainty, interpretation, and locator metadata, while
+traditional and scholarly accounts remain separately labeled.
 ## Requirements
 ### Requirement: Source-traceable assertion
 Every published material historical assertion MUST expose at least one inspectable source reference and one certainty value.

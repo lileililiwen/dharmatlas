@@ -1,7 +1,9 @@
 # public-read-api-completion Specification
 
 ## Purpose
-TBD - created by archiving change public-read-api-completion. Update Purpose after archive.
+Defines the completed versioned public API routes for search, timeline, map,
+institution, tradition, claim/evidence, entity detail, source navigation, and
+bounded public reads over published data.
 ## Requirements
 ### Requirement: Complete discovery surface
 The public API MUST expose documented search, timeline, map, institution, tradition, claim/evidence, entity detail, and source navigation routes.

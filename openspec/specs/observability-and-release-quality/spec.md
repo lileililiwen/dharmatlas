@@ -1,7 +1,9 @@
 # observability-and-release-quality Specification
 
 ## Purpose
-TBD - created by archiving change observability-and-release-quality. Update Purpose after archive.
+Make failures detectable and recoverable through privacy-safe telemetry,
+real-infrastructure release gates, and repeatable operational recovery
+procedures.
 ## Requirements
 ### Requirement: Actionable telemetry
 The host MUST emit privacy-safe structured logs and metrics for request failures, readiness, slow queries, imports, moderation, AI drafts, and exports with correlation identifiers.

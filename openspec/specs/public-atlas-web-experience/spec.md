@@ -1,7 +1,9 @@
 # public-atlas-web-experience Specification
 
 ## Purpose
-TBD - created by archiving change public-atlas-web-experience. Update Purpose after archive.
+Defines the accessible React/Vite public atlas experience for multilingual search,
+stable entity navigation, uncertainty-aware dates, evidence inspection, timeline
+and map/list exploration, responsive states, and reduced-motion behavior.
 ## Requirements
 ### Requirement: Usable public discovery
 The web application MUST let a first-time visitor search multilingual names and navigate to a stable entity page.

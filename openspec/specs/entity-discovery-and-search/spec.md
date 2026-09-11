@@ -1,7 +1,9 @@
 # entity-discovery-and-search Specification
 
 ## Purpose
-TBD - created by archiving change entity-discovery-and-search. Update Purpose after archive.
+Defines multilingual entity discovery and detail reads across canonical names,
+alternate scripts, transliterations, regions, certainty, dates, sources, and
+relationships while preserving one stable entity identity per result.
 ## Requirements
 ### Requirement: Multilingual entity search
 
@@ -29,4 +31,3 @@ Search results MUST identify entity type and matched name form.
 
 - **WHEN** multiple entities share a name
 - **THEN** results distinguish them by type, period, region, or other recorded context
-

@@ -1,7 +1,8 @@
 # query-performance-and-export-delivery Specification
 
 ## Purpose
-TBD - created by archiving change query-performance-and-export-delivery. Update Purpose after archive.
+Keep public queries bounded and cursor-stable as the corpus grows, and deliver
+large source-first exports as identifiable, checksummed, compressed snapshots.
 ## Requirements
 ### Requirement: Database-side bounded queries
 Public list, search, timeline, and map queries MUST apply filters, ordering, projection, and limits before materializing results.

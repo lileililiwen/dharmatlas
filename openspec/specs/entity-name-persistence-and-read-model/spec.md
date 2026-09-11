@@ -1,7 +1,9 @@
 # entity-name-persistence-and-read-model Specification
 
 ## Purpose
-TBD - created by archiving change entity-name-persistence-and-read-model. Update Purpose after archive.
+Defines durable multilingual entity names and shared canonical/read-model rules,
+including primary-name invariants, deterministic ordering, and reuse across
+search, API, export, seed import, and detail projections.
 ## Requirements
 ### Requirement: Durable aliases
 Every accepted entity name MUST be persisted as an `EntityName` record and MUST survive a database round trip.

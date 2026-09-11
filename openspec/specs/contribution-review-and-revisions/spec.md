@@ -1,7 +1,9 @@
 # contribution-review-and-revisions Specification
 
 ## Purpose
-TBD - created by archiving change contribution-review-and-revisions. Update Purpose after archive.
+Defines the human-reviewed contribution workflow: submissions remain pending
+until review, approved changes publish transactionally, and immutable revisions
+preserve reviewer, source, reason, and changed-field provenance.
 ## Requirements
 ### Requirement: Reviewed contribution workflow
 
@@ -29,4 +31,3 @@ The system MUST retain inspectable, ordered revisions for every published change
 
 - **WHEN** a reader opens an entity history
 - **THEN** prior values, changed fields, actor, timestamp, reason, and sources can be inspected
-

@@ -19,7 +19,7 @@ Schema changes are versioned with EF Core migrations. Applying migrations is an
 explicit operation. For a configured database:
 
 ```bash
-DHARMATLAS_DATABASE_CONNECTION='Host=localhost;Port=5432;Database=dharmatlas;Username=dharmatlas;Password=...' \
+DHARMATLAS_DATABASE_CONNECTION='Host=localhost;Port=55434;Database=dharmatlas;Username=dharmatlas;Password=...' \
   dotnet ef database update \
   --project src/Dharmatlas.Persistence/Dharmatlas.Persistence.csproj \
   --startup-project src/Dharmatlas.Host/Dharmatlas.Host.csproj
@@ -92,9 +92,10 @@ database, then repeat the restore drill before resuming deployment.
 ## CI
 
 CI restores and builds the solution, runs tests against the repository test
-project, applies migrations to a disposable PostgreSQL service, validates all
-OpenSpec artifacts, and checks whitespace. Browser and frontend gates will be
-added by `public-atlas-web-experience`.
+project, applies migrations to a disposable PostgreSQL service, runs frontend
+tests and a production build, validates all OpenSpec artifacts, and checks
+whitespace. Browser smoke and accessibility review remain release-checklist
+gates for the deployed public journey.
 
 ## Seed import
 
