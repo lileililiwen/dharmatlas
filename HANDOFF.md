@@ -2,7 +2,7 @@
 
 ## Current state
 
-Thirteen OpenSpec changes are complete and archived:
+Fourteen OpenSpec changes are complete and archived:
 
 - `project-foundation` — source-first domain contract (`docs/domain-contract.md`),
   promoted to `openspec/specs/project-foundation/spec.md` as the acceptance baseline.
@@ -63,9 +63,26 @@ was authored as nine changes:
 8. `query-performance-and-export-delivery`
 9. `observability-and-release-quality`
 
-They cover the gaps identified in the product maturity audit. The first seven
-changes have now been implemented and archived; two remain as planning
-artifacts.
+They cover the gaps identified in the product maturity audit. The first eight
+changes have now been implemented and archived; one remains as a planning
+artifact.
+
+`query-performance-and-export-delivery` was archived as
+`2026-09-11-query-performance-and-export-delivery`. It moves public list,
+search, timeline, and map filtering into bounded database queries with stable
+ID ordering and hard limits; adds PostgreSQL query-support indexes; and adds
+checksummed export metadata, retry-safe job state, and a gzip response stream.
+
+- Full .NET test suite: **147 passed, 0 failed**.
+- PostgreSQL migration `20260911101010_QueryPerformanceIndexes` applied on host
+  port `55434`.
+- Export coverage verifies valid gzip round-trip, checksum metadata, and that a
+  failed job clears partial download state before retry.
+- Search-engine adoption threshold documented at sustained p95 above 250 ms at
+  maximum page size or loss of selectivity in PostgreSQL plans.
+- Host build: passed with 0 warnings and 0 errors.
+- `openspec validate --all --strict --no-interactive` -> **15 passed, 0 failed**.
+- `git diff --check` passed.
 
 `provenance-claims-and-evidence` was archived as
 `2026-09-11-provenance-claims-and-evidence`. It adds claim interpretation and
@@ -151,7 +168,7 @@ search, detail, API, export, and seed validation paths.
 
 ## Next change
 
-The next implementation change is `query-performance-and-export-delivery`. Select it with:
+The next implementation change is `observability-and-release-quality`. Select it with:
 
 ```bash
 openspec list
