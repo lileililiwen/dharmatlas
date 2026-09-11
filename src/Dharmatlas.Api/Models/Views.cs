@@ -26,6 +26,7 @@ public sealed record SourceView
 public sealed record ClaimView
 {
     public required string Id { get; init; }
+    public string? SubjectEntityId { get; init; }
     public required string Statement { get; init; }
     public required string Certainty { get; init; }
     public required string Interpretation { get; init; }

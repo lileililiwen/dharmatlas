@@ -135,6 +135,59 @@ public sealed class ApiQueryService
         };
     }
 
+    public async Task<SimpleEntityView?> GetInstitutionAsync(EntityId id, CancellationToken cancellationToken = default) =>
+        await GetSimpleEntityAsync<Institution>(id, cancellationToken);
+
+    public async Task<SimpleEntityView?> GetTraditionAsync(EntityId id, CancellationToken cancellationToken = default) =>
+        await GetSimpleEntityAsync<Tradition>(id, cancellationToken);
+
+    public async Task<Paginated<EntityRef>> ListSimpleEntitiesAsync(
+        EntityType type, Paging paging, CancellationToken cancellationToken = default)
+    {
+        var entities = await _db.Entities.Where(e => e.Type == type).ToListAsync(cancellationToken);
+        var names = await NamesForAsync(entities.Select(e => e.Id), cancellationToken);
+        var rows = entities.Select(e => ToEntityRef(e, names))
+            .OrderBy(e => e.Id, StringComparer.Ordinal)
+            .ToList();
+        return Paginator.Apply(rows, paging.Limit, paging.After, e => e.Id);
+    }
+
+    public async Task<ClaimView?> GetClaimAsync(EntityId id, CancellationToken cancellationToken = default)
+    {
+        var claim = await _db.Claims.FirstOrDefaultAsync(c => c.Id == id && c.Status == ClaimStatus.Published, cancellationToken);
+        if (claim is null)
+        {
+            return null;
+        }
+
+        var sources = await _db.Sources.Where(s => claim.SourceIds.Contains(s.Id)).ToListAsync(cancellationToken);
+        if (sources.Count != claim.SourceIds.Count)
+        {
+            return null;
+        }
+
+        return ToClaimViews(new[] { claim }, sources.Select(ToSearchSourceView).ToList()).Single();
+    }
+
+    public async Task<Paginated<ClaimView>> ListClaimsAsync(
+        EntityId? subjectId, Paging paging, CancellationToken cancellationToken = default)
+    {
+        var claims = await _db.Claims
+            .Where(c => c.Status == ClaimStatus.Published && (subjectId == null || c.SubjectEntityId == subjectId))
+            .OrderBy(c => c.Id)
+            .ToListAsync(cancellationToken);
+        var sourceIds = claims.SelectMany(c => c.SourceIds).Distinct().ToList();
+        var sources = sourceIds.Count == 0
+            ? new List<Source>()
+            : await _db.Sources.Where(s => sourceIds.Contains(s.Id)).ToListAsync(cancellationToken);
+        var sourceLookup = sources.Select(s => s.Id).ToHashSet();
+        var rows = claims
+            .Where(c => c.SourceIds.All(sourceLookup.Contains))
+            .SelectMany(c => ToClaimViews(new[] { c }, sources.Select(ToSearchSourceView).ToList()))
+            .ToList();
+        return Paginator.Apply(rows, paging.Limit, paging.After, c => c.Id);
+    }
+
     public async Task<Models.SourceView?> GetSourceAsync(EntityId id, CancellationToken cancellationToken = default)
     {
         var source = await _db.Sources.FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
@@ -425,6 +478,7 @@ public sealed class ApiQueryService
         return claims.Select(claim => new Models.ClaimView
         {
             Id = claim.Id.ToString(),
+            SubjectEntityId = claim.SubjectEntityId?.ToString(),
             Statement = claim.Statement,
             Certainty = claim.Certainty.ToString(),
             Interpretation = claim.Interpretation.ToString(),
@@ -434,6 +488,38 @@ public sealed class ApiQueryService
                 .Select(sourceId => ToSourceView(sourceLookup[sourceId]))
                 .ToList()
         }).ToList();
+    }
+
+    private async Task<SimpleEntityView?> GetSimpleEntityAsync<TEntity>(
+        EntityId id, CancellationToken cancellationToken)
+        where TEntity : Entity
+    {
+        var entity = await _db.Entities.OfType<TEntity>().FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+        if (entity is null)
+        {
+            return null;
+        }
+
+        var detail = await _details.GetAsync(id, cancellationToken);
+        return new SimpleEntityView
+        {
+            Id = entity.Id.ToString(),
+            Type = entity.Type.ToString(),
+            CanonicalName = detail!.CanonicalName,
+            Names = detail.Names.Select(n => new Models.NameView
+            {
+                Value = n.Value,
+                Language = n.Language,
+                Script = n.Script,
+                Romanization = n.Romanization,
+                IsPrimary = n.IsPrimary
+            }).ToList(),
+            Summary = entity.Summary,
+            Region = detail.Region,
+            Certainty = detail.Certainty.ToString(),
+            Sources = detail.Sources.Select(ToSourceView).ToList(),
+            Claims = ToClaimViews(detail.Claims, detail.Sources)
+        };
     }
 
     private static Search.Models.SourceView ToSearchSourceView(Source s) => new()

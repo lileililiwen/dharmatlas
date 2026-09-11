@@ -56,6 +56,17 @@ public static class MapEngine
             return false;
         }
 
+        var point = feature.Geometry.FirstOrDefault();
+        if (point is null && (query.MinLatitude is not null || query.MaxLatitude is not null ||
+            query.MinLongitude is not null || query.MaxLongitude is not null) ||
+            point is not null && (query.MinLatitude is not null && point.Latitude < query.MinLatitude ||
+            query.MaxLatitude is not null && point.Latitude > query.MaxLatitude ||
+            query.MinLongitude is not null && point.Longitude < query.MinLongitude ||
+            query.MaxLongitude is not null && point.Longitude > query.MaxLongitude))
+        {
+            return false;
+        }
+
         return true;
     }
 

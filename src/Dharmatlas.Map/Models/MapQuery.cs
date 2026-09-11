@@ -16,6 +16,11 @@ public sealed record MapQuery
 
     public string? Region { get; init; }
 
+    public double? MinLatitude { get; init; }
+    public double? MaxLatitude { get; init; }
+    public double? MinLongitude { get; init; }
+    public double? MaxLongitude { get; init; }
+
     /// <summary>Include features whose activity has no normalized bounds.</summary>
     public bool IncludeUnknownActivity { get; init; }
 }

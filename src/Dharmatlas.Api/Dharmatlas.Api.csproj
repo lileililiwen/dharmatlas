@@ -14,6 +14,8 @@
     <ProjectReference Include="..\Dharmatlas.Domain\Dharmatlas.Domain.csproj" />
     <ProjectReference Include="..\Dharmatlas.Persistence\Dharmatlas.Persistence.csproj" />
     <ProjectReference Include="..\Dharmatlas.Search\Dharmatlas.Search.csproj" />
+    <ProjectReference Include="..\Dharmatlas.Map\Dharmatlas.Map.csproj" />
+    <ProjectReference Include="..\Dharmatlas.Timeline\Dharmatlas.Timeline.csproj" />
   </ItemGroup>
 
 </Project>

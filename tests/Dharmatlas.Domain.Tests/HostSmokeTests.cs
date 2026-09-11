@@ -40,6 +40,26 @@ public sealed class HostSmokeTests : IClassFixture<HostSmokeTests.TestHostFactor
         Assert.Equal(HttpStatusCode.ServiceUnavailable, response.StatusCode);
     }
 
+    [Fact]
+    public async Task Search_requires_a_query_before_database_access()
+    {
+        using var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/api/v1/search");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Map_rejects_an_unbounded_or_invalid_year()
+    {
+        using var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/api/v1/map?year=9999");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
     public sealed class TestHostFactory : WebApplicationFactory<Program>
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
