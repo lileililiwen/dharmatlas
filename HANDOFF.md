@@ -2,7 +2,7 @@
 
 ## Current state
 
-Ten OpenSpec changes are complete and archived:
+Eleven OpenSpec changes are complete and archived:
 
 - `project-foundation` — source-first domain contract (`docs/domain-contract.md`),
   promoted to `openspec/specs/project-foundation/spec.md` as the acceptance baseline.
@@ -63,8 +63,8 @@ was authored as nine changes:
 8. `query-performance-and-export-delivery`
 9. `observability-and-release-quality`
 
-They cover the gaps identified in the product maturity audit. The first four
-changes have now been implemented and archived; five remain as planning
+They cover the gaps identified in the product maturity audit. The first five
+changes have now been implemented and archived; four remain as planning
 artifacts.
 
 `provenance-claims-and-evidence` was archived as
@@ -79,6 +79,19 @@ conflicting published claims remain separate.
 - PostgreSQL migration `20260911092229_ClaimEvidenceMetadata` applied.
 - PostgreSQL `claims.interpretation` and `claims.source_locator` columns verified.
 - Rejected claims were excluded from API/export projections; competing published claims remained visible.
+- `openspec validate --all --strict --no-interactive` -> **15 passed, 0 failed**.
+- `git diff --check` passed.
+
+`public-read-api-completion` was archived as
+`2026-09-11-public-read-api-completion`. It adds versioned HTTP routes and
+explicit DTOs for multilingual search, bounded timeline/map exploration,
+institution and tradition navigation, and published claim/evidence access.
+Map viewport and year inputs are validated before querying; search results carry
+stable detail links; API metadata and examples are maintained in `docs/api.md`.
+
+- Focused API/host contract tests: **22 passed, 0 failed**.
+- Full test suite: **140 passed, 0 failed**.
+- New route validation covers required search terms and invalid map years.
 - `openspec validate --all --strict --no-interactive` -> **15 passed, 0 failed**.
 - `git diff --check` passed.
 
@@ -98,7 +111,7 @@ search, detail, API, export, and seed validation paths.
 
 ## Next change
 
-The next implementation change is `public-read-api-completion`. Select it with:
+The next implementation change is `public-atlas-web-experience`. Select it with:
 
 ```bash
 openspec list
