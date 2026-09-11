@@ -2,7 +2,7 @@
 
 ## Current state
 
-Nine OpenSpec changes are complete and archived:
+Ten OpenSpec changes are complete and archived:
 
 - `project-foundation` — source-first domain contract (`docs/domain-contract.md`),
   promoted to `openspec/specs/project-foundation/spec.md` as the acceptance baseline.
@@ -63,9 +63,24 @@ was authored as nine changes:
 8. `query-performance-and-export-delivery`
 9. `observability-and-release-quality`
 
-They cover the gaps identified in the product maturity audit. The first three
-changes have now been implemented and archived; six remain as planning
+They cover the gaps identified in the product maturity audit. The first four
+changes have now been implemented and archived; five remain as planning
 artifacts.
+
+`provenance-claims-and-evidence` was archived as
+`2026-09-11-provenance-claims-and-evidence`. It adds claim interpretation and
+source-locator metadata, a publication-safe claim boundary, evidence sections
+on person/event/place/text API and detail views, and published claims in bulk
+exports. Traditional and scholarly interpretations remain explicitly labeled;
+conflicting published claims remain separate.
+
+- Focused provenance tests: **3 passed, 0 failed**.
+- Full test suite: **138 passed, 0 failed**.
+- PostgreSQL migration `20260911092229_ClaimEvidenceMetadata` applied.
+- PostgreSQL `claims.interpretation` and `claims.source_locator` columns verified.
+- Rejected claims were excluded from API/export projections; competing published claims remained visible.
+- `openspec validate --all --strict --no-interactive` -> **15 passed, 0 failed**.
+- `git diff --check` passed.
 
 `entity-name-persistence-and-read-model` was archived as
 `2026-09-11-entity-name-persistence-and-read-model`. It adds shared entity-name
@@ -83,7 +98,7 @@ search, detail, API, export, and seed validation paths.
 
 ## Next change
 
-The next implementation change is `provenance-claims-and-evidence`. Select it with:
+The next implementation change is `public-read-api-completion`. Select it with:
 
 ```bash
 openspec list
