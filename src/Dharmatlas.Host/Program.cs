@@ -27,6 +27,9 @@ builder.Services.AddHealthChecks()
 
 var app = builder.Build();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapHealthChecks("/health/live", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
 {
     Predicate = _ => false
@@ -36,6 +39,7 @@ app.MapHealthChecks("/health/ready", new Microsoft.AspNetCore.Diagnostics.Health
     Predicate = check => check.Tags.Contains("ready")
 });
 app.MapPublicApi();
+app.MapFallbackToFile("index.html");
 
 if (app.Configuration.GetValue<bool>("Dharmatlas:ApplyMigrations") ||
     string.Equals(Environment.GetEnvironmentVariable("DHARMATLAS_APPLY_MIGRATIONS"), "true", StringComparison.OrdinalIgnoreCase))
