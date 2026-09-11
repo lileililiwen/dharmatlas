@@ -144,12 +144,16 @@ public sealed class ApiQueryService
     public async Task<Paginated<EntityRef>> ListSimpleEntitiesAsync(
         EntityType type, Paging paging, CancellationToken cancellationToken = default)
     {
-        var entities = await _db.Entities.Where(e => e.Type == type).ToListAsync(cancellationToken);
+        var pageSize = Paginator.ClampLimit(paging.Limit);
+        var after = ParseCursor(paging.After);
+        var entities = await _db.Entities.AsNoTracking()
+            .Where(e => e.Type == type && (after == null || e.Id.Value > after.Value.Value))
+            .OrderBy(e => e.Id.Value)
+            .Take(pageSize + 1)
+            .ToListAsync(cancellationToken);
         var names = await NamesForAsync(entities.Select(e => e.Id), cancellationToken);
-        var rows = entities.Select(e => ToEntityRef(e, names))
-            .OrderBy(e => e.Id, StringComparer.Ordinal)
-            .ToList();
-        return Paginator.Apply(rows, paging.Limit, paging.After, e => e.Id);
+        var rows = entities.Take(pageSize).Select(e => ToEntityRef(e, names)).ToList();
+        return Page(rows, entities.Count > pageSize, pageSize);
     }
 
     public async Task<ClaimView?> GetClaimAsync(EntityId id, CancellationToken cancellationToken = default)
@@ -172,9 +176,13 @@ public sealed class ApiQueryService
     public async Task<Paginated<ClaimView>> ListClaimsAsync(
         EntityId? subjectId, Paging paging, CancellationToken cancellationToken = default)
     {
-        var claims = await _db.Claims
+        var pageSize = Paginator.ClampLimit(paging.Limit);
+        var after = ParseCursor(paging.After);
+        var claims = await _db.Claims.AsNoTracking()
             .Where(c => c.Status == ClaimStatus.Published && (subjectId == null || c.SubjectEntityId == subjectId))
-            .OrderBy(c => c.Id)
+            .Where(c => after == null || c.Id.Value > after.Value.Value)
+            .OrderBy(c => c.Id.Value)
+            .Take(pageSize + 1)
             .ToListAsync(cancellationToken);
         var sourceIds = claims.SelectMany(c => c.SourceIds).Distinct().ToList();
         var sources = sourceIds.Count == 0
@@ -185,7 +193,7 @@ public sealed class ApiQueryService
             .Where(c => c.SourceIds.All(sourceLookup.Contains))
             .SelectMany(c => ToClaimViews(new[] { c }, sources.Select(ToSearchSourceView).ToList()))
             .ToList();
-        return Paginator.Apply(rows, paging.Limit, paging.After, c => c.Id);
+        return Page(rows.Take(pageSize).ToList(), rows.Count > pageSize, pageSize);
     }
 
     public async Task<Models.SourceView?> GetSourceAsync(EntityId id, CancellationToken cancellationToken = default)
@@ -196,56 +204,64 @@ public sealed class ApiQueryService
 
     public async Task<Paginated<EntityRef>> ListPersonsAsync(PersonQuery query, CancellationToken cancellationToken = default)
     {
-        var persons = await _db.Entities.OfType<Person>().ToListAsync(cancellationToken);
+        var pageSize = Paginator.ClampLimit(query.Paging.Limit);
+        var after = ParseCursor(query.Paging.After);
+        var persons = await _db.Entities.OfType<Person>().AsNoTracking()
+            .Where(p => (after == null || p.Id.Value > after.Value.Value) &&
+                (string.IsNullOrWhiteSpace(query.Name) || _db.EntityNames.Any(n => n.EntityId == p.Id && EF.Functions.ILike(n.Value, $"%{query.Name!.Trim()}%"))))
+            .OrderBy(p => p.Id.Value).Take(pageSize + 1).ToListAsync(cancellationToken);
         var names = await NamesForAsync(persons.Select(p => p.Id), cancellationToken);
 
-        var rows = persons
-            .Where(p => MatchesName(p, names, query.Name))
-            .Select(p => ToEntityRef(p, names))
-            .OrderBy(r => r.Id, StringComparer.Ordinal)
-            .ToList();
+        var rows = persons.Take(pageSize).Where(p => MatchesName(p, names, query.Name)).Select(p => ToEntityRef(p, names)).ToList();
 
-        return Paginator.Apply(rows, query.Paging.Limit, query.Paging.After, r => r.Id);
+        return Page(rows, persons.Count > pageSize, pageSize);
     }
 
     public async Task<Paginated<EntityRef>> ListPlacesAsync(PlaceQuery query, CancellationToken cancellationToken = default)
     {
-        var places = await _db.Entities.OfType<Place>().ToListAsync(cancellationToken);
-        if (!string.IsNullOrWhiteSpace(query.Region))
-        {
-            places = places.Where(p => string.Equals(p.Region, query.Region, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-
-        if (query.Kind is { } kind)
-        {
-            places = places.Where(p => p.Kind == kind).ToList();
-        }
+        var pageSize = Paginator.ClampLimit(query.Paging.Limit);
+        var after = ParseCursor(query.Paging.After);
+        var placesQuery = _db.Entities.OfType<Place>().AsNoTracking()
+            .Where(p => (after == null || p.Id.Value > after.Value.Value));
+        if (!string.IsNullOrWhiteSpace(query.Region)) placesQuery = placesQuery.Where(p => p.Region == query.Region);
+        if (query.Kind is { } kind) placesQuery = placesQuery.Where(p => p.Kind == kind);
+        var places = await placesQuery.OrderBy(p => p.Id.Value).Take(pageSize + 1).ToListAsync(cancellationToken);
 
         var names = await NamesForAsync(places.Select(p => p.Id), cancellationToken);
-        var rows = places.Select(p => ToEntityRef(p, names)).OrderBy(r => r.Id, StringComparer.Ordinal).ToList();
-        return Paginator.Apply(rows, query.Paging.Limit, query.Paging.After, r => r.Id);
+        var rows = places.Take(pageSize).Select(p => ToEntityRef(p, names)).ToList();
+        return Page(rows, places.Count > pageSize, pageSize);
     }
 
     public async Task<Paginated<EntityRef>> ListTextsAsync(TextQuery query, CancellationToken cancellationToken = default)
     {
-        var texts = await _db.Entities.OfType<Text>().ToListAsync(cancellationToken);
+        var pageSize = Paginator.ClampLimit(query.Paging.Limit);
+        var after = ParseCursor(query.Paging.After);
+        var texts = await _db.Entities.OfType<Text>().AsNoTracking()
+            .Where(t => (after == null || t.Id.Value > after.Value.Value) &&
+                (string.IsNullOrWhiteSpace(query.Language) || t.OriginalLanguage == query.Language))
+            .OrderBy(t => t.Id.Value).Take(pageSize + 1).ToListAsync(cancellationToken);
         var names = await NamesForAsync(texts.Select(t => t.Id), cancellationToken);
 
-        var rows = texts
-            .Where(t => MatchesLanguage(t, names, query.Language))
-            .Select(t => ToEntityRef(t, names))
-            .OrderBy(r => r.Id, StringComparer.Ordinal)
-            .ToList();
+        var rows = texts.Take(pageSize).Where(t => MatchesLanguage(t, names, query.Language)).Select(t => ToEntityRef(t, names)).ToList();
 
-        return Paginator.Apply(rows, query.Paging.Limit, query.Paging.After, r => r.Id);
+        return Page(rows, texts.Count > pageSize, pageSize);
     }
 
     public async Task<Paginated<EventSummaryView>> ListEventsAsync(EventQuery query, CancellationToken cancellationToken = default)
     {
-        var events = await _db.Entities.OfType<Event>().ToListAsync(cancellationToken);
+        var pageSize = Paginator.ClampLimit(query.Paging.Limit);
+        var after = ParseCursor(query.Paging.After);
+        var eventsQuery = _db.Entities.OfType<Event>().AsNoTracking()
+            .Where(e => after == null || e.Id.Value > after.Value.Value);
+        if (!string.IsNullOrWhiteSpace(query.Region)) eventsQuery = eventsQuery.Where(e => e.Region == query.Region);
+        if (!string.IsNullOrWhiteSpace(query.Category)) eventsQuery = eventsQuery.Where(e => e.Category == query.Category);
+        if (query.PlaceId is { } placeId) eventsQuery = eventsQuery.Where(e => e.PlaceId == placeId);
+        if (query.FromYear is { } from) eventsQuery = eventsQuery.Where(e => e.When == null || e.When.NormalizedUpperBound == null || e.When.NormalizedUpperBound >= from);
+        if (query.ToYear is { } to) eventsQuery = eventsQuery.Where(e => e.When == null || e.When.NormalizedLowerBound == null || e.When.NormalizedLowerBound <= to);
+        var events = await eventsQuery.OrderBy(e => e.Id.Value).Take(pageSize + 1).ToListAsync(cancellationToken);
         var names = await NamesForAsync(events.Select(e => e.Id), cancellationToken);
 
-        var rows = events
+        var rows = events.Take(pageSize)
             .Where(e => PassesEventFilters(e, query))
             .Select(e => new EventSummaryView
             {
@@ -257,35 +273,22 @@ public sealed class ApiQueryService
                 Category = e.Category,
                 Certainty = e.Certainty.ToString()
             })
-            .OrderBy(r => r.Id, StringComparer.Ordinal)
             .ToList();
 
-        return Paginator.Apply(rows, query.Paging.Limit, query.Paging.After, r => r.Id);
+        return Page(rows, events.Count > pageSize, pageSize);
     }
 
     public async Task<Paginated<RelationshipView>> ListRelationshipsAsync(
         RelationshipQuery query, CancellationToken cancellationToken = default)
     {
-        var relationships = await _db.Relationships.ToListAsync(cancellationToken);
-        if (query.From is { } from)
-        {
-            relationships = relationships.Where(r => r.FromEntityId == from).ToList();
-        }
-
-        if (query.To is { } to)
-        {
-            relationships = relationships.Where(r => r.ToEntityId == to).ToList();
-        }
-
-        if (!string.IsNullOrWhiteSpace(query.Type))
-        {
-            relationships = relationships.Where(r => string.Equals(r.Type, query.Type, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-
-        if (query.MinCertainty is { } min)
-        {
-            relationships = relationships.Where(r => r.Certainty >= min).ToList();
-        }
+        var pageSize = Paginator.ClampLimit(query.Paging.Limit);
+        var after = ParseCursor(query.Paging.After);
+        var relationshipQuery = _db.Relationships.AsNoTracking().Where(r => after == null || r.Id.Value > after.Value.Value);
+        if (query.From is { } from) relationshipQuery = relationshipQuery.Where(r => r.FromEntityId == from);
+        if (query.To is { } to) relationshipQuery = relationshipQuery.Where(r => r.ToEntityId == to);
+        if (!string.IsNullOrWhiteSpace(query.Type)) relationshipQuery = relationshipQuery.Where(r => r.Type == query.Type);
+        if (query.MinCertainty is { } min) relationshipQuery = relationshipQuery.Where(r => r.Certainty >= min);
+        var relationships = await relationshipQuery.OrderBy(r => r.Id.Value).Take(pageSize + 1).ToListAsync(cancellationToken);
 
         var endpoints = await BuildEndpointLookupAsync(
             relationships.SelectMany(r => new[] { r.FromEntityId, r.ToEntityId }).Distinct(),
@@ -301,10 +304,9 @@ public sealed class ApiQueryService
                 Certainty = r.Certainty.ToString(),
                 SourceIds = r.SourceIds.Select(s => s.ToString()).ToList()
             })
-            .OrderBy(r => r.Id, StringComparer.Ordinal)
             .ToList();
 
-        return Paginator.Apply(rows, query.Paging.Limit, query.Paging.After, r => r.Id);
+        return Page(rows, relationships.Count > pageSize, pageSize);
     }
 
     public async Task<ExportSnapshot> BuildExportAsync(
@@ -321,6 +323,37 @@ public sealed class ApiQueryService
     }
 
     public ApiMetaView GetMeta() => ApiMeta.Describe();
+
+    private static EntityId? ParseCursor(string? cursor)
+    {
+        if (string.IsNullOrWhiteSpace(cursor))
+        {
+            return null;
+        }
+
+        return EntityId.TryParse(cursor, out var id)
+            ? id
+            : throw ApiException.BadRequest("The pagination cursor must be a stable entity id.");
+    }
+
+    private static Paginated<T> Page<T>(IReadOnlyList<T> items, bool hasMore, int limit)
+    {
+        return new Paginated<T>
+        {
+            Items = items,
+            HasMore = hasMore,
+            NextCursor = hasMore && items.Count > 0 ? GetId(items[^1]) : null,
+            Limit = limit
+        };
+    }
+
+    private static string GetId<T>(T item) => item switch
+    {
+        EntityRef entity => entity.Id,
+        RelationshipView relationship => relationship.Id,
+        ClaimView claim => claim.Id,
+        _ => throw new InvalidOperationException($"No cursor projection exists for {typeof(T).Name}.")
+    };
 
     private bool PassesEventFilters(Event e, EventQuery q)
     {

@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.IO.Compression;
 using System.Text.Json;
 using Dharmatlas.Api;
 using Dharmatlas.Api.Models;
@@ -349,6 +350,7 @@ public class ApiContractTests
             DateTimeOffset.UnixEpoch);
 
         Assert.Equal(ApiConstants.SchemaVersion, snapshot.SchemaVersion);
+        Assert.NotEmpty(snapshot.Checksum);
         Assert.Equal(ApiConstants.License, snapshot.License);
         Assert.Equal(ApiConstants.LicenseUrl, snapshot.LicenseUrl);
         Assert.Equal(1, snapshot.Index.Entities);
@@ -382,6 +384,46 @@ public class ApiContractTests
         // Ordering is by stable id, so the first entity is deterministic regardless
         // of insertion order. With two random ids, the smaller one leads.
         Assert.Equal(new[] { p1, p2 }.Min(id => id.ToString()), snapshot1.Entities[0].Id);
+    }
+
+    [Fact]
+    public async Task Export_delivery_writes_valid_gzip_without_partial_json()
+    {
+        var db = NewDb();
+        var personId = EntityId.New();
+        db.Entities.Add(new Person { Id = personId });
+        db.EntityNames.Add(Name(personId, "Xuanzang", primary: true));
+        await db.SaveChangesAsync();
+
+        var snapshot = await new ApiQueryService(db).BuildExportAsync(DateTimeOffset.UnixEpoch);
+        await using var compressed = new MemoryStream();
+        await ExportDelivery.WriteCompressedAsync(compressed, snapshot);
+
+        compressed.Position = 0;
+        await using var gzip = new GZipStream(compressed, CompressionMode.Decompress);
+        var restored = await JsonSerializer.DeserializeAsync<ExportSnapshot>(gzip, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        Assert.NotNull(restored);
+        Assert.Equal(snapshot.Index.Entities, restored!.Index.Entities);
+        Assert.Equal(snapshot.Index.Relationships, restored.Index.Relationships);
+        Assert.Equal(snapshot.Index.Sources, restored.Index.Sources);
+        Assert.Equal(snapshot.Index.Claims, restored.Index.Claims);
+        Assert.Contains(restored.Entities, e => e.Id == personId.ToString());
+    }
+
+    [Fact]
+    public void Export_job_clears_partial_delivery_on_failure_and_can_retry()
+    {
+        var job = ExportJob.Create("export-1").Start().Fail("storage unavailable");
+        Assert.Equal(ExportJobStatus.Failed, job.Status);
+        Assert.Null(job.DownloadUrl);
+        Assert.Equal(1, job.Attempts);
+
+        var retry = job.Start();
+        Assert.Equal(ExportJobStatus.Running, retry.Status);
+        Assert.Equal(2, retry.Attempts);
+        var completed = retry.Complete("abc", "/api/v1/export/jobs/export-1/download");
+        Assert.Equal(ExportJobStatus.Completed, completed.Status);
+        Assert.Equal("abc", completed.Checksum);
     }
 
     // --- Rate limiting and cache/error shaping ---

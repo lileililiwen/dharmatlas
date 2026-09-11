@@ -153,7 +153,7 @@ public static class MapEngine
             features.Add(ProjectInstitution(institution, location));
         }
 
-        features = features.Where(f => PassesFilters(f, query)).ToList();
+        features = features.Where(f => PassesFilters(f, query)).OrderBy(f => f.Id.ToString()).Take(500).ToList();
 
         return new MapResult(query, features, ComputeViewport(features));
     }

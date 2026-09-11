@@ -279,9 +279,17 @@ public static class PublicApiEndpoints
             return source is null ? NotFound(id) : Results.Ok(source);
         }));
 
-        group.MapGet("/export", async (ApiQueryService svc) => await Guard(async () =>
+        group.MapGet("/export", async (ApiQueryService svc, HttpContext http, string? format) => await Guard(async () =>
         {
             var snapshot = await svc.BuildExportAsync(DateTimeOffset.UtcNow);
+            if (string.Equals(format, "gzip", StringComparison.OrdinalIgnoreCase))
+            {
+                http.Response.ContentType = "application/gzip";
+                http.Response.Headers["Content-Disposition"] = "attachment; filename=dharmatlas-export.json.gz";
+                await ExportDelivery.WriteCompressedAsync(http.Response.Body, snapshot, http.RequestAborted);
+                return Results.Empty;
+            }
+
             return Results.Ok(snapshot);
         }));
 

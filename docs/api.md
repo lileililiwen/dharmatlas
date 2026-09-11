@@ -33,6 +33,16 @@ Map years are bounded to `-5000..3000`; latitude and longitude bounds are
 validated before querying. `includeUnknownActivity=true` explicitly opts into
 features without normalized activity bounds.
 
+List endpoints use stable entity-id cursors and database-side filters. Responses
+are capped at 100 items; map responses are capped at 500 features. The bulk
+snapshot includes a dataset revision and SHA-256 checksum. Add `?format=gzip` to
+`/api/v1/export` to stream a compressed JSON snapshot directly to the client.
+
+Future search-engine adoption is justified only after PostgreSQL-backed benchmark
+fixtures show sustained p95 search latency above 250 ms at the maximum page size,
+or query plans show the name indexes are no longer selective for the published
+corpus. Until then, the database query remains the source of truth.
+
 ## Inspect evidence
 
 ```http

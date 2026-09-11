@@ -22,17 +22,36 @@ public sealed class SearchQueryService : ISearchQueryService
 
     public async Task<SearchResult> QueryAsync(SearchQuery query, CancellationToken cancellationToken = default)
     {
-        var entities = await _db.Entities.ToListAsync(cancellationToken);
-        var names = await _db.EntityNames.ToListAsync(cancellationToken);
+        var term = query.Term.Trim();
+        if (term.Length == 0)
+        {
+            return new SearchResult { Term = term, Hits = Array.Empty<EntitySearchHit>() };
+        }
+
+        IQueryable<EntityName> namesQuery = _db.EntityNames.AsNoTracking();
+        if (_db.Database.IsRelational())
+        {
+            namesQuery = namesQuery.Where(n => EF.Functions.ILike(n.Value, $"%{term}%"));
+        }
+        else
+        {
+            namesQuery = namesQuery.Where(n => n.Value.Contains(term, StringComparison.OrdinalIgnoreCase));
+        }
+
+        var candidateIds = await namesQuery.Select(n => n.EntityId).Distinct().ToListAsync(cancellationToken);
+        var entitiesQuery = _db.Entities.AsNoTracking().Where(e => candidateIds.Contains(e.Id));
+        if (query.Types is { Count: > 0 }) entitiesQuery = entitiesQuery.Where(e => query.Types.Contains(e.Type));
+        var entities = await entitiesQuery.ToListAsync(cancellationToken);
+        var names = await _db.EntityNames.AsNoTracking().Where(n => candidateIds.Contains(n.EntityId)).ToListAsync(cancellationToken);
 
         var namesByEntity = names
             .GroupBy(n => n.EntityId)
             .ToDictionary(g => g.Key, g => (IReadOnlyList<EntityName>)EntityNameReadModel.Order(g));
 
-        var placeRegions = entities
-            .OfType<Place>()
-            .Where(p => p.Region is not null)
-            .ToDictionary(p => p.Id, p => p.Region!);
+        var institutionPlaceIds = entities.OfType<Institution>().Where(i => i.PlaceId is not null).Select(i => i.PlaceId!.Value).ToList();
+        var placeRegions = await _db.Entities.OfType<Place>().AsNoTracking()
+            .Where(p => p.Region != null && institutionPlaceIds.Contains(p.Id))
+            .ToDictionaryAsync(p => p.Id, p => p.Region!, cancellationToken);
 
         var searchEntities = entities.Select(e => ToSearchEntity(e, namesByEntity, placeRegions)).ToList();
 

@@ -1,4 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography;
+using System.Text.Json;
 using Dharmatlas.Domain;
 using Dharmatlas.Domain.Entities;
 using Dharmatlas.Domain.ValueObjects;
@@ -59,9 +61,11 @@ public static class BulkExporter
             .GroupBy(e => e.Type)
             .ToDictionary(g => g.Key, g => g.Count());
 
-        return new ExportSnapshot
+        var snapshot = new ExportSnapshot
         {
             SchemaVersion = schemaVersion,
+            DatasetRevision = $"published-{exportEntities.Count}-{exportRelationships.Count}-{exportSources.Count}-{exportClaims.Count}",
+            Checksum = string.Empty,
             License = license,
             LicenseUrl = licenseUrl,
             GeneratedAt = generatedAt,
@@ -78,6 +82,9 @@ public static class BulkExporter
             Sources = exportSources,
             Claims = exportClaims
         };
+
+        var bytes = JsonSerializer.SerializeToUtf8Bytes(snapshot with { Checksum = string.Empty });
+        return snapshot with { Checksum = Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant() };
     }
 
     private static ExportEntity ToExportEntity(

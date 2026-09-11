@@ -24,5 +24,7 @@ public class RelationshipConfiguration : IEntityTypeConfiguration<Relationship>
 
         builder.HasIndex(r => new { r.FromEntityId, r.ToEntityId }, "ix_relationships_endpoints");
         builder.HasIndex(r => r.Type, "ix_relationships_type");
+        builder.HasIndex(r => new { r.FromEntityId, r.Id }, "ix_relationships_from_id");
+        builder.HasIndex(r => new { r.ToEntityId, r.Id }, "ix_relationships_to_id");
     }
 }

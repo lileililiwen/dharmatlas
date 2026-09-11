@@ -10,6 +10,9 @@ namespace Dharmatlas.Api.Models;
 public sealed record ExportSnapshot
 {
     public required string SchemaVersion { get; init; }
+    public required string DatasetRevision { get; init; }
+    /// <summary>SHA-256 of the snapshot with this field omitted.</summary>
+    public required string Checksum { get; init; }
     public required string License { get; init; }
     public required string LicenseUrl { get; init; }
     public required DateTimeOffset GeneratedAt { get; init; }
