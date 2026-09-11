@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\data\seed\v1\manifest.json" Link="data\seed\v1\manifest.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
@@ -30,6 +34,7 @@
     <ProjectReference Include="..\..\src\Dharmatlas.Api\Dharmatlas.Api.csproj" />
     <ProjectReference Include="..\..\src\Dharmatlas.AI\Dharmatlas.AI.csproj" />
     <ProjectReference Include="..\..\src\Dharmatlas.Host\Dharmatlas.Host.csproj" />
+    <ProjectReference Include="..\..\src\Dharmatlas.Import\Dharmatlas.Import.csproj" />
   </ItemGroup>
 
   <ItemGroup>

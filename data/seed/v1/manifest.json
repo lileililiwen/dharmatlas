@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "metadata": {
+    "license": "CC-BY-4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "datasetVersion": "seed-2026-09-11",
+    "editorialNote": "Representative source-linked seed records for the first public atlas slice."
+  },
+  "sources": [
+    { "id": "10000000-0000-0000-0000-000000000001", "title": "The Mahavamsa", "author": "Mahanama", "date": "5th century CE", "publisherOrCollection": "Sri Lankan chronicle", "licenseNote": "Use bibliographic metadata only; verify editions before redistribution." },
+    { "id": "10000000-0000-0000-0000-000000000002", "title": "The Buddhist Records of the Western World", "author": "Xuanzang; trans. Samuel Beal", "date": "1888", "publisherOrCollection": "Public-domain translation", "identifier": "archive-record-xuanzang" },
+    { "id": "10000000-0000-0000-0000-000000000003", "title": "The Foundations of Buddhism", "author": "Rupert Gethin", "date": "1998", "publisherOrCollection": "Oxford University Press", "identifier": "doi:10.1093/0192892231.001.0001" }
+  ],
+  "entities": [
+    { "id": "20000000-0000-0000-0000-000000000001", "type": "Person", "summary": "A representative historical person record for the seed corpus." },
+    { "id": "20000000-0000-0000-0000-000000000002", "type": "Person", "summary": "A Chinese pilgrim and translator represented with a documented travel date." },
+    { "id": "20000000-0000-0000-0000-000000000101", "type": "Place", "summary": "A representative place in northern India.", "region": "India", "modernName": "Bodh Gaya", "kind": "ArchaeologicalSite", "latitude": 24.6961, "longitude": 84.9912, "activity": { "kind": "Interval", "displayExpression": "3rd century BCE–present", "lower": -300, "upper": 2026 }, "certainty": "Probable", "sourceIds": ["10000000-0000-0000-0000-000000000003"] },
+    { "id": "20000000-0000-0000-0000-000000000102", "type": "Place", "summary": "A representative place in Central Asia.", "region": "Central Asia", "kind": "City", "latitude": 39.4704, "longitude": 75.9897, "activity": { "kind": "Approximate", "displayExpression": "ca. 2nd–7th century CE", "lower": 100, "upper": 700 }, "certainty": "Disputed", "sourceIds": ["10000000-0000-0000-0000-000000000002"] },
+    { "id": "20000000-0000-0000-0000-000000000103", "type": "Place", "summary": "A representative place in China.", "region": "China", "kind": "City", "latitude": 34.3416, "longitude": 108.9398, "activity": { "kind": "OpenInterval", "displayExpression": "after 2nd century CE", "lower": 100 }, "certainty": "Documented", "sourceIds": ["10000000-0000-0000-0000-000000000002"] },
+    { "id": "20000000-0000-0000-0000-000000000104", "type": "Place", "summary": "A representative place in Sri Lanka.", "region": "Sri Lanka", "kind": "ArchaeologicalSite", "latitude": 8.3114, "longitude": 80.4037, "activity": { "kind": "Traditional", "displayExpression": "Traditionally associated with the reign of King Devanampiya Tissa", "lower": -250, "upper": -200 }, "certainty": "TraditionalAccount", "sourceIds": ["10000000-0000-0000-0000-000000000001"] },
+    { "id": "20000000-0000-0000-0000-000000000105", "type": "Place", "summary": "A representative place in Tibet.", "region": "Tibet", "kind": "Mountain", "latitude": 29.65, "longitude": 91.1, "certainty": "Unknown", "sourceIds": ["10000000-0000-0000-0000-000000000003"] },
+    { "id": "20000000-0000-0000-0000-000000000106", "type": "Place", "summary": "A representative place in Korea.", "region": "Korea", "kind": "Monastery", "latitude": 35.79, "longitude": 127.1, "activity": { "kind": "Century", "displayExpression": "6th century CE", "lower": 500, "upper": 599 }, "certainty": "Probable", "sourceIds": ["10000000-0000-0000-0000-000000000003"] },
+    { "id": "20000000-0000-0000-0000-000000000107", "type": "Place", "summary": "A representative place in Japan.", "region": "Japan", "kind": "Region", "latitude": 35.68, "longitude": 139.69, "certainty": "Documented", "sourceIds": ["10000000-0000-0000-0000-000000000003"] },
+    { "id": "20000000-0000-0000-0000-000000000201", "type": "Institution", "summary": "A representative institution linked to a known place.", "institutionalForm": "Monastic university", "placeId": "20000000-0000-0000-0000-000000000101", "activity": { "kind": "Interval", "displayExpression": "5th–12th century CE", "lower": 400, "upper": 1200 }, "certainty": "Documented", "sourceIds": ["10000000-0000-0000-0000-000000000003"] },
+    { "id": "20000000-0000-0000-0000-000000000301", "type": "Text", "summary": "A representative source-text entity.", "originalLanguage": "Sanskrit" },
+    { "id": "20000000-0000-0000-0000-000000000401", "type": "Tradition", "summary": "A representative tradition entity.", "region": "India" },
+    { "id": "20000000-0000-0000-0000-000000000501", "type": "Event", "summary": "A representative event with an interval date.", "category": "Translation", "region": "China", "placeId": "20000000-0000-0000-0000-000000000103", "date": { "kind": "Interval", "displayExpression": "401–413 CE", "lower": 401, "upper": 413 }, "certainty": "Documented" },
+    { "id": "20000000-0000-0000-0000-000000000502", "type": "Event", "summary": "A representative event with a traditional date expression.", "category": "Tradition", "region": "Sri Lanka", "date": { "kind": "Traditional", "displayExpression": "Year 3 of the reign of a traditional king", "lower": -300, "upper": -250 }, "certainty": "TraditionalAccount" }
+  ],
+  "names": [
+    { "id": "30000000-0000-0000-0000-000000000001", "entityId": "20000000-0000-0000-0000-000000000001", "language": "eng", "script": "latin", "romanization": "", "value": "Seed Teacher", "isPrimary": true },
+    { "id": "30000000-0000-0000-0000-000000000002", "entityId": "20000000-0000-0000-0000-000000000001", "language": "san", "script": "latin", "romanization": "IAST", "value": "Ācārya Bhadra", "isPrimary": false },
+    { "id": "30000000-0000-0000-0000-000000000003", "entityId": "20000000-0000-0000-0000-000000000002", "language": "eng", "script": "latin", "romanization": "", "value": "Xuanzang", "isPrimary": true },
+    { "id": "30000000-0000-0000-0000-000000000004", "entityId": "20000000-0000-0000-0000-000000000101", "language": "eng", "script": "latin", "romanization": "", "value": "Bodh Gaya", "isPrimary": true },
+    { "id": "30000000-0000-0000-0000-000000000005", "entityId": "20000000-0000-0000-0000-000000000103", "language": "eng", "script": "latin", "romanization": "", "value": "Chang'an", "isPrimary": true },
+    { "id": "30000000-0000-0000-0000-000000000006", "entityId": "20000000-0000-0000-0000-000000000201", "language": "eng", "script": "latin", "romanization": "", "value": "Seed Monastic University", "isPrimary": true },
+    { "id": "30000000-0000-0000-0000-000000000007", "entityId": "20000000-0000-0000-0000-000000000301", "language": "eng", "script": "latin", "romanization": "", "value": "Seed Discourse", "isPrimary": true },
+    { "id": "30000000-0000-0000-0000-000000000008", "entityId": "20000000-0000-0000-0000-000000000401", "language": "eng", "script": "latin", "romanization": "", "value": "Seed Tradition", "isPrimary": true },
+    { "id": "30000000-0000-0000-0000-000000000009", "entityId": "20000000-0000-0000-0000-000000000501", "language": "eng", "script": "latin", "romanization": "", "value": "Translation Event at Chang'an", "isPrimary": true },
+    { "id": "30000000-0000-0000-0000-000000000010", "entityId": "20000000-0000-0000-0000-000000000502", "language": "eng", "script": "latin", "romanization": "", "value": "Traditional Council Account", "isPrimary": true }
+  ],
+  "claims": [
+    { "id": "40000000-0000-0000-0000-000000000001", "subjectEntityId": "20000000-0000-0000-0000-000000000001", "statement": "This seed record represents a source-linked historical actor.", "certainty": "Probable", "sourceIds": ["10000000-0000-0000-0000-000000000003"] },
+    { "id": "40000000-0000-0000-0000-000000000002", "subjectEntityId": "20000000-0000-0000-0000-000000000104", "statement": "The traditional account associates this site with an early Buddhist foundation.", "certainty": "TraditionalAccount", "sourceIds": ["10000000-0000-0000-0000-000000000001"] },
+    { "id": "40000000-0000-0000-0000-000000000003", "subjectEntityId": "20000000-0000-0000-0000-000000000102", "statement": "The identification and chronology of this place remain disputed.", "certainty": "Disputed", "sourceIds": ["10000000-0000-0000-0000-000000000002", "10000000-0000-0000-0000-000000000003"] }
+  ],
+  "relationships": [
+    { "id": "50000000-0000-0000-0000-000000000001", "fromEntityId": "20000000-0000-0000-0000-000000000001", "toEntityId": "20000000-0000-0000-0000-000000000301", "type": "authored", "certainty": "Probable", "sourceIds": ["10000000-0000-0000-0000-000000000003"] },
+    { "id": "50000000-0000-0000-0000-000000000002", "fromEntityId": "20000000-0000-0000-0000-000000000002", "toEntityId": "20000000-0000-0000-0000-000000000103", "type": "visited", "certainty": "Documented", "sourceIds": ["10000000-0000-0000-0000-000000000002"] },
+    { "id": "50000000-0000-0000-0000-000000000003", "fromEntityId": "20000000-0000-0000-0000-000000000201", "toEntityId": "20000000-0000-0000-0000-000000000401", "type": "part-of", "certainty": "Probable", "sourceIds": ["10000000-0000-0000-0000-000000000003"] }
+  ]
+}

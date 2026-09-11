@@ -50,3 +50,17 @@ CI restores and builds the solution, runs tests against the repository test
 project, applies migrations to a disposable PostgreSQL service, validates all
 OpenSpec artifacts, and checks whitespace. Browser and frontend gates will be
 added by `public-atlas-web-experience`.
+
+## Seed import
+
+After applying migrations, load the reviewed seed snapshot with the import CLI:
+
+```bash
+DHARMATLAS_DATABASE_CONNECTION='Host=localhost;Port=55434;Database=dharmatlas;Username=dharmatlas;Password=dharmatlas-local-only' \
+  dotnet run --project src/Dharmatlas.Import/Dharmatlas.Import.csproj -- \
+  --file data/seed/v1/manifest.json
+```
+
+The importer validates the complete manifest before writing and replaces only
+records carrying IDs from that manifest. It does not delete unrelated records.
+Review source licensing and attribution metadata before adding records.
