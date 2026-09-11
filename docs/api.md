@@ -44,3 +44,21 @@ Claim responses include statement, certainty, interpretation, source locator,
 and inspectable source records. Draft, rejected, and private claims are never
 returned. Traditional accounts and competing interpretations remain separately
 labeled records.
+
+## Authenticated contributions
+
+The write surface is separate from public reads. Deployments must provide a
+verified authentication handler and map its stable subject claim to a
+`contributors.external_subject` record. The host never trusts contributor or
+reviewer IDs from request bodies.
+
+- `POST /api/v1/contributions` — contributor role; validates JSON shape, cited
+  source existence, and target type before queue insertion.
+- `GET /api/v1/contributions/mine` — contributor role; returns only the actor's
+  submissions.
+- `GET /api/v1/contributions/review-queue` — reviewer role.
+- `POST /api/v1/contributions/{id}/review` — reviewer role; requires a decision
+  reason, rejects self-approval by default, and records a server correlation ID.
+
+Approval is transactional on relational providers and uses a submission version
+token so concurrent decisions fail safely instead of overwriting history.

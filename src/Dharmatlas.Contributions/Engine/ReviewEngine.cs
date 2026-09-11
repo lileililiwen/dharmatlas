@@ -48,7 +48,8 @@ public static class ReviewEngine
         string reason,
         IReadOnlyList<EntityId> sourceIds,
         string? changedFieldsJson,
-        DateTimeOffset timestamp) =>
+        DateTimeOffset timestamp,
+        string? correlationId = null) =>
         new(
             targetId,
             priorValueJson,
@@ -57,7 +58,8 @@ public static class ReviewEngine
             timestamp,
             reviewerId: reviewerId,
             changedFieldsJson: changedFieldsJson,
-            sourceIds: sourceIds);
+            sourceIds: sourceIds,
+            correlationId: correlationId);
 
     /// <summary>
     /// Compute the field-level diff between a prior value and the proposed payload.

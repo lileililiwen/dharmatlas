@@ -30,6 +30,7 @@ public sealed record Revision
     public IReadOnlyList<EntityId> SourceIds { get; init; } = Array.Empty<EntityId>();
 
     public DateTimeOffset Timestamp { get; init; }
+    public string? CorrelationId { get; init; }
 
     public Revision(
         EntityId targetId,
@@ -39,7 +40,8 @@ public sealed record Revision
         DateTimeOffset timestamp,
         EntityId? reviewerId = null,
         string? changedFieldsJson = null,
-        IReadOnlyList<EntityId>? sourceIds = null)
+        IReadOnlyList<EntityId>? sourceIds = null,
+        string? correlationId = null)
     {
         if (string.IsNullOrWhiteSpace(priorValueJson))
         {
@@ -59,5 +61,6 @@ public sealed record Revision
         ReviewerId = reviewerId;
         ChangedFieldsJson = changedFieldsJson;
         SourceIds = sourceIds ?? Array.Empty<EntityId>();
+        CorrelationId = correlationId;
     }
 }

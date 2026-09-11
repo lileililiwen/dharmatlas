@@ -1,4 +1,5 @@
 using Dharmatlas.Contributions.Models;
+using Dharmatlas.Contributions.Identity;
 using Dharmatlas.Domain;
 using Dharmatlas.Domain.Entities;
 
@@ -12,6 +13,15 @@ namespace Dharmatlas.Contributions.Services;
 /// </summary>
 public interface IContributionService
 {
+    Task<Submission> SubmitAsync(
+        ContributionActor actor,
+        SubmissionType type,
+        string summary,
+        string payloadJson,
+        IReadOnlyList<EntityId>? sourceIds = null,
+        EntityId? targetId = null,
+        CancellationToken cancellationToken = default);
+
     /// <summary>Validate and submit a draft contribution. Returns the pending submission.</summary>
     Task<Submission> SubmitAsync(
         EntityId contributorId,
@@ -28,6 +38,15 @@ public interface IContributionService
         EntityId reviewerId,
         ReviewDecisionType decision,
         string reason,
+        string? correlationId = null,
+        CancellationToken cancellationToken = default);
+
+    Task<Submission> ReviewAsync(
+        ContributionActor actor,
+        EntityId submissionId,
+        ReviewDecisionType decision,
+        string reason,
+        string? correlationId = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>Ordered revision history for a target object (newest first).</summary>

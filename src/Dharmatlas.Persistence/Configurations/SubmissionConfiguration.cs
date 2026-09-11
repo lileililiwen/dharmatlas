@@ -25,6 +25,7 @@ public class SubmissionConfiguration : IEntityTypeConfiguration<Submission>
             .HasColumnType("text").HasConversion(new SourceIdsConverter());
         builder.Property(s => s.Status).HasColumnName("status").HasConversion<string>();
         builder.Property(s => s.CreatedAt).HasColumnName("created_at");
+        builder.Property(s => s.Version).HasColumnName("version").IsConcurrencyToken();
         builder.OwnsMany(s => s.Decisions, nav =>
         {
             nav.ToTable("submission_decisions");
@@ -33,6 +34,7 @@ public class SubmissionConfiguration : IEntityTypeConfiguration<Submission>
             nav.Property(d => d.Decision).HasColumnName("decision").HasConversion<string>();
             nav.Property(d => d.Reason).HasColumnName("reason").IsRequired();
             nav.Property(d => d.Timestamp).HasColumnName("timestamp");
+            nav.Property(d => d.CorrelationId).HasColumnName("correlation_id");
             nav.WithOwner().HasForeignKey("submission_id");
         });
 

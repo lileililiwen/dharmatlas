@@ -24,7 +24,8 @@ public sealed record Submission
     public IReadOnlyList<EntityId> SourceIds { get; init; } = Array.Empty<EntityId>();
     public SubmissionStatus Status { get; init; } = SubmissionStatus.Draft;
     public DateTimeOffset CreatedAt { get; init; }
-    public IReadOnlyList<ReviewDecision> Decisions { get; init; } = Array.Empty<ReviewDecision>();
+    public long Version { get; init; }
+    public IReadOnlyList<ReviewDecision> Decisions { get; init; } = new List<ReviewDecision>();
 
     public Submission(
         EntityId contributorId,

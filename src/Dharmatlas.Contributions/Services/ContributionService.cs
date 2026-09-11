@@ -1,11 +1,13 @@
 using System.Diagnostics.CodeAnalysis;
 using Dharmatlas.Contributions.Engine;
+using Dharmatlas.Contributions.Identity;
 using Dharmatlas.Contributions.Models;
 using Dharmatlas.Domain;
 using Dharmatlas.Domain.Entities;
 using Dharmatlas.Domain.ValueObjects;
 using Dharmatlas.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Dharmatlas.Contributions.Services;
 
@@ -22,6 +24,19 @@ public sealed class ContributionService : IContributionService
 
     public ContributionService(DharmatlasDbContext db) => _db = db;
 
+    public Task<Submission> SubmitAsync(
+        ContributionActor actor,
+        SubmissionType type,
+        string summary,
+        string payloadJson,
+        IReadOnlyList<EntityId>? sourceIds = null,
+        EntityId? targetId = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (!actor.IsContributor) throw new DomainValidationException("The authenticated actor is not a contributor.");
+        return SubmitCoreAsync(actor.ContributorId, type, summary, payloadJson, sourceIds, targetId, true, cancellationToken);
+    }
+
     public async Task<Submission> SubmitAsync(
         EntityId contributorId,
         SubmissionType type,
@@ -31,7 +46,34 @@ public sealed class ContributionService : IContributionService
         EntityId? targetId = null,
         CancellationToken cancellationToken = default)
     {
-        var draft = new Submission(contributorId, type, summary, payloadJson, sourceIds, targetId);
+        return await SubmitCoreAsync(contributorId, type, summary, payloadJson, sourceIds, targetId, false, cancellationToken);
+    }
+
+    private async Task<Submission> SubmitCoreAsync(
+        EntityId contributorId,
+        SubmissionType type,
+        string summary,
+        string payloadJson,
+        IReadOnlyList<EntityId>? sourceIds,
+        EntityId? targetId,
+        bool enforceReferences,
+        CancellationToken cancellationToken)
+    {
+        if (enforceReferences && !await _db.Contributors.AnyAsync(c => c.Id == contributorId, cancellationToken))
+            throw new InvalidReferenceException("The authenticated contributor is not registered.");
+
+        var sourceIdsValue = sourceIds ?? Array.Empty<EntityId>();
+        if (enforceReferences)
+        {
+            var existingSources = await _db.Sources.CountAsync(s => sourceIdsValue.Contains(s.Id), cancellationToken);
+            if (existingSources != sourceIdsValue.Distinct().Count())
+                throw new InvalidReferenceException("Every cited source must exist before a contribution enters review.");
+
+            if (targetId is { } target && !await TargetMatchesTypeAsync(target, type, cancellationToken))
+                throw new InvalidReferenceException("The contribution target does not exist or has the wrong entity type.");
+        }
+
+        var draft = new Submission(contributorId, type, summary, payloadJson, sourceIdsValue, targetId);
 
         var validation = SubmissionValidator.Validate(draft);
         if (!validation.IsValid)
@@ -40,10 +82,26 @@ public sealed class ContributionService : IContributionService
                 "Invalid submission: " + string.Join("; ", validation.Errors));
         }
 
-        var pending = draft.Submit();
+        var pending = draft.Submit() with { CreatedAt = DateTimeOffset.UtcNow, Version = 0 };
         _db.Submissions.Add(pending);
         await _db.SaveChangesAsync(cancellationToken);
         return pending;
+    }
+
+    public async Task<Submission> ReviewAsync(
+        ContributionActor actor,
+        EntityId submissionId,
+        ReviewDecisionType decision,
+        string reason,
+        string? correlationId = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (!actor.IsReviewer) throw new DomainValidationException("The authenticated actor is not a reviewer.");
+        var submission = await _db.Submissions.AsNoTracking().FirstOrDefaultAsync(s => s.Id == submissionId, cancellationToken)
+            ?? throw new InvalidReferenceException($"Submission {submissionId} not found.");
+        if (!actor.IsAdministrator && submission.ContributorId == actor.ContributorId)
+            throw new DomainValidationException("A contributor cannot review their own submission.");
+        return await ReviewCoreAsync(submissionId, actor.ContributorId, decision, reason, correlationId, cancellationToken);
     }
 
     public async Task<Submission> ReviewAsync(
@@ -51,7 +109,19 @@ public sealed class ContributionService : IContributionService
         EntityId reviewerId,
         ReviewDecisionType decision,
         string reason,
+        string? correlationId = null,
         CancellationToken cancellationToken = default)
+    {
+        return await ReviewCoreAsync(submissionId, reviewerId, decision, reason, correlationId, cancellationToken);
+    }
+
+    private async Task<Submission> ReviewCoreAsync(
+        EntityId submissionId,
+        EntityId reviewerId,
+        ReviewDecisionType decision,
+        string reason,
+        string? correlationId,
+        CancellationToken cancellationToken)
     {
         var tracked = await _db.Submissions.FirstOrDefaultAsync(s => s.Id == submissionId, cancellationToken)
             ?? throw new InvalidReferenceException($"Submission {submissionId} not found.");
@@ -61,7 +131,10 @@ public sealed class ContributionService : IContributionService
             throw new DomainValidationException($"Submission is not awaiting review (status: {tracked.Status}).");
         }
 
-        var reviewDecision = new ReviewDecision(reviewerId, decision, reason, DateTimeOffset.UtcNow);
+        await using var transaction = _db.Database.IsRelational()
+            ? await _db.Database.BeginTransactionAsync(cancellationToken)
+            : null;
+        var reviewDecision = new ReviewDecision(reviewerId, decision, reason, DateTimeOffset.UtcNow, correlationId);
 
         // Approve: first check for a conflicting already-approved change on the same target.
         if (decision == ReviewDecisionType.Approve && tracked.TargetId is { } target)
@@ -73,7 +146,9 @@ public sealed class ContributionService : IContributionService
             if (ReviewEngine.HasConflictWithApproved(approved, tracked))
             {
                 _db.Entry(tracked).Property(s => s.Status).CurrentValue = SubmissionStatus.Conflict;
-                await _db.SaveChangesAsync(cancellationToken);
+                _db.Entry(tracked).Property(s => s.Version).CurrentValue = tracked.Version + 1;
+                await SaveWithConcurrencyGuardAsync(cancellationToken);
+                if (transaction is not null) await transaction.CommitAsync(cancellationToken);
                 return tracked;
             }
         }
@@ -89,8 +164,33 @@ public sealed class ContributionService : IContributionService
         // than replacing the instance, which keeps the owned decision rows consistent.
         _db.Entry(tracked).Property(s => s.Status).CurrentValue = decided.Status;
         _db.Entry(tracked).Collection(s => s.Decisions).CurrentValue = decided.Decisions.ToList();
-        await _db.SaveChangesAsync(cancellationToken);
-        return decided;
+        _db.Entry(tracked).Property(s => s.Version).CurrentValue = tracked.Version + 1;
+        await SaveWithConcurrencyGuardAsync(cancellationToken);
+        if (transaction is not null) await transaction.CommitAsync(cancellationToken);
+        return decided with { Version = tracked.Version };
+    }
+
+    private async Task SaveWithConcurrencyGuardAsync(CancellationToken cancellationToken)
+    {
+        try { await _db.SaveChangesAsync(cancellationToken); }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new DomainValidationException("This submission changed while it was being reviewed. Reload it and try again.");
+        }
+    }
+
+    private async Task<bool> TargetMatchesTypeAsync(EntityId targetId, SubmissionType type, CancellationToken cancellationToken)
+    {
+        var target = await _db.Entities.AsNoTracking().FirstOrDefaultAsync(e => e.Id == targetId, cancellationToken);
+        return type switch
+        {
+            SubmissionType.Date => target is Event,
+            SubmissionType.Name or SubmissionType.Translation => target is not null,
+            SubmissionType.Event => target is Event,
+            SubmissionType.Institution => target is Institution,
+            SubmissionType.Person => target is Person,
+            _ => target is not null
+        };
     }
 
     public async Task<ContributionHistoryView?> GetHistoryAsync(EntityId targetId, CancellationToken cancellationToken = default)
@@ -201,7 +301,8 @@ public sealed class ContributionService : IContributionService
             decision.Reason,
             submission.SourceIds,
             ReviewEngine.SerializeChangedFields(changed),
-            decision.Timestamp);
+            decision.Timestamp,
+            decision.CorrelationId);
 
         _db.Revisions.Add(revision);
         // The submission status update is persisted by the caller after this returns.

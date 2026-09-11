@@ -23,6 +23,7 @@ public class RevisionConfiguration : IEntityTypeConfiguration<Revision>
         builder.Property(r => r.SourceIds).HasColumnName("source_ids")
             .HasColumnType("text").HasConversion(new SourceIdsConverter());
         builder.Property(r => r.Timestamp).HasColumnName("timestamp");
+        builder.Property(r => r.CorrelationId).HasColumnName("correlation_id");
         builder.HasIndex(r => r.TargetId, "ix_revisions_target");
     }
 }
@@ -34,7 +35,11 @@ public class ContributorConfiguration : IEntityTypeConfiguration<Contributor>
         builder.ToTable("contributors");
         builder.HasKey(c => c.Id);
         builder.Property(c => c.Id).HasColumnName("id").HasConversion(new EntityIdConverter());
+        builder.Property(c => c.ExternalSubject).HasColumnName("external_subject");
         builder.Property(c => c.DisplayName).HasColumnName("display_name").IsRequired();
         builder.Property(c => c.Email).HasColumnName("email");
+        builder.Property(c => c.Roles).HasColumnName("roles").HasColumnType("text")
+            .HasConversion(new ContributorRolesConverter());
+        builder.HasIndex(c => c.ExternalSubject).IsUnique().HasFilter("external_subject IS NOT NULL");
     }
 }

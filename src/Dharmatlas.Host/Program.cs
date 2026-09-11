@@ -4,6 +4,7 @@ using Dharmatlas.Map.Services;
 using Dharmatlas.Persistence;
 using Dharmatlas.Search.Services;
 using Dharmatlas.Timeline.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,13 @@ if (string.IsNullOrWhiteSpace(connectionString))
 }
 
 builder.Services.AddDbContext<DharmatlasDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddAuthentication("Dharmatlas")
+    .AddScheme<AuthenticationSchemeOptions, UnconfiguredAuthenticationHandler>("Dharmatlas", _ => { });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("contributor", policy => policy.RequireAuthenticatedUser());
+    options.AddPolicy("reviewer", policy => policy.RequireAuthenticatedUser());
+});
 builder.Services.AddScoped<ITimelineQueryService, TimelineQueryService>();
 builder.Services.AddScoped<IMapQueryService, MapQueryService>();
 builder.Services.AddScoped<ISearchQueryService, SearchQueryService>();
@@ -29,6 +37,8 @@ var app = builder.Build();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapHealthChecks("/health/live", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
 {

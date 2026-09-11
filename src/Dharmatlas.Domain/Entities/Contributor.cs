@@ -7,8 +7,10 @@ namespace Dharmatlas.Domain.Entities;
 public sealed record Contributor
 {
     public EntityId Id { get; init; } = EntityId.New();
+    public string? ExternalSubject { get; init; }
     public string DisplayName { get; init; }
     public string? Email { get; init; }
+    public IReadOnlyList<ContributorRole> Roles { get; init; } = new[] { ContributorRole.Contributor };
 
     public Contributor(string displayName)
     {
@@ -18,5 +20,17 @@ public sealed record Contributor
         }
 
         DisplayName = displayName;
+    }
+
+    public Contributor(string displayName, string externalSubject, IReadOnlyList<ContributorRole>? roles = null)
+        : this(displayName)
+    {
+        if (string.IsNullOrWhiteSpace(externalSubject))
+        {
+            throw new DomainValidationException("An authenticated contributor requires an external subject.");
+        }
+
+        ExternalSubject = externalSubject;
+        Roles = roles is { Count: > 0 } ? roles : new[] { ContributorRole.Contributor };
     }
 }

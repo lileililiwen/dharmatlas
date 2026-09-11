@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Hosting;
 
@@ -58,6 +59,22 @@ public sealed class HostSmokeTests : IClassFixture<HostSmokeTests.TestHostFactor
         var response = await client.GetAsync("/api/v1/map?year=9999");
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Contributions_require_authentication()
+    {
+        using var client = _factory.CreateClient();
+
+        var response = await client.PostAsJsonAsync("/api/v1/contributions", new
+        {
+            type = "Event",
+            summary = "Unauthenticated",
+            payloadJson = "{\"Summary\":\"No\"}",
+            sourceIds = Array.Empty<string>()
+        });
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     public sealed class TestHostFactory : WebApplicationFactory<Program>

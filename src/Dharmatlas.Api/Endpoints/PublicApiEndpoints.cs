@@ -1,6 +1,9 @@
 using Dharmatlas.Api.Models;
 using Dharmatlas.Api.RateLimit;
 using Dharmatlas.Api.Services;
+using Dharmatlas.Contributions.Identity;
+using Dharmatlas.Contributions.Models;
+using Dharmatlas.Contributions.Services;
 using Dharmatlas.Domain;
 using Dharmatlas.Domain.Entities;
 using Dharmatlas.Domain.ValueObjects;
@@ -144,6 +147,42 @@ public static class PublicApiEndpoints
             return Results.Ok(await svc.ListClaimsAsync(subject, new Paging(limit ?? ApiConstants.DefaultPageSize, after)));
         }));
 
+        group.MapPost("/contributions", async (
+            HttpContext http, IContributionActorResolver actors, IContributionService service,
+            CreateContributionRequest request, CancellationToken cancellationToken) => await ContributionGuard(async () =>
+        {
+            var actor = await RequireActorAsync(http, actors, cancellationToken);
+            var sourceIds = request.SourceIds.Select(ParseIdOrThrow).ToList();
+            var targetId = request.TargetId is null ? (EntityId?)null : ParseIdOrThrow(request.TargetId);
+            var submission = await service.SubmitAsync(actor, request.Type, request.Summary, request.PayloadJson, sourceIds, targetId, cancellationToken);
+            return Results.Created($"{ApiConstants.RoutePrefix}/contributions/{submission.Id}", new { submission.Id, submission.Status, submission.CreatedAt, submission.Version });
+        })).RequireAuthorization("contributor");
+
+        group.MapGet("/contributions/mine", async (
+            HttpContext http, IContributionActorResolver actors, IContributionService service, CancellationToken cancellationToken) => await ContributionGuard(async () =>
+        {
+            var actor = await RequireActorAsync(http, actors, cancellationToken);
+            RequireContributor(actor);
+            return Results.Ok(await service.GetContributorSubmissionsAsync(actor.ContributorId, cancellationToken));
+        })).RequireAuthorization("contributor");
+
+        group.MapGet("/contributions/review-queue", async (
+            HttpContext http, IContributionActorResolver actors, IContributionService service, CancellationToken cancellationToken) => await ContributionGuard(async () =>
+        {
+            var actor = await RequireActorAsync(http, actors, cancellationToken);
+            RequireReviewer(actor);
+            return Results.Ok(await service.GetReviewerQueueAsync(cancellationToken));
+        })).RequireAuthorization("reviewer");
+
+        group.MapPost("/contributions/{id}/review", async (
+            HttpContext http, IContributionActorResolver actors, IContributionService service, string id,
+            ReviewContributionRequest request, CancellationToken cancellationToken) => await ContributionGuard(async () =>
+        {
+            var actor = await RequireActorAsync(http, actors, cancellationToken);
+            var submission = await service.ReviewAsync(actor, ParseIdOrThrow(id), request.Decision, request.Reason, http.TraceIdentifier, cancellationToken);
+            return Results.Ok(new { submission.Id, submission.Status, submission.Version });
+        })).RequireAuthorization("reviewer");
+
         group.MapGet("/persons/{id}", async (ApiQueryService svc, string id) => await Guard(async () =>
         {
             var entityId = ParseIdOrThrow(id);
@@ -281,6 +320,8 @@ public static class PublicApiEndpoints
     public static IServiceCollection AddPublicApi(this IServiceCollection services)
     {
         services.AddScoped<ApiQueryService>();
+        services.AddScoped<IContributionService, ContributionService>();
+        services.AddScoped<IContributionActorResolver, ContributionActorResolver>();
         services.AddSingleton<RateLimiter>();
         return services;
     }
@@ -359,6 +400,31 @@ public static class PublicApiEndpoints
         {
             return Results.Json(ProblemDetailsView.From(ex.Error), statusCode: ex.Error.Status);
         }
+    }
+
+    private static async Task<IResult> ContributionGuard(Func<Task<IResult>> action)
+    {
+        try { return await action(); }
+        catch (DomainValidationException ex) { return Results.Json(ProblemDetailsView.From(ApiException.BadRequest(ex.Message).Error), statusCode: 400); }
+        catch (InvalidReferenceException ex) { return Results.Json(ProblemDetailsView.From(ApiException.BadRequest(ex.Message).Error), statusCode: 400); }
+        catch (UnauthorizedAccessException ex) { return Results.Json(ProblemDetailsView.From(new ApiError(403, "forbidden", ex.Message)), statusCode: 403); }
+    }
+
+    private static async Task<ContributionActor> RequireActorAsync(
+        HttpContext http, IContributionActorResolver actors, CancellationToken cancellationToken)
+    {
+        return await actors.ResolveAsync(http.User, cancellationToken)
+            ?? throw new UnauthorizedAccessException("The authenticated identity is not mapped to a contributor.");
+    }
+
+    private static void RequireContributor(ContributionActor actor)
+    {
+        if (!actor.IsContributor) throw new UnauthorizedAccessException("The authenticated actor is not a contributor.");
+    }
+
+    private static void RequireReviewer(ContributionActor actor)
+    {
+        if (!actor.IsReviewer) throw new UnauthorizedAccessException("The authenticated actor is not a reviewer.");
     }
 
     private static IResult NotFound(string id) =>

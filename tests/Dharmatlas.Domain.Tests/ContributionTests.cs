@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
 using Dharmatlas.Contributions.Engine;
+using Dharmatlas.Contributions.Identity;
 using Dharmatlas.Contributions.Models;
 using Dharmatlas.Contributions.Services;
 using Dharmatlas.Domain;
@@ -144,7 +146,7 @@ public class ContributionTests
             contributor, SubmissionType.Date, "Fix to 700 CE", DatePayload700,
             new[] { source }, target.Id);
 
-        var decided = await service.ReviewAsync(submission.Id, reviewer, ReviewDecisionType.Approve, "Inscription confirms 700");
+        var decided = await service.ReviewAsync(submission.Id, reviewer, ReviewDecisionType.Approve, "Inscription confirms 700", "request-700");
 
         Assert.Equal(SubmissionStatus.Approved, decided.Status);
 
@@ -158,6 +160,7 @@ public class ContributionTests
         Assert.Equal(reviewer, revision.ReviewerId);
         Assert.Equal(source, Assert.Single(revision.SourceIds));
         Assert.Equal("Inscription confirms 700", revision.Reason);
+        Assert.Equal("request-700", revision.CorrelationId);
         Assert.Contains("DisplayExpression", revision.ChangedFieldsJson!);
     }
 
@@ -217,6 +220,86 @@ public class ContributionTests
 
         Assert.Contains(queue, v => v.Id == pending.Id && v.Status == SubmissionStatus.PendingReview);
         Assert.Contains(queue, v => v.Id == contributor.Id);
+    }
+
+    [Fact]
+    public async Task Authenticated_submission_requires_registered_sources_and_sets_server_timestamp()
+    {
+        var db = NewDb();
+        var contributor = new Contributor("Researcher", "subject-1");
+        db.Contributors.Add(contributor);
+        await db.SaveChangesAsync();
+        var actor = new ContributionActor(contributor.Id, "subject-1", contributor.Roles.ToHashSet());
+        var service = new ContributionService(db);
+
+        await Assert.ThrowsAsync<InvalidReferenceException>(() => service.SubmitAsync(
+            actor, SubmissionType.Source, "New source", "{\"Title\":\"Chronicle\"}", new[] { EntityId.New() }));
+
+        var source = new Source("Chronicle");
+        db.Sources.Add(source);
+        await db.SaveChangesAsync();
+        var submission = await service.SubmitAsync(
+            actor, SubmissionType.Source, "New source", "{\"Title\":\"Chronicle\"}", new[] { source.Id });
+
+        Assert.Equal(SubmissionStatus.PendingReview, submission.Status);
+        Assert.True(submission.CreatedAt > DateTimeOffset.UtcNow.AddMinutes(-1));
+        Assert.Equal(0, submission.Version);
+    }
+
+    [Fact]
+    public async Task Reviewer_cannot_approve_their_own_submission()
+    {
+        var db = NewDb();
+        var contributor = new Contributor("Reviewer", "reviewer-1", new[] { ContributorRole.Contributor, ContributorRole.Reviewer });
+        var source = new Source("Chronicle");
+        db.AddRange(contributor, source);
+        await db.SaveChangesAsync();
+        var actor = new ContributionActor(contributor.Id, "reviewer-1", contributor.Roles.ToHashSet());
+        var service = new ContributionService(db);
+        var submission = await service.SubmitAsync(actor, SubmissionType.Source, "New source", "{\"Title\":\"Chronicle\"}", new[] { source.Id });
+
+        await Assert.ThrowsAsync<DomainValidationException>(() => service.ReviewAsync(
+            actor, submission.Id, ReviewDecisionType.Approve, "I reviewed it"));
+    }
+
+    [Fact]
+    public async Task Actor_resolver_maps_verified_subject_to_persisted_roles()
+    {
+        var db = NewDb();
+        var contributor = new Contributor("Reviewer", "oidc-subject", new[] { ContributorRole.Reviewer });
+        db.Contributors.Add(contributor);
+        await db.SaveChangesAsync();
+        var principal = new ClaimsPrincipal(new ClaimsIdentity(
+            new[] { new System.Security.Claims.Claim(ClaimTypes.NameIdentifier, "oidc-subject") }, "test"));
+
+        var actor = await new ContributionActorResolver(db).ResolveAsync(principal);
+
+        Assert.NotNull(actor);
+        Assert.Equal(contributor.Id, actor!.ContributorId);
+        Assert.True(actor.IsReviewer);
+        Assert.False(actor.IsContributor);
+    }
+
+    [Fact]
+    public async Task Concurrent_review_of_one_submission_is_rejected_by_version_token()
+    {
+        var databaseName = "concurrency-" + Guid.NewGuid();
+        var options = new DbContextOptionsBuilder<DharmatlasDbContext>()
+            .UseInMemoryDatabase(databaseName)
+            .Options;
+        await using var writer = new DharmatlasDbContext(options);
+        var submission = await new ContributionService(writer).SubmitAsync(
+            EntityId.New(), SubmissionType.Source, "New source", "{\"Title\":\"Chronicle\"}", new[] { EntityId.New() });
+
+        await using var first = new DharmatlasDbContext(options);
+        await using var second = new DharmatlasDbContext(options);
+        _ = await first.Submissions.SingleAsync(s => s.Id == submission.Id);
+        _ = await second.Submissions.SingleAsync(s => s.Id == submission.Id);
+
+        await new ContributionService(first).ReviewAsync(submission.Id, EntityId.New(), ReviewDecisionType.Reject, "First decision");
+
+        await Assert.ThrowsAsync<DomainValidationException>(() =>
+            new ContributionService(second).ReviewAsync(submission.Id, EntityId.New(), ReviewDecisionType.Reject, "Stale decision"));
     }
 
     private static DharmatlasDbContext NewDb() =>

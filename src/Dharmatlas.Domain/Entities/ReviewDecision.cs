@@ -14,12 +14,14 @@ public sealed record ReviewDecision
     public ReviewDecisionType Decision { get; init; }
     public string Reason { get; init; }
     public DateTimeOffset Timestamp { get; init; }
+    public string? CorrelationId { get; init; }
 
     public ReviewDecision(
         EntityId reviewerId,
         ReviewDecisionType decision,
         string reason,
-        DateTimeOffset timestamp)
+        DateTimeOffset timestamp,
+        string? correlationId = null)
     {
         if (string.IsNullOrWhiteSpace(reason))
         {
@@ -30,5 +32,6 @@ public sealed record ReviewDecision
         Decision = decision;
         Reason = reason;
         Timestamp = timestamp;
+        CorrelationId = correlationId;
     }
 }
