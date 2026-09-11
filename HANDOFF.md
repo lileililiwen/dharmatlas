@@ -50,18 +50,51 @@ Eight OpenSpec changes are complete and archived:
   `SubmissionType.Person` so AI entity-extraction drafts can publish through the
   human gate. Promoted to `openspec/specs/ai-assisted-curation/spec.md`.
 
-No implementation-ready OpenSpec changes remain unarchived. The ROADMAP queue
-(items 1-7) is exhausted; any further work requires a new proposal.
+The original implementation queue is archived. A new maturity remediation queue
+has now been authored as nine active OpenSpec changes:
+
+1. `runtime-host-and-deployment`
+2. `curated-seed-data-and-import`
+3. `entity-name-persistence-and-read-model`
+4. `provenance-claims-and-evidence`
+5. `public-read-api-completion`
+6. `public-atlas-web-experience`
+7. `authenticated-contribution-governance`
+8. `query-performance-and-export-delivery`
+9. `observability-and-release-quality`
+
+They cover the gaps identified in the product maturity audit. The first change
+has now been implemented and archived; the remaining eight are still planning
+artifacts.
 
 ## Next change
 
-None pending. The ROADMAP queue is empty after `ai-assisted-curation`. To start
-new work, open a new OpenSpec change (e.g. `openspec new <change-name>`) and
-select it with:
+The next implementation change is `curated-seed-data-and-import`. Select it with:
 
 ```bash
 openspec list
 ```
+
+## Completed change evidence
+
+`runtime-host-and-deployment` was archived as
+`2026-09-11-runtime-host-and-deployment`. It adds the executable host,
+PostgreSQL migration, health endpoints, Docker Compose stack, CI workflow,
+operations guide, and host smoke tests. Local Compose uses host PostgreSQL port
+`55434` and host HTTP port `18080` because ports `5432` and `8080` are occupied
+by other services; container-internal ports remain `5432` and `8080`.
+
+- Focused host smoke tests: **3 passed, 0 failed**.
+- Full test suite: **126 passed, 0 failed**.
+- PostgreSQL migration history contains `20260911083028_InitialCreate`.
+- Required PostgreSQL tables `entities`, `relationships`, and `sources` verified.
+- `/health/live` -> HTTP 200.
+- `/health/ready` -> HTTP 200 with PostgreSQL running.
+- `/api/v1/meta` -> HTTP 200.
+- Docker image build and `docker compose config --quiet` passed.
+- `dotnet build Dharmatlas.slnx --no-restore --nologo -m:1` passed with 0 warnings and 0 errors.
+- `openspec validate --all --strict --no-interactive` -> **17 passed, 0 failed**.
+- `git diff --check` passed.
 
 ## Exact delivery workflow
 
@@ -74,6 +107,13 @@ openspec list
 7. Update `HANDOFF.md` with completion evidence and the next change.
 8. Commit 2: only the `HANDOFF.md` update.
 9. Stop; do not start another change or push.
+
+## Planning evidence
+
+- The nine active changes each contain `proposal.md`, `design.md`, `tasks.md`,
+  and `specs/<capability>/spec.md`.
+- The dependency sequence is recorded in `ROADMAP.md`; implementation must
+  continue through the one-change workflow below.
 
 ## Verification evidence
 
