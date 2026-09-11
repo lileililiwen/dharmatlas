@@ -2,7 +2,7 @@
 
 ## Current state
 
-Twelve OpenSpec changes are complete and archived:
+Thirteen OpenSpec changes are complete and archived:
 
 - `project-foundation` — source-first domain contract (`docs/domain-contract.md`),
   promoted to `openspec/specs/project-foundation/spec.md` as the acceptance baseline.
@@ -63,8 +63,8 @@ was authored as nine changes:
 8. `query-performance-and-export-delivery`
 9. `observability-and-release-quality`
 
-They cover the gaps identified in the product maturity audit. The first six
-changes have now been implemented and archived; three remain as planning
+They cover the gaps identified in the product maturity audit. The first seven
+changes have now been implemented and archived; two remain as planning
 artifacts.
 
 `provenance-claims-and-evidence` was archived as
@@ -79,6 +79,27 @@ conflicting published claims remain separate.
 - PostgreSQL migration `20260911092229_ClaimEvidenceMetadata` applied.
 - PostgreSQL `claims.interpretation` and `claims.source_locator` columns verified.
 - Rejected claims were excluded from API/export projections; competing published claims remained visible.
+- `openspec validate --all --strict --no-interactive` -> **15 passed, 0 failed**.
+- `git diff --check` passed.
+
+`authenticated-contribution-governance` was archived as
+`2026-09-11-authenticated-contribution-governance`. It adds provider-neutral
+subject-to-contributor mapping, persisted contributor roles, protected
+contribution/reviewer routes, source and target reference validation,
+server-owned timestamps, self-approval denial, relational approval
+transactions, optimistic submission versioning, and correlation IDs on review
+decisions and revisions. The default host authentication handler is fail-closed
+and trusts no request headers; deployments must replace it with their verified
+OIDC, SAML, or gateway handler.
+
+- Focused and full .NET test suite: **145 passed, 0 failed**.
+- Coverage includes anonymous route denial, identity/role mapping, source and
+  target validation, server timestamp, self-approval, audit correlation, and
+  stale concurrent review rejection.
+- PostgreSQL migration `20260911095511_AuthenticatedContributionGovernance`
+  applied on host port `55434`; identity, role, version, and correlation columns
+  verified.
+- Host build: passed with 0 warnings and 0 errors.
 - `openspec validate --all --strict --no-interactive` -> **15 passed, 0 failed**.
 - `git diff --check` passed.
 
@@ -130,7 +151,7 @@ search, detail, API, export, and seed validation paths.
 
 ## Next change
 
-The next implementation change is `authenticated-contribution-governance`. Select it with:
+The next implementation change is `query-performance-and-export-delivery`. Select it with:
 
 ```bash
 openspec list
