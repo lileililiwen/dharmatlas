@@ -28,7 +28,7 @@ public static class BulkExporter
     {
         var namesByEntity = names
             .GroupBy(n => n.EntityId)
-            .ToDictionary(g => g.Key, g => (IReadOnlyList<EntityName>)g.ToList());
+            .ToDictionary(g => g.Key, g => (IReadOnlyList<EntityName>)EntityNameReadModel.Order(g));
 
         var placeRegions = entities
             .OfType<Place>()
@@ -81,7 +81,7 @@ public static class BulkExporter
         namesByEntity.TryGetValue(entity.Id, out var names);
         names ??= Array.Empty<EntityName>();
 
-        var canonical = CanonicalOf(names) ?? entity.Id.ToString();
+        var canonical = EntityNameReadModel.CanonicalName(names) ?? entity.Id.ToString();
         var nameViews = names
             .Select(n => new NameView
             {
@@ -162,10 +162,4 @@ public static class BulkExporter
         _ => null
     };
 
-    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
-    internal static string? CanonicalOf(IReadOnlyList<EntityName> names)
-    {
-        var primary = names.FirstOrDefault(n => n.IsPrimary) ?? names.FirstOrDefault();
-        return primary?.Value;
-    }
 }

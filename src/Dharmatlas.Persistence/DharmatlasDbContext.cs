@@ -1,4 +1,5 @@
 using Dharmatlas.Domain.Contracts;
+using Dharmatlas.Domain;
 using Dharmatlas.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,9 +25,31 @@ public class DharmatlasDbContext : DbContext
     public DbSet<Contributor> Contributors => Set<Contributor>();
     public DbSet<AiDraft> AiDrafts => Set<AiDraft>();
 
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        ValidateEntityNames();
+        return base.SaveChanges(acceptAllChangesOnSuccess);
+    }
+
+    public override Task<int> SaveChangesAsync(
+        bool acceptAllChangesOnSuccess,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateEntityNames();
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(DharmatlasDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
+    }
+
+    private void ValidateEntityNames()
+    {
+        foreach (var group in EntityNames.Local.GroupBy(n => n.EntityId))
+        {
+            EntityNameReadModel.Validate(group);
+        }
     }
 }

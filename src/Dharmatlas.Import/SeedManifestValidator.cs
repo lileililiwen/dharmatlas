@@ -52,11 +52,18 @@ public static class SeedManifestValidator
         }
 
         var primaryByLanguage = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var normalizedNames = new HashSet<string>(StringComparer.Ordinal);
         foreach (var (name, index) in manifest.Names.Select((value, index) => (value, index)))
         {
             var path = $"names[{index}]";
             if (!entityIds.Contains(ParseOrEmpty(name.EntityId))) errors.Add($"{path}.entityId references an unknown entity.");
             if (string.IsNullOrWhiteSpace(name.Language) || string.IsNullOrWhiteSpace(name.Script) || string.IsNullOrWhiteSpace(name.Value)) errors.Add($"{path} requires language, script, and value.");
+            if (name.Language.Length > EntityNameReadModel.MaxLanguageLength) errors.Add($"{path}.language exceeds {EntityNameReadModel.MaxLanguageLength} characters.");
+            if (name.Script.Length > EntityNameReadModel.MaxScriptLength) errors.Add($"{path}.script exceeds {EntityNameReadModel.MaxScriptLength} characters.");
+            if (name.Romanization.Length > EntityNameReadModel.MaxRomanizationLength) errors.Add($"{path}.romanization exceeds {EntityNameReadModel.MaxRomanizationLength} characters.");
+            if (name.Value.Length > EntityNameReadModel.MaxValueLength) errors.Add($"{path}.value exceeds {EntityNameReadModel.MaxValueLength} characters.");
+            var normalizedKey = string.Join('\u001f', name.EntityId.ToLowerInvariant(), EntityNameReadModel.Normalize(name.Language), EntityNameReadModel.Normalize(name.Script), EntityNameReadModel.Normalize(name.Romanization), EntityNameReadModel.Normalize(name.Value));
+            if (!normalizedNames.Add(normalizedKey)) errors.Add($"{path} duplicates a name after normalization.");
             if (name.IsPrimary && !primaryByLanguage.Add($"{name.EntityId}:{name.Language}")) errors.Add($"{path} duplicates a primary name for entity/language.");
         }
 

@@ -68,4 +68,16 @@ public class PersistenceModelTests
         var relationshipType = context.Model.FindEntityType(typeof(Relationship))!;
         Assert.Contains(relationshipType.GetIndexes(), i => i.Name == "ix_relationships_endpoints");
     }
+
+    [Fact]
+    public void Entity_names_have_primary_language_uniqueness_constraint()
+    {
+        using var context = CreateContext();
+
+        var nameType = context.Model.FindEntityType(typeof(EntityName))!;
+        var index = nameType.GetIndexes().Single(i => i.Name == "ux_entity_names_primary_language");
+
+        Assert.True(index.IsUnique);
+        Assert.Contains("is_primary", index.GetFilter(), StringComparison.OrdinalIgnoreCase);
+    }
 }

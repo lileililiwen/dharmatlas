@@ -1,5 +1,7 @@
 using Dharmatlas.Domain.ValueObjects;
 
+using Dharmatlas.Domain;
+
 namespace Dharmatlas.Domain.Entities;
 
 /// <summary>
@@ -36,12 +38,10 @@ public abstract record Entity
     /// </summary>
     public Entity AddName(EntityName name)
     {
-        if (string.IsNullOrWhiteSpace(name.Value))
-        {
-            throw new DomainValidationException("An entity name requires a non-empty value.");
-        }
+        EntityNameReadModel.Validate(new[] { name });
 
-        if (name.IsPrimary && _names.Any(n => n.IsPrimary && n.Language == name.Language))
+        if (name.IsPrimary && _names.Any(n => n.IsPrimary &&
+            EntityNameReadModel.Normalize(n.Language) == EntityNameReadModel.Normalize(name.Language)))
         {
             throw new DomainValidationException(
                 $"Entity already has a primary name for language '{name.Language}'.");

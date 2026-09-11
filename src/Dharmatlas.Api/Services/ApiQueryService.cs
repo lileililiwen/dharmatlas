@@ -194,7 +194,7 @@ public sealed class ApiQueryService
             {
                 Id = e.Id.ToString(),
                 Type = EntityType.Event.ToString(),
-                CanonicalName = CanonicalOf(names.GetValueOrDefault(e.Id)) ?? e.Id.ToString(),
+                CanonicalName = EntityNameReadModel.CanonicalName(names.GetValueOrDefault(e.Id) ?? Array.Empty<EntityName>()) ?? e.Id.ToString(),
                 When = DateView.From(e.When),
                 Region = e.Region,
                 Category = e.Category,
@@ -325,7 +325,7 @@ public sealed class ApiQueryService
             return true;
         }
 
-        var canonical = CanonicalOf(names.GetValueOrDefault(entity.Id)) ?? entity.Id.ToString();
+        var canonical = EntityNameReadModel.CanonicalName(names.GetValueOrDefault(entity.Id) ?? Array.Empty<EntityName>()) ?? entity.Id.ToString();
         return canonical.Contains(term.Trim(), StringComparison.OrdinalIgnoreCase);
     }
 
@@ -344,7 +344,7 @@ public sealed class ApiQueryService
     private async Task<string> CanonicalNameAsync(EntityId id, CancellationToken cancellationToken)
     {
         var names = await _db.EntityNames.Where(n => n.EntityId == id).ToListAsync(cancellationToken);
-        return CanonicalOf(names) ?? id.ToString();
+        return EntityNameReadModel.CanonicalName(names) ?? id.ToString();
     }
 
     private async Task<IReadOnlyDictionary<EntityId, IReadOnlyList<EntityName>>> NamesForAsync(
@@ -358,7 +358,7 @@ public sealed class ApiQueryService
 
         var names = await _db.EntityNames.Where(n => idList.Contains(n.EntityId)).ToListAsync(cancellationToken);
         return names.GroupBy(n => n.EntityId)
-            .ToDictionary(g => g.Key, g => (IReadOnlyList<EntityName>)g.ToList());
+            .ToDictionary(g => g.Key, g => (IReadOnlyList<EntityName>)EntityNameReadModel.Order(g));
     }
 
     private async Task<IReadOnlyDictionary<EntityId, EntityRef>> BuildEndpointLookupAsync(
@@ -379,7 +379,7 @@ public sealed class ApiQueryService
     {
         Id = entity.Id.ToString(),
         Type = entity.Type.ToString(),
-        CanonicalName = CanonicalOf(names.GetValueOrDefault(entity.Id)) ?? entity.Id.ToString()
+        CanonicalName = EntityNameReadModel.CanonicalName(names.GetValueOrDefault(entity.Id) ?? Array.Empty<EntityName>()) ?? entity.Id.ToString()
     };
 
     private static IReadOnlyList<Models.NameView> MapNames(IReadOnlyList<Search.Models.NameView> names) =>
@@ -421,14 +421,4 @@ public sealed class ApiQueryService
         Identifier = s.Identifier
     };
 
-    private static string? CanonicalOf(IReadOnlyList<EntityName>? names)
-    {
-        if (names is null || names.Count == 0)
-        {
-            return null;
-        }
-
-        var primary = names.FirstOrDefault(n => n.IsPrimary) ?? names[0];
-        return primary.Value;
-    }
 }

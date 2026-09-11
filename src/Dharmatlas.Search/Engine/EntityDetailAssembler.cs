@@ -27,9 +27,10 @@ public static class EntityDetailAssembler
         string? region,
         string? activePeriod)
     {
-        var canonical = CanonicalNameOf(names, entity.Id);
+        var orderedNames = EntityNameReadModel.Order(names);
+        var canonical = EntityNameReadModel.CanonicalName(orderedNames) ?? entity.Id.ToString();
 
-        var nameViews = names
+        var nameViews = orderedNames
             .Select(n => new NameView
             {
                 Value = n.Value,
@@ -84,12 +85,6 @@ public static class EntityDetailAssembler
 
     private static IReadOnlyList<RelatedEntity> Group(IReadOnlyList<RelatedEntity> related, EntityType type) =>
         related.Where(r => r.Type == type).ToList();
-
-    private static string CanonicalNameOf(IReadOnlyList<EntityName> names, EntityId fallback)
-    {
-        var primary = names.FirstOrDefault(n => n.IsPrimary) ?? names.FirstOrDefault();
-        return primary?.Value ?? fallback.ToString();
-    }
 
     [SuppressMessage("ReSharper", "PatternIsUnnecessary")]
     private static Certainty CertaintyOf(Entity entity) => entity switch

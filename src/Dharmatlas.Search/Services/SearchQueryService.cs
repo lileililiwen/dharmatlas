@@ -27,7 +27,7 @@ public sealed class SearchQueryService : ISearchQueryService
 
         var namesByEntity = names
             .GroupBy(n => n.EntityId)
-            .ToDictionary(g => g.Key, g => (IReadOnlyList<EntityName>)g.ToList());
+            .ToDictionary(g => g.Key, g => (IReadOnlyList<EntityName>)EntityNameReadModel.Order(g));
 
         var placeRegions = entities
             .OfType<Place>()

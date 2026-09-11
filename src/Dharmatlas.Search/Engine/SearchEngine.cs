@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text;
+using Dharmatlas.Domain;
 using Dharmatlas.Domain.Entities;
 using Dharmatlas.Search.Models;
 
@@ -58,7 +59,7 @@ public static class SearchEngine
             {
                 Id = entity.Id,
                 Type = entity.Type,
-                CanonicalName = CanonicalNameOf(entity),
+                CanonicalName = EntityNameReadModel.CanonicalName(entity.Names) ?? entity.Id.ToString(),
                 MatchedName = best.Value.Name.Value,
                 MatchedForm = Classify(best.Value.Name),
                 Region = entity.Region,
@@ -145,12 +146,6 @@ public static class SearchEngine
         return string.Equals(name.Script, "latin", StringComparison.OrdinalIgnoreCase)
             ? NameForm.Romanization
             : NameForm.AlternateScript;
-    }
-
-    private static string CanonicalNameOf(SearchEntity entity)
-    {
-        var primary = entity.Names.FirstOrDefault(n => n.IsPrimary) ?? entity.Names.FirstOrDefault();
-        return primary?.Value ?? entity.Id.ToString();
     }
 
     /// <summary>

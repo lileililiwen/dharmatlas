@@ -19,7 +19,7 @@ public class EntityNameConfiguration : IEntityTypeConfiguration<EntityName>
         builder.Property(n => n.Language).HasColumnName("language").HasMaxLength(16).IsRequired();
         builder.Property(n => n.Script).HasColumnName("script").HasMaxLength(32).IsRequired();
         builder.Property(n => n.Romanization).HasColumnName("romanization").HasMaxLength(32).IsRequired();
-        builder.Property(n => n.Value).HasColumnName("value").IsRequired();
+        builder.Property(n => n.Value).HasColumnName("value").HasMaxLength(512).IsRequired();
         builder.Property(n => n.IsPrimary).HasColumnName("is_primary");
 
         builder.HasIndex(n => new { n.Language, n.Value }, "ix_entity_names_lang_value");
@@ -28,5 +28,8 @@ public class EntityNameConfiguration : IEntityTypeConfiguration<EntityName>
         // scheme let the engine match alternate scripts and transliterations.
         builder.HasIndex(n => n.Script, "ix_entity_names_script");
         builder.HasIndex(n => n.Romanization, "ix_entity_names_romanization");
+        builder.HasIndex(n => new { n.EntityId, n.Language }, "ux_entity_names_primary_language")
+            .IsUnique()
+            .HasFilter("is_primary = true");
     }
 }

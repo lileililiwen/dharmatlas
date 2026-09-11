@@ -101,7 +101,7 @@ public sealed class EntityDetailService : IEntityDetailService
 
         var canonicalByName = relatedNames
             .GroupBy(n => n.EntityId)
-            .ToDictionary(g => g.Key, g => CanonicalOf(g.ToList()));
+            .ToDictionary(g => g.Key, g => EntityNameReadModel.CanonicalName(g));
 
         var lookup = new Dictionary<EntityId, EntityDetailAssembler.RelatedInfo>();
         foreach (var rid in relatedIds)
@@ -111,7 +111,7 @@ public sealed class EntityDetailService : IEntityDetailService
                 continue;
             }
 
-            lookup[rid] = new EntityDetailAssembler.RelatedInfo(type, canonicalByName.GetValueOrDefault(rid, rid.ToString()));
+            lookup[rid] = new EntityDetailAssembler.RelatedInfo(type, canonicalByName.GetValueOrDefault(rid) ?? rid.ToString());
         }
 
         return lookup;
@@ -124,12 +124,6 @@ public sealed class EntityDetailService : IEntityDetailService
         Institution i when i.PlaceId is { } pid && placeRegions.TryGetValue(pid, out var r) => r,
         _ => null
     };
-
-    private static string CanonicalOf(IReadOnlyList<EntityName> names)
-    {
-        var primary = names.FirstOrDefault(n => n.IsPrimary) ?? names.FirstOrDefault();
-        return primary?.Value ?? string.Empty;
-    }
 
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     private static SourceView ToView(Source s) => new()
