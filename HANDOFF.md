@@ -2,7 +2,7 @@
 
 ## Current state
 
-Eight OpenSpec changes are complete and archived:
+Nine OpenSpec changes are complete and archived:
 
 - `project-foundation` — source-first domain contract (`docs/domain-contract.md`),
   promoted to `openspec/specs/project-foundation/spec.md` as the acceptance baseline.
@@ -63,13 +63,27 @@ was authored as nine changes:
 8. `query-performance-and-export-delivery`
 9. `observability-and-release-quality`
 
-They cover the gaps identified in the product maturity audit. The first two
-changes have now been implemented and archived; seven remain as planning
+They cover the gaps identified in the product maturity audit. The first three
+changes have now been implemented and archived; six remain as planning
 artifacts.
+
+`entity-name-persistence-and-read-model` was archived as
+`2026-09-11-entity-name-persistence-and-read-model`. It adds shared entity-name
+validation and deterministic canonical/alias projection rules, EF save-boundary
+validation, a PostgreSQL primary-name uniqueness migration, and reuse across
+search, detail, API, export, and seed validation paths.
+
+- Focused name/persistence tests: **9 passed, 0 failed**.
+- Full test suite: **135 passed, 0 failed**.
+- PostgreSQL migration `20260911090654_EntityNameInvariants` applied.
+- PostgreSQL index verified as unique on `(entity_id, lower(language))` for primary names.
+- Transactional PostgreSQL round trip verified for English and Sanskrit aliases.
+- `openspec validate --all --strict --no-interactive` -> **15 passed, 0 failed**.
+- `git diff --check` passed.
 
 ## Next change
 
-The next implementation change is `entity-name-persistence-and-read-model`. Select it with:
+The next implementation change is `provenance-claims-and-evidence`. Select it with:
 
 ```bash
 openspec list
