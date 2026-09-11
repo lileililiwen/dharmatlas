@@ -2,7 +2,7 @@
 
 ## Current state
 
-Fourteen OpenSpec changes are complete and archived:
+Fifteen OpenSpec changes are complete and archived:
 
 - `project-foundation` — source-first domain contract (`docs/domain-contract.md`),
   promoted to `openspec/specs/project-foundation/spec.md` as the acceptance baseline.
@@ -63,9 +63,21 @@ was authored as nine changes:
 8. `query-performance-and-export-delivery`
 9. `observability-and-release-quality`
 
-They cover the gaps identified in the product maturity audit. The first eight
-changes have now been implemented and archived; one remains as a planning
-artifact.
+They cover the gaps identified in the product maturity audit. All nine maturity
+remediation changes have now been implemented and archived.
+
+`observability-and-release-quality` was archived as
+`2026-09-11-observability-and-release-quality`. It adds privacy-safe structured
+request logs, correlation IDs, named metrics, readiness failure counting,
+frontend CI gates, host smoke coverage, and operational documentation for
+backup/restore, rollback, retention, and incident recovery.
+
+- Full .NET test suite: **148 passed, 0 failed**.
+- Frontend tests: **1 passed, 0 failed**; production build passed with Vite **6.4.3**.
+- Host smoke coverage verifies correlation-ID propagation and `/metrics` availability.
+- Host build: passed with 0 warnings and 0 errors.
+- `openspec validate --all --strict --no-interactive` -> **15 passed, 0 failed**.
+- `git diff --check` passed.
 
 `query-performance-and-export-delivery` was archived as
 `2026-09-11-query-performance-and-export-delivery`. It moves public list,
@@ -168,7 +180,8 @@ search, detail, API, export, and seed validation paths.
 
 ## Next change
 
-The next implementation change is `observability-and-release-quality`. Select it with:
+There are no remaining active implementation changes. `openspec list` should
+show an empty change queue; future work should begin with a new audited proposal:
 
 ```bash
 openspec list
