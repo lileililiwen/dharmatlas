@@ -1,62 +1,34 @@
-using System.Collections.Concurrent;
-
 namespace Dharmatlas.Api.RateLimit;
 
 /// <summary>
-/// A simple fixed-window per-key rate limiter. Intentionally minimal: it protects
-/// the read-only service from abuse without requiring infrastructure (no Redis,
-/// no distributed state). Ordinary research use is unaffected because the default
-/// window permits far more requests than a single researcher issues.
+/// Public rate-limiter facade. Delegates to the configured
+/// <see cref="IRateLimitStore"/> (in-memory by default, Postgres-backed when
+/// <c>Dharmatlas:RateLimit:Mode=Postgres</c>) on the search tier so existing
+/// consumers keep a stable single-key API while tiers share one store.
 /// </summary>
 public sealed class RateLimiter
 {
+    private readonly IRateLimitStore _store;
     private readonly int _limit;
     private readonly TimeSpan _window;
-    private readonly ConcurrentDictionary<string, Queue<DateTimeOffset>> _hits = new();
 
     public RateLimiter(int limit = ApiConstants.RateLimitPerMinute, TimeSpan? window = null)
+        : this(new MemoryRateLimitStore(), limit, window)
     {
+    }
+
+    public RateLimiter(IRateLimitStore store, int limit = ApiConstants.RateLimitPerMinute, TimeSpan? window = null)
+    {
+        _store = store;
         _limit = Math.Max(1, limit);
         _window = window ?? TimeSpan.FromMinutes(1);
     }
 
     /// <summary>Records a hit for <paramref name="key"/> and returns whether it is allowed.</summary>
-    public bool Allow(string key, DateTimeOffset now)
-    {
-        var queue = _hits.GetOrAdd(key, _ => new Queue<DateTimeOffset>());
-        lock (queue)
-        {
-            while (queue.Count > 0 && now - queue.Peek() > _window)
-            {
-                queue.Dequeue();
-            }
-
-            if (queue.Count >= _limit)
-            {
-                return false;
-            }
-
-            queue.Enqueue(now);
-            return true;
-        }
-    }
+    public bool Allow(string key, DateTimeOffset now) =>
+        _store.Allow(RateLimitPolicy.SearchTier, key, _limit, _window, now);
 
     /// <summary>Remaining requests in the current window for <paramref name="key"/>.</summary>
-    public int Remaining(string key, DateTimeOffset now)
-    {
-        if (!_hits.TryGetValue(key, out var queue))
-        {
-            return _limit;
-        }
-
-        lock (queue)
-        {
-            while (queue.Count > 0 && now - queue.Peek() > _window)
-            {
-                queue.Dequeue();
-            }
-
-            return Math.Max(0, _limit - queue.Count);
-        }
-    }
+    public int Remaining(string key, DateTimeOffset now) =>
+        _store.Remaining(RateLimitPolicy.SearchTier, key, _limit, _window, now);
 }

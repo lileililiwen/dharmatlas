@@ -1,0 +1,9 @@
+<Project>
+  <!-- Supply-chain gate: NuGet vulnerability audit runs on every restore.
+       CI promotes NU1901-NU1904 (vulnerable packages) to build errors while
+       NU1801 (audit source unreachable, e.g. offline local builds) stays a
+       warning so development without network access keeps working. -->
+  <PropertyGroup>
+    <NuGetAudit>true</NuGetAudit>
+  </PropertyGroup>
+</Project>

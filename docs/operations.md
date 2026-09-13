@@ -35,6 +35,51 @@ Set either `ConnectionStrings:Dharmatlas` or
 `DHARMATLAS_DATABASE_CONNECTION`. The host fails at startup when neither is
 configured. Never commit credentials, connection strings, or database dumps.
 
+### Authentication
+
+- Default (`DHARMATLAS_AUTH_MODE` unset or `unconfigured`): fail-closed.
+  Anonymous writes are denied without creating state.
+- Production (`DHARMATLAS_AUTH_MODE=oidc`): set `DHARMATLAS_OIDC_ISSUER`,
+  `DHARMATLAS_OIDC_AUDIENCE`, and `DHARMATLAS_OIDC_JWKS_URI`. The reference
+  handler validates `iss`/`aud`/`exp`, verifies the RS256 signature against
+  the provider JWKS (refreshed hourly, faster on unknown `kid` rotation), and
+  maps the stable OIDC `sub` to the contributor record with the `roles` claim
+  (configurable via `DHARMATLAS_OIDC_ROLE_CLAIM`) mapped to
+  contributor/reviewer. Startup names any missing key and refuses to boot.
+- Local development only (`DHARMATLAS_AUTH_MODE=dev-loopback` with
+  `ASPNETCORE_ENVIRONMENT=Development`): loopback identities via
+  `X-Dev-Subject`/`X-Dev-Role` headers. Never enable outside Development;
+  startup refuses any other combination.
+
+### Rate limiting
+
+Tiers are configured with `Dharmatlas:RateLimit:Mode` (`Memory` default,
+`Postgres` for shared budgets across instances), plus per-minute budgets
+`SearchPerMinute` (default 60), `WritePerMinute` (default 30), and
+`ExportPerMinute` (default 10). `Postgres` mode requires the database
+connection and creates a `rate_limit_hits` timestamp table
+(`IF NOT EXISTS`) holding no contributor or content data. Denied requests
+receive 429 with `Retry-After: 60`; denied exports serve no partial body.
+
+### Security headers and CORS
+
+The host emits `Content-Security-Policy` (same-origin scripts, styles,
+images, connections), `X-Content-Type-Options`, `X-Frame-Options`,
+`Referrer-Policy`, `Permissions-Policy`, and `Strict-Transport-Security`
+(HTTPS responses only, so local HTTP development is not pinned). CORS
+read-access for additional origins is allowlisted only via
+`Dharmatlas:Cors:AllowedOrigins` or `DHARMATLAS_CORS_ORIGINS`; the default is
+same-origin. The production image runs as non-root (`USER app`).
+
+## Key rotation
+
+JWKS keys rotate provider-side without restart: the cached document refreshes
+hourly and immediately on an unknown `kid`. When rotating the provider signing
+key, publish the new JWKS entry before signing with it and keep the old entry
+until the refresh interval has passed. To rotate database credentials, update
+the environment-provided connection string and restart; the host never falls
+back to a default credential.
+
 ## Readiness and recovery
 
 Liveness confirms that the process is running and does not require PostgreSQL.

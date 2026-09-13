@@ -19,4 +19,8 @@ COPY --from=web-build /web/dist/ /app/publish/wwwroot/
 FROM runtime AS final
 WORKDIR /app
 COPY --from=build /app/publish .
+# The official .NET image ships a non-root `app` user; run as it and hand it
+# ownership of the published output. No default credentials are baked in.
+RUN chown -R app:app /app
+USER app
 ENTRYPOINT ["dotnet", "Dharmatlas.Host.dll"]

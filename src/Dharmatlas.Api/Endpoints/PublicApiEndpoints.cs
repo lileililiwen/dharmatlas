@@ -13,6 +13,8 @@ using Dharmatlas.Search.Models;
 using Dharmatlas.Search.Services;
 using Dharmatlas.Timeline.Models;
 using Dharmatlas.Timeline.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -301,15 +303,19 @@ public static class PublicApiEndpoints
         group.AddEndpointFilter(async (context, next) =>
         {
             var http = context.HttpContext;
-            var limiter = http.RequestServices.GetRequiredService<RateLimiter>();
+            var store = http.RequestServices.GetRequiredService<IRateLimitStore>();
+            var options = http.RequestServices.GetRequiredService<RateLimitOptions>();
+            var tier = RateLimitPolicy.TierFor(http.Request.Path);
+            var limit = RateLimitPolicy.LimitFor(tier, options);
+            var window = TimeSpan.FromMinutes(1);
             var key = http.Connection.RemoteIpAddress?.ToString() ?? http.Request.Headers["X-Forwarded-For"].ToString() ?? "anonymous";
             var now = DateTimeOffset.UtcNow;
 
-            var remaining = limiter.Remaining(key, now);
-            http.Response.Headers["X-RateLimit-Limit"] = ApiConstants.RateLimitPerMinute.ToString();
+            var remaining = store.Remaining(tier, key, limit, window, now);
+            http.Response.Headers["X-RateLimit-Limit"] = limit.ToString();
             http.Response.Headers["X-RateLimit-Remaining"] = remaining.ToString();
 
-            if (!limiter.Allow(key, now))
+            if (!store.Allow(tier, key, limit, window, now))
             {
                 http.Response.Headers["Retry-After"] = "60";
                 return Results.StatusCode(Status429TooManyRequests);
@@ -328,11 +334,14 @@ public static class PublicApiEndpoints
     }
 
     /// <summary>Registers the read-only API services. The host must also register the DbContext.</summary>
-    public static IServiceCollection AddPublicApi(this IServiceCollection services)
+    public static IServiceCollection AddPublicApi(this IServiceCollection services, IConfiguration configuration)
     {
+        var rateLimits = RateLimitOptions.Bind(configuration);
         services.AddScoped<ApiQueryService>();
         services.AddScoped<IContributionService, ContributionService>();
         services.AddScoped<IContributionActorResolver, ContributionActorResolver>();
+        services.TryAddSingleton(rateLimits);
+        services.TryAddSingleton<IRateLimitStore, MemoryRateLimitStore>();
         services.AddSingleton<RateLimiter>();
         return services;
     }

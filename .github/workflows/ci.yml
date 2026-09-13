@@ -25,11 +25,13 @@ jobs:
       DHARMATLAS_DATABASE_CONNECTION: Host=localhost;Port=5432;Database=dharmatlas_test;Username=dharmatlas;Password=dharmatlas-test
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
-      - run: dotnet restore Dharmatlas.slnx --ignore-failed-sources -p:NuGetAudit=false --nologo
-      - run: dotnet build Dharmatlas.slnx --no-restore --nologo -m:1
+      - run: dotnet restore Dharmatlas.slnx --nologo
+      - run: dotnet build Dharmatlas.slnx --no-restore --nologo -m:1 -p:TreatWarningsAsErrors=true -p:WarningsNotAsErrors=NU1801
       - run: dotnet test tests/Dharmatlas.Domain.Tests/Dharmatlas.Domain.Tests.csproj --no-build --no-restore --nologo -m:1
       - run: dotnet ef database update --project src/Dharmatlas.Persistence/Dharmatlas.Persistence.csproj --startup-project src/Dharmatlas.Host/Dharmatlas.Host.csproj
       - uses: actions/setup-node@v4
@@ -39,9 +41,15 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - run: npm ci
         working-directory: web
+      - run: npm audit --audit-level=high
+        working-directory: web
       - run: npm test
         working-directory: web
       - run: npm run build
         working-directory: web
+      - name: Secret scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: openspec validate --all --strict --no-interactive
       - run: git diff --check

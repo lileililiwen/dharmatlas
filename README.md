@@ -51,6 +51,14 @@ All fifteen OpenSpec changes are archived. There are no active OpenSpec changes;
 future work should begin with a new audited proposal. See [ROADMAP.md](ROADMAP.md)
 for product direction and [HANDOFF.md](HANDOFF.md) for verified current state.
 
+## License and governance
+
+- Code in this repository is licensed under the MIT License — see `LICENSE`.
+- Seed and curated data are released under CC-BY-4.0, recorded in
+  `data/seed/v2/manifest.json` (`metadata.license`).
+- Contributions follow `CONTRIBUTING.md` (OpenSpec one-change workflow, DCO
+  sign-off, seed licensing rules), `CODE_OF_CONDUCT.md`, and `SECURITY.md`.
+
 ## Scope boundary
 
 The MVP does not include online temples, community features, live streaming, courses, donations, fortune telling, a Q&A bot, a full Buddhist canon reader, sectarian forums, temple reviews, or social features. Modern Buddhism (1800–present) and the 1000–1800 period follow after the MVP.
