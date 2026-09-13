@@ -10,4 +10,5 @@ public sealed record SourceView
     public string? Author { get; init; }
     public string? Date { get; init; }
     public string? Identifier { get; init; }
+    public string? Tier { get; init; }
 }

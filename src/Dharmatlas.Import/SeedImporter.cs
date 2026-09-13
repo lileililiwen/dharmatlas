@@ -59,7 +59,8 @@ public static class SeedImporter
     private static Source ToSource(SeedSource source) => new(source.Title)
     {
         Id = EntityId.From(Guid.Parse(source.Id)), Author = source.Author, Date = source.Date,
-        PublisherOrCollection = source.PublisherOrCollection, Identifier = source.Identifier
+        PublisherOrCollection = source.PublisherOrCollection, Identifier = source.Identifier,
+        Tier = string.IsNullOrWhiteSpace(source.Tier) ? null : SourceTierParser.Parse(source.Tier)
     };
 
     private static EntityName ToName(SeedName name) => new(
@@ -83,7 +84,14 @@ public static class SeedImporter
     }
 
     private static Claim ToClaim(SeedClaim claim) => Claim.Publish(
-        claim.Statement, CertaintyParser.Parse(claim.Certainty), Ids(claim.SourceIds), EntityId.From(Guid.Parse(claim.SubjectEntityId))) with { Id = EntityId.From(Guid.Parse(claim.Id)) };
+        claim.Statement,
+        CertaintyParser.Parse(claim.Certainty),
+        Ids(claim.SourceIds),
+        EntityId.From(Guid.Parse(claim.SubjectEntityId)),
+        string.IsNullOrWhiteSpace(claim.Interpretation)
+            ? ClaimInterpretation.Historical
+            : Enum.Parse<ClaimInterpretation>(claim.Interpretation, true),
+        string.IsNullOrWhiteSpace(claim.SourceLocator) ? null : claim.SourceLocator) with { Id = EntityId.From(Guid.Parse(claim.Id)) };
 
     private static Relationship ToRelationship(SeedRelationship relationship) => new Relationship(
         EntityId.From(Guid.Parse(relationship.FromEntityId)), EntityId.From(Guid.Parse(relationship.ToEntityId)), relationship.Type,

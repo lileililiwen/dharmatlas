@@ -16,6 +16,13 @@ public sealed record Source
     /// <summary>DOI, inscription number, or other stable locator.</summary>
     public string? Identifier { get; init; }
 
+    /// <summary>
+    /// Editorial quality tier (primary, scholarly, traditional, reference).
+    /// Null for legacy records authored before tiering; new corpus records
+    /// always carry a tier.
+    /// </summary>
+    public SourceTier? Tier { get; init; }
+
     public Source(string title)
     {
         if (string.IsNullOrWhiteSpace(title))

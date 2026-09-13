@@ -151,7 +151,8 @@ public static class BulkExporter
         Title = s.Title,
         Author = s.Author,
         Date = s.Date,
-        Identifier = s.Identifier
+        Identifier = s.Identifier,
+        Tier = s.Tier?.ToString()
     };
 
     private static ExportClaim ToExportClaim(Claim claim) => new()

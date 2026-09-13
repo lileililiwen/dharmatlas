@@ -500,7 +500,8 @@ public sealed class ApiQueryService
         Title = s.Title,
         Author = s.Author,
         Date = s.Date,
-        Identifier = s.Identifier
+        Identifier = s.Identifier,
+        Tier = s.Tier
     };
 
     private static IReadOnlyList<Models.ClaimView> ToClaimViews(
@@ -561,7 +562,8 @@ public sealed class ApiQueryService
         Title = s.Title,
         Author = s.Author,
         Date = s.Date,
-        Identifier = s.Identifier
+        Identifier = s.Identifier,
+        Tier = s.Tier?.ToString()
     };
 
 }

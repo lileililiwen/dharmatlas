@@ -1,0 +1,2103 @@
+{
+  "schemaVersion": "1.1.0",
+  "metadata": {
+    "license": "CC-BY-4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "datasetVersion": "seed-2026-Q4",
+    "editorialNote": "Genuine historical corpus for the first public atlas slice (500 BCE-1000 CE); every published record carries a resolvable source and a source tier.",
+    "changelog": "data/seed/v2/CHANGELOG.md",
+    "doiStub": "doi:10.0000/dharmatlas.seed-2026-Q4 (reserved stub; not registered)"
+  },
+  "sources": [
+    {
+      "id": "61000000-0000-0000-0000-000000000001",
+      "title": "The Inscriptions of Asoka",
+      "author": "E. Hultzsch",
+      "date": "1925",
+      "publisherOrCollection": "Corpus Inscriptionum Indicarum, Vol. I; Oxford: Clarendon Press",
+      "identifier": "CII-1",
+      "licenseNote": "Public-domain work; bibliographic metadata with edition details.",
+      "tier": "primary"
+    },
+    {
+      "id": "61000000-0000-0000-0000-000000000002",
+      "title": "Mahabodhi, or the Great Buddhist Temple at Buddhagaya",
+      "author": "A. Cunningham",
+      "date": "1892",
+      "publisherOrCollection": "London: W. H. Allen",
+      "identifier": "Cunningham-Mahabodhi-1892",
+      "licenseNote": "Public-domain work; bibliographic metadata with edition details.",
+      "tier": "primary"
+    },
+    {
+      "id": "61000000-0000-0000-0000-000000000003",
+      "title": "A Record of Buddhistic Kingdoms",
+      "author": "J. Legge (translating Faxian)",
+      "date": "1886",
+      "publisherOrCollection": "Oxford: Clarendon Press",
+      "identifier": "Legge-Faxian-1886",
+      "licenseNote": "Public-domain work; bibliographic metadata with edition details.",
+      "tier": "traditional"
+    },
+    {
+      "id": "61000000-0000-0000-0000-000000000004",
+      "title": "Buddhist Records of the Western World",
+      "author": "S. Beal (translating Xuanzang)",
+      "date": "1888",
+      "publisherOrCollection": "London: Trubner",
+      "identifier": "Beal-Xuanzang-1888",
+      "licenseNote": "Public-domain work; bibliographic metadata with edition details.",
+      "tier": "traditional"
+    },
+    {
+      "id": "61000000-0000-0000-0000-000000000005",
+      "title": "The Mahavamsa",
+      "author": "W. Geiger (translator)",
+      "date": "1912",
+      "publisherOrCollection": "London: Pali Text Society",
+      "identifier": "Geiger-Mahavamsa-1912",
+      "licenseNote": "Public-domain work; bibliographic metadata with edition details.",
+      "tier": "traditional"
+    },
+    {
+      "id": "61000000-0000-0000-0000-000000000006",
+      "title": "A Record of the Buddhist Religion",
+      "author": "J. Takakusu (translating Yijing)",
+      "date": "1896",
+      "publisherOrCollection": "Oxford: Clarendon Press",
+      "identifier": "Takakusu-Yijing-1896",
+      "licenseNote": "Public-domain work; bibliographic metadata with edition details.",
+      "tier": "traditional"
+    },
+    {
+      "id": "61000000-0000-0000-0000-000000000007",
+      "title": "Nihongi",
+      "author": "W. G. Aston (translator)",
+      "date": "1896",
+      "publisherOrCollection": "London: Japan Society",
+      "identifier": "Aston-Nihongi-1896",
+      "licenseNote": "Public-domain work; bibliographic metadata with edition details.",
+      "tier": "traditional"
+    },
+    {
+      "id": "61000000-0000-0000-0000-000000000008",
+      "title": "Samguk Yusa: Legends and History of the Three Kingdoms",
+      "author": "T.-H. Ha and G. K. Mintz (translators)",
+      "date": "1972",
+      "publisherOrCollection": "Seoul: Yonsei University Press",
+      "identifier": "Ha-Mintz-SamgukYusa-1972",
+      "licenseNote": "In-copyright work; bibliographic metadata only, do not reproduce protected text.",
+      "tier": "traditional"
+    },
+    {
+      "id": "61000000-0000-0000-0000-000000000009",
+      "title": "The Foundations of Buddhism",
+      "author": "R. Gethin",
+      "date": "1998",
+      "publisherOrCollection": "Oxford University Press",
+      "identifier": "ISBN-9780192892232",
+      "licenseNote": "In-copyright work; bibliographic metadata only, do not reproduce protected text.",
+      "tier": "scholarly"
+    },
+    {
+      "id": "61000000-0000-0000-0000-000000000010",
+      "title": "The Dating of the Historical Buddha",
+      "author": "H. Bechert (editor)",
+      "date": "1991-1992",
+      "publisherOrCollection": "Gottingen: Vandenhoeck & Ruprecht",
+      "identifier": "Bechert-Dating-Buddha-1991",
+      "licenseNote": "In-copyright work; bibliographic metadata only, do not reproduce protected text.",
+      "tier": "scholarly"
+    },
+    {
+      "id": "61000000-0000-0000-0000-000000000011",
+      "title": "Mahayana Buddhism: The Doctrinal Foundations, 2nd ed.",
+      "author": "P. Williams",
+      "date": "2009",
+      "publisherOrCollection": "London: Routledge",
+      "identifier": "Williams-Mahayana-2009",
+      "licenseNote": "In-copyright work; bibliographic metadata only, do not reproduce protected text.",
+      "tier": "scholarly"
+    },
+    {
+      "id": "61000000-0000-0000-0000-000000000012",
+      "title": "Tibetan Painted Scrolls",
+      "author": "G. Tucci",
+      "date": "1949",
+      "publisherOrCollection": "Rome: La Libreria dello Stato",
+      "identifier": "Tucci-Painted-Scrolls-1949",
+      "licenseNote": "In-copyright work; bibliographic metadata only, do not reproduce protected text.",
+      "tier": "scholarly"
+    },
+    {
+      "id": "61000000-0000-0000-0000-000000000013",
+      "title": "Les grottes de Touen-houang",
+      "author": "P. Pelliot",
+      "date": "1920-1924",
+      "publisherOrCollection": "Paris: Geuthner",
+      "identifier": "Pelliot-Touenhouang-1920",
+      "licenseNote": "Public-domain work; bibliographic metadata with edition details.",
+      "tier": "reference"
+    }
+  ],
+  "entities": [
+    {
+      "id": "62000000-0000-0000-0000-000000000001",
+      "type": "Person",
+      "summary": "The central teacher of the Buddhist tradition-complex, remembered as Siddhattha Gotama; traditional accounts and scholarly reconstructions date him differently."
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000002",
+      "type": "Person",
+      "summary": "Mauryan emperor (r. ca. 268-232 BCE) whose edicts document patronage of Buddhist institutions."
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000003",
+      "type": "Person",
+      "summary": "South Asian philosopher associated with the Madhyamaka treatises; his dates remain disputed between the 2nd and 3rd centuries CE."
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000004",
+      "type": "Person",
+      "summary": "Chinese pilgrim whose 5th-century account records monasteries and practices from Chang'an to Sri Lanka."
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000005",
+      "type": "Person",
+      "summary": "Chinese pilgrim and translator whose 7th-century record and translations shaped East Asian Buddhism."
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000006",
+      "type": "Person",
+      "summary": "Translator active at Chang'an whose teams rendered Madhyamaka and Lotus texts into Chinese."
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000007",
+      "type": "Person",
+      "summary": "Silla monk noted for commentaries and for accounts of practice outside formal monastic rank."
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000008",
+      "type": "Person",
+      "summary": "Japanese regent remembered in chronicles as a patron of Buddhism in the Asuka period."
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000009",
+      "type": "Place",
+      "summary": "Pilgrimage town in Bihar associated with the teacher's awakening; excavated temple remains date from the Mauryan period onward.",
+      "region": "India",
+      "modernName": "Bodh Gaya",
+      "kind": "ArchaeologicalSite",
+      "latitude": 24.6961,
+      "longitude": 84.9912,
+      "activity": {
+        "kind": "Interval",
+        "displayExpression": "3rd century BCE-present",
+        "lower": -300,
+        "upper": 2026
+      },
+      "certainty": "Documented",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000002"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000010",
+      "type": "Place",
+      "summary": "Deer-park site near Varanasi remembered as the setting of the first teaching; Ashokan-period remains survive.",
+      "region": "India",
+      "kind": "ArchaeologicalSite",
+      "latitude": 25.3808,
+      "longitude": 83.0213,
+      "activity": {
+        "kind": "Interval",
+        "displayExpression": "3rd century BCE-present",
+        "lower": -250,
+        "upper": 2026
+      },
+      "certainty": "Documented",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000001"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000011",
+      "type": "Place",
+      "summary": "Excavated monastic-university site in Bihar, active from the 5th century CE.",
+      "region": "India",
+      "kind": "ArchaeologicalSite",
+      "latitude": 25.1367,
+      "longitude": 85.4438,
+      "activity": {
+        "kind": "Interval",
+        "displayExpression": "5th-12th century CE",
+        "lower": 400,
+        "upper": 1200
+      },
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000009"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000012",
+      "type": "Place",
+      "summary": "Oasis-town corridor site; the Mogao caves preserve Buddhist painting and manuscripts from 366 CE onward.",
+      "region": "Central Asia",
+      "kind": "ArchaeologicalSite",
+      "latitude": 40.0427,
+      "longitude": 94.8077,
+      "activity": {
+        "kind": "Interval",
+        "displayExpression": "366 CE-14th century",
+        "lower": 366,
+        "upper": 1400
+      },
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000013"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000013",
+      "type": "Place",
+      "summary": "Tarim-basin oasis kingdom on the northern route; a translation center before Kumarajiva's move east.",
+      "region": "Central Asia",
+      "kind": "City",
+      "latitude": 41.7179,
+      "longitude": 82.9629,
+      "activity": {
+        "kind": "Approximate",
+        "displayExpression": "ca. 2nd-7th century CE",
+        "lower": 100,
+        "upper": 700
+      },
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000004"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000014",
+      "type": "Place",
+      "summary": "Han-Tang capital and translation center where Faxian, Xuanzang, and Kumarajiva worked.",
+      "region": "China",
+      "kind": "City",
+      "latitude": 34.3416,
+      "longitude": 108.9398,
+      "activity": {
+        "kind": "Interval",
+        "displayExpression": "3rd century BCE-907 CE",
+        "lower": -200,
+        "upper": 907
+      },
+      "certainty": "Documented",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000004"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000015",
+      "type": "Place",
+      "summary": "Cliff-temple complex south of Luoyang begun under Northern Wei patronage after 493 CE.",
+      "region": "China",
+      "kind": "ArchaeologicalSite",
+      "latitude": 34.5553,
+      "longitude": 112.4717,
+      "activity": {
+        "kind": "OpenInterval",
+        "displayExpression": "after 493 CE",
+        "lower": 493
+      },
+      "certainty": "Documented",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000009"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000016",
+      "type": "Place",
+      "summary": "Ancient Sri Lankan capital and seat of the Mahavihara lineage.",
+      "region": "Sri Lanka",
+      "kind": "City",
+      "latitude": 8.3114,
+      "longitude": 80.4037,
+      "activity": {
+        "kind": "Interval",
+        "displayExpression": "4th century BCE-11th century CE",
+        "lower": -400,
+        "upper": 1000
+      },
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000005"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000017",
+      "type": "Place",
+      "summary": "Hill site traditionally linked with Mahinda's arrival in Sri Lanka.",
+      "region": "Sri Lanka",
+      "kind": "ArchaeologicalSite",
+      "latitude": 8.35,
+      "longitude": 80.52,
+      "activity": {
+        "kind": "Traditional",
+        "displayExpression": "Traditionally linked with Mahinda's arrival",
+        "lower": -250,
+        "upper": -200
+      },
+      "certainty": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000005"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000018",
+      "type": "Place",
+      "summary": "Temple site in Lhasa associated with the imperial-period introduction of Buddhism to Tibet.",
+      "region": "Tibet",
+      "kind": "Monastery",
+      "latitude": 29.653,
+      "longitude": 91.1299,
+      "activity": {
+        "kind": "Approximate",
+        "displayExpression": "ca. 7th century CE",
+        "lower": 600,
+        "upper": 700
+      },
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000012"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000019",
+      "type": "Place",
+      "summary": "Mountain venerated across Buddhist, Bon, Hindu, and Jain accounts; pilgrimage circuits are recorded from the imperial period onward.",
+      "region": "Tibet",
+      "kind": "Mountain",
+      "latitude": 31.0675,
+      "longitude": 81.3119,
+      "activity": {
+        "kind": "Traditional",
+        "displayExpression": "Traditionally venerated across Buddhist, Bon, Hindu, and Jain accounts",
+        "lower": -500,
+        "upper": 1000
+      },
+      "certainty": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000012"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000020",
+      "type": "Place",
+      "summary": "Silla capital and temple-building center from the 6th century CE.",
+      "region": "Korea",
+      "kind": "City",
+      "latitude": 35.8562,
+      "longitude": 129.2247,
+      "activity": {
+        "kind": "Interval",
+        "displayExpression": "6th-10th century CE",
+        "lower": 500,
+        "upper": 1000
+      },
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000008"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000021",
+      "type": "Place",
+      "summary": "Excavated Silla temple site in Gyeongju, founded in 569 CE.",
+      "region": "Korea",
+      "kind": "ArchaeologicalSite",
+      "latitude": 35.79,
+      "longitude": 129.22,
+      "activity": {
+        "kind": "Interval",
+        "displayExpression": "569 CE-10th century",
+        "lower": 569,
+        "upper": 1000
+      },
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000008"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000022",
+      "type": "Place",
+      "summary": "Japanese capital region of the Nara period and early temple-building center.",
+      "region": "Japan",
+      "kind": "City",
+      "latitude": 34.6851,
+      "longitude": 135.8048,
+      "activity": {
+        "kind": "Interval",
+        "displayExpression": "6th-9th century CE",
+        "lower": 500,
+        "upper": 900
+      },
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000007"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000023",
+      "type": "Place",
+      "summary": "Basin district west of Nara holding the Horyu-ji temple area.",
+      "region": "Japan",
+      "kind": "Region",
+      "latitude": 34.6145,
+      "longitude": 135.7343,
+      "activity": {
+        "kind": "Approximate",
+        "displayExpression": "ca. 7th century CE",
+        "lower": 600,
+        "upper": 700
+      },
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000007"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000024",
+      "type": "Institution",
+      "summary": "Monastic university drawing students from across Asia; Xuanzang studied here.",
+      "institutionalForm": "Monastic university",
+      "placeId": "62000000-0000-0000-0000-000000000011",
+      "activity": {
+        "kind": "Interval",
+        "displayExpression": "5th-12th century CE",
+        "lower": 400,
+        "upper": 1200
+      },
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000009",
+        "61000000-0000-0000-0000-000000000004"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000025",
+      "type": "Institution",
+      "summary": "Anuradhapura fraternity remembered as the custodian of the Pali commentarial tradition.",
+      "institutionalForm": "Monastic fraternity",
+      "placeId": "62000000-0000-0000-0000-000000000016",
+      "activity": {
+        "kind": "Traditional",
+        "displayExpression": "Traditionally founded in the 3rd century BCE",
+        "lower": -300,
+        "upper": -200
+      },
+      "certainty": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000005"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000026",
+      "type": "Institution",
+      "summary": "Cave-monastery community at Dunhuang producing manuscripts sealed in the library cave.",
+      "institutionalForm": "Cave monastery complex",
+      "placeId": "62000000-0000-0000-0000-000000000012",
+      "activity": {
+        "kind": "Interval",
+        "displayExpression": "366-1000 CE",
+        "lower": 366,
+        "upper": 1000
+      },
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000013"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000027",
+      "type": "Institution",
+      "summary": "Temple in Ikaruga holding early Japanese Buddhist sculpture and architecture.",
+      "institutionalForm": "Temple",
+      "placeId": "62000000-0000-0000-0000-000000000023",
+      "activity": {
+        "kind": "Approximate",
+        "displayExpression": "ca. 7th century CE",
+        "lower": 600,
+        "upper": 700
+      },
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000007"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000028",
+      "type": "Institution",
+      "summary": "Silla temple complex in Gyeongju developed from the 8th century.",
+      "institutionalForm": "Temple complex",
+      "placeId": "62000000-0000-0000-0000-000000000020",
+      "activity": {
+        "kind": "Interval",
+        "displayExpression": "751 CE-10th century",
+        "lower": 751,
+        "upper": 1000
+      },
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000008"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000029",
+      "type": "Institution",
+      "summary": "Lhasa temple associated with the imperial-period establishment of Buddhism.",
+      "institutionalForm": "Temple",
+      "placeId": "62000000-0000-0000-0000-000000000018",
+      "activity": {
+        "kind": "Approximate",
+        "displayExpression": "ca. 7th century CE",
+        "lower": 600,
+        "upper": 700
+      },
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000012"
+      ]
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000030",
+      "type": "Text",
+      "summary": "Pali discourse remembered as the first teaching; transmitted in the Samyutta Nikaya.",
+      "originalLanguage": "Pali"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000031",
+      "type": "Text",
+      "summary": "Sanskrit sutra family on the single vehicle; widely translated in Central Asia and China.",
+      "originalLanguage": "Sanskrit"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000032",
+      "type": "Text",
+      "summary": "Short wisdom text circulating in Sanskrit and Chinese versions.",
+      "originalLanguage": "Sanskrit"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000033",
+      "type": "Text",
+      "summary": "Pali chronicle composed at the Mahavihara, carrying Sri Lankan traditional history.",
+      "originalLanguage": "Pali"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000034",
+      "type": "Text",
+      "summary": "Faxian's record of monasteries between Chang'an and Sri Lanka.",
+      "originalLanguage": "Literary Chinese"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000035",
+      "type": "Text",
+      "summary": "Xuanzang's record of Nalanda and the western regions on his return.",
+      "originalLanguage": "Literary Chinese"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000036",
+      "type": "Text",
+      "summary": "Verses attributed to Nagarjuna and read as the Madhyamaka root text.",
+      "originalLanguage": "Sanskrit"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000037",
+      "type": "Text",
+      "summary": "Japanese court chronicle whose Buddhism passages underlie competing introduction dates.",
+      "originalLanguage": "Classical Japanese"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000038",
+      "type": "Tradition",
+      "summary": "The Mahavihara lineage preserved in Sri Lanka and identified with Theravada transmission.",
+      "region": "Sri Lanka"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000039",
+      "type": "Tradition",
+      "summary": "A family of movements oriented to the bodhisattva ideal, visible in texts and inscriptions of the early centuries CE.",
+      "region": "India"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000040",
+      "type": "Tradition",
+      "summary": "Esoteric transmissions documented from the 7th-8th centuries, with earlier ritual antecedents.",
+      "region": "India"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000041",
+      "type": "Tradition",
+      "summary": "A meditation-oriented lineage whose early history mixes documented teachers with retrospective genealogy.",
+      "region": "China"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000042",
+      "type": "Event",
+      "summary": "Gathering remembered as the first communal recitation after the teacher's passing.",
+      "category": "Council",
+      "region": "India",
+      "date": {
+        "kind": "Traditional",
+        "displayExpression": "Traditionally dated to the first rains after the teacher's passing",
+        "lower": -480,
+        "upper": -400
+      },
+      "certainty": "TraditionalAccount"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000043",
+      "type": "Event",
+      "summary": "Distribution of imperial edicts recording moral instruction and institutional patronage.",
+      "category": "Patronage",
+      "region": "India",
+      "date": {
+        "kind": "Interval",
+        "displayExpression": "ca. 268-232 BCE",
+        "lower": -268,
+        "upper": -232
+      },
+      "certainty": "Documented"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000044",
+      "type": "Event",
+      "summary": "Pilgrim journey from Chang'an through Central Asia to Sri Lanka and back by sea.",
+      "category": "Travel",
+      "region": "China",
+      "date": {
+        "kind": "Interval",
+        "displayExpression": "399-413 CE",
+        "lower": 399,
+        "upper": 413
+      },
+      "certainty": "Probable"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000045",
+      "type": "Event",
+      "summary": "Translation activity at Chang'an rendering Madhyamaka and Lotus texts into Chinese.",
+      "category": "Translation",
+      "region": "China",
+      "placeId": "62000000-0000-0000-0000-000000000014",
+      "date": {
+        "kind": "Interval",
+        "displayExpression": "401-413 CE",
+        "lower": 401,
+        "upper": 413
+      },
+      "certainty": "Documented"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000046",
+      "type": "Event",
+      "summary": "Pilgrim journey to Nalanda and return to Chang'an with manuscripts.",
+      "category": "Travel",
+      "region": "China",
+      "date": {
+        "kind": "Interval",
+        "displayExpression": "629-645 CE",
+        "lower": 629,
+        "upper": 645
+      },
+      "certainty": "Probable"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000047",
+      "type": "Event",
+      "summary": "Opening of the first Mogao devotional caves near Dunhuang.",
+      "category": "Foundation",
+      "region": "Central Asia",
+      "placeId": "62000000-0000-0000-0000-000000000012",
+      "date": {
+        "kind": "Approximate",
+        "displayExpression": "ca. 366 CE",
+        "lower": 366,
+        "upper": 366
+      },
+      "certainty": "Probable"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000048",
+      "type": "Event",
+      "summary": "Beginning of cliff-temple carving south of Luoyang under Northern Wei patronage.",
+      "category": "Construction",
+      "region": "China",
+      "placeId": "62000000-0000-0000-0000-000000000015",
+      "date": {
+        "kind": "OpenInterval",
+        "displayExpression": "after 493 CE",
+        "lower": 493
+      },
+      "certainty": "Probable"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000049",
+      "type": "Event",
+      "summary": "Founding of the Samye monastery under imperial Tibetan patronage.",
+      "category": "Foundation",
+      "region": "Tibet",
+      "date": {
+        "kind": "Approximate",
+        "displayExpression": "ca. 775-779 CE",
+        "lower": 775,
+        "upper": 779
+      },
+      "certainty": "Probable"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000050",
+      "type": "Event",
+      "summary": "Official introduction of Buddhism to the Japanese court; chronicle dates compete.",
+      "category": "Transmission",
+      "region": "Japan",
+      "placeId": "62000000-0000-0000-0000-000000000022",
+      "date": {
+        "kind": "Interval",
+        "displayExpression": "538 or 552 CE (competing chronicle dates)",
+        "lower": 538,
+        "upper": 552
+      },
+      "certainty": "Disputed"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000051",
+      "type": "Event",
+      "summary": "Founding of the Hwangnyong temple in the Silla capital.",
+      "category": "Foundation",
+      "region": "Korea",
+      "placeId": "62000000-0000-0000-0000-000000000021",
+      "date": {
+        "kind": "Exact",
+        "displayExpression": "569 CE",
+        "lower": 569
+      },
+      "certainty": "Probable"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000052",
+      "type": "Event",
+      "summary": "Establishment of the Nalanda teaching community under Gupta-period patronage.",
+      "category": "Foundation",
+      "region": "India",
+      "placeId": "62000000-0000-0000-0000-000000000011",
+      "date": {
+        "kind": "Century",
+        "displayExpression": "5th century CE",
+        "lower": 400,
+        "upper": 499
+      },
+      "certainty": "Probable"
+    },
+    {
+      "id": "62000000-0000-0000-0000-000000000053",
+      "type": "Event",
+      "summary": "Traditional founding of the Mahavihara fraternity at Anuradhapura.",
+      "category": "Foundation",
+      "region": "Sri Lanka",
+      "placeId": "62000000-0000-0000-0000-000000000016",
+      "date": {
+        "kind": "Traditional",
+        "displayExpression": "Traditionally dated to Devanampiya Tissa's reign",
+        "lower": -250,
+        "upper": -200
+      },
+      "certainty": "TraditionalAccount"
+    }
+  ],
+  "names": [
+    {
+      "id": "63000000-0000-0000-0000-000000000001",
+      "entityId": "62000000-0000-0000-0000-000000000001",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "The Buddha",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000002",
+      "entityId": "62000000-0000-0000-0000-000000000002",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Ashoka",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000003",
+      "entityId": "62000000-0000-0000-0000-000000000003",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Nagarjuna",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000004",
+      "entityId": "62000000-0000-0000-0000-000000000004",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Faxian",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000005",
+      "entityId": "62000000-0000-0000-0000-000000000005",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Xuanzang",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000006",
+      "entityId": "62000000-0000-0000-0000-000000000006",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Kumarajiva",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000007",
+      "entityId": "62000000-0000-0000-0000-000000000007",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Wonhyo",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000008",
+      "entityId": "62000000-0000-0000-0000-000000000008",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Shotoku Taishi",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000009",
+      "entityId": "62000000-0000-0000-0000-000000000009",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Bodh Gaya",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000010",
+      "entityId": "62000000-0000-0000-0000-000000000010",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Sarnath",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000011",
+      "entityId": "62000000-0000-0000-0000-000000000011",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Nalanda",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000012",
+      "entityId": "62000000-0000-0000-0000-000000000012",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Dunhuang",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000013",
+      "entityId": "62000000-0000-0000-0000-000000000013",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Kucha",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000014",
+      "entityId": "62000000-0000-0000-0000-000000000014",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Chang'an",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000015",
+      "entityId": "62000000-0000-0000-0000-000000000015",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Longmen",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000016",
+      "entityId": "62000000-0000-0000-0000-000000000016",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Anuradhapura",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000017",
+      "entityId": "62000000-0000-0000-0000-000000000017",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Mihintale",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000018",
+      "entityId": "62000000-0000-0000-0000-000000000018",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Jokhang",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000019",
+      "entityId": "62000000-0000-0000-0000-000000000019",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Mount Kailash",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000020",
+      "entityId": "62000000-0000-0000-0000-000000000020",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Gyeongju",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000021",
+      "entityId": "62000000-0000-0000-0000-000000000021",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Hwangnyongsa Temple Site",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000022",
+      "entityId": "62000000-0000-0000-0000-000000000022",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Nara",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000023",
+      "entityId": "62000000-0000-0000-0000-000000000023",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Ikaruga",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000024",
+      "entityId": "62000000-0000-0000-0000-000000000024",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Nalanda Mahavihara",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000025",
+      "entityId": "62000000-0000-0000-0000-000000000025",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Mahavihara",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000026",
+      "entityId": "62000000-0000-0000-0000-000000000026",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Mogao Monastic Community",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000027",
+      "entityId": "62000000-0000-0000-0000-000000000027",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Horyu-ji",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000028",
+      "entityId": "62000000-0000-0000-0000-000000000028",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Bulguksa",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000029",
+      "entityId": "62000000-0000-0000-0000-000000000029",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Jokhang Temple",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000030",
+      "entityId": "62000000-0000-0000-0000-000000000030",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Dhammacakkappavattana Sutta",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000031",
+      "entityId": "62000000-0000-0000-0000-000000000031",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Lotus Sutra",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000032",
+      "entityId": "62000000-0000-0000-0000-000000000032",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Heart Sutra",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000033",
+      "entityId": "62000000-0000-0000-0000-000000000033",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Mahavamsa",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000034",
+      "entityId": "62000000-0000-0000-0000-000000000034",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Foguo Ji",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000035",
+      "entityId": "62000000-0000-0000-0000-000000000035",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Da Tang Xiyu Ji",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000036",
+      "entityId": "62000000-0000-0000-0000-000000000036",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Mulamadhyamakakarika",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000037",
+      "entityId": "62000000-0000-0000-0000-000000000037",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Nihon Shoki",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000038",
+      "entityId": "62000000-0000-0000-0000-000000000038",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Theravada",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000039",
+      "entityId": "62000000-0000-0000-0000-000000000039",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Mahayana",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000040",
+      "entityId": "62000000-0000-0000-0000-000000000040",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Vajrayana",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000041",
+      "entityId": "62000000-0000-0000-0000-000000000041",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Chan",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000042",
+      "entityId": "62000000-0000-0000-0000-000000000042",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "First Council Account",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000043",
+      "entityId": "62000000-0000-0000-0000-000000000043",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Ashokan Edicts Distribution",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000044",
+      "entityId": "62000000-0000-0000-0000-000000000044",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Faxian Pilgrimage",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000045",
+      "entityId": "62000000-0000-0000-0000-000000000045",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Chang'an Translation Activity",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000046",
+      "entityId": "62000000-0000-0000-0000-000000000046",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Xuanzang Journey",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000047",
+      "entityId": "62000000-0000-0000-0000-000000000047",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Mogao Founding",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000048",
+      "entityId": "62000000-0000-0000-0000-000000000048",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Longmen Carving Begins",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000049",
+      "entityId": "62000000-0000-0000-0000-000000000049",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Samye Founding",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000050",
+      "entityId": "62000000-0000-0000-0000-000000000050",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Introduction of Buddhism to Japan",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000051",
+      "entityId": "62000000-0000-0000-0000-000000000051",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Hwangnyongsa Founding",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000052",
+      "entityId": "62000000-0000-0000-0000-000000000052",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Nalanda Founding",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000053",
+      "entityId": "62000000-0000-0000-0000-000000000053",
+      "language": "eng",
+      "script": "latin",
+      "romanization": "",
+      "value": "Mahavihara Founding",
+      "isPrimary": true
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000054",
+      "entityId": "62000000-0000-0000-0000-000000000001",
+      "language": "pli",
+      "script": "latin",
+      "romanization": "IAST",
+      "value": "Gotama",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000055",
+      "entityId": "62000000-0000-0000-0000-000000000001",
+      "language": "san",
+      "script": "latin",
+      "romanization": "IAST",
+      "value": "Sakyamuni",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000056",
+      "entityId": "62000000-0000-0000-0000-000000000002",
+      "language": "san",
+      "script": "latin",
+      "romanization": "IAST",
+      "value": "Asoka",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000057",
+      "entityId": "62000000-0000-0000-0000-000000000003",
+      "language": "san",
+      "script": "latin",
+      "romanization": "IAST",
+      "value": "Nagarjuna",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000058",
+      "entityId": "62000000-0000-0000-0000-000000000004",
+      "language": "zho",
+      "script": "hani",
+      "romanization": "",
+      "value": "Faxian",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000059",
+      "entityId": "62000000-0000-0000-0000-000000000005",
+      "language": "zho",
+      "script": "hani",
+      "romanization": "",
+      "value": "Xuanzang",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000060",
+      "entityId": "62000000-0000-0000-0000-000000000006",
+      "language": "san",
+      "script": "latin",
+      "romanization": "IAST",
+      "value": "Kumarajiva",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000061",
+      "entityId": "62000000-0000-0000-0000-000000000007",
+      "language": "kor",
+      "script": "hangul",
+      "romanization": "",
+      "value": "Wonhyo",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000062",
+      "entityId": "62000000-0000-0000-0000-000000000008",
+      "language": "jpn",
+      "script": "hani",
+      "romanization": "",
+      "value": "Shotoku Taishi",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000063",
+      "entityId": "62000000-0000-0000-0000-000000000014",
+      "language": "zho",
+      "script": "hani",
+      "romanization": "",
+      "value": "Chang'an",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000064",
+      "entityId": "62000000-0000-0000-0000-000000000012",
+      "language": "zho",
+      "script": "hani",
+      "romanization": "",
+      "value": "Dunhuang",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000065",
+      "entityId": "62000000-0000-0000-0000-000000000013",
+      "language": "zho",
+      "script": "hani",
+      "romanization": "",
+      "value": "Kucha",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000066",
+      "entityId": "62000000-0000-0000-0000-000000000020",
+      "language": "kor",
+      "script": "hangul",
+      "romanization": "",
+      "value": "Gyeongju",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000067",
+      "entityId": "62000000-0000-0000-0000-000000000022",
+      "language": "jpn",
+      "script": "hani",
+      "romanization": "",
+      "value": "Nara",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000068",
+      "entityId": "62000000-0000-0000-0000-000000000031",
+      "language": "san",
+      "script": "latin",
+      "romanization": "IAST",
+      "value": "Saddharmapundarika",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000069",
+      "entityId": "62000000-0000-0000-0000-000000000032",
+      "language": "san",
+      "script": "latin",
+      "romanization": "IAST",
+      "value": "Prajnaparamitahrdaya",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000070",
+      "entityId": "62000000-0000-0000-0000-000000000036",
+      "language": "san",
+      "script": "latin",
+      "romanization": "IAST",
+      "value": "Mulamadhyamakakarika",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000071",
+      "entityId": "62000000-0000-0000-0000-000000000034",
+      "language": "zho",
+      "script": "hani",
+      "romanization": "",
+      "value": "Foguo Ji",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000072",
+      "entityId": "62000000-0000-0000-0000-000000000035",
+      "language": "zho",
+      "script": "hani",
+      "romanization": "",
+      "value": "Da Tang Xiyu Ji",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000073",
+      "entityId": "62000000-0000-0000-0000-000000000033",
+      "language": "pli",
+      "script": "latin",
+      "romanization": "IAST",
+      "value": "Mahavamsa",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000074",
+      "entityId": "62000000-0000-0000-0000-000000000037",
+      "language": "jpn",
+      "script": "hani",
+      "romanization": "",
+      "value": "Nihon Shoki",
+      "isPrimary": false
+    },
+    {
+      "id": "63000000-0000-0000-0000-000000000075",
+      "entityId": "62000000-0000-0000-0000-000000000010",
+      "language": "pli",
+      "script": "latin",
+      "romanization": "IAST",
+      "value": "Isipatana",
+      "isPrimary": false
+    }
+  ],
+  "claims": [
+    {
+      "id": "64000000-0000-0000-0000-000000000001",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000001",
+      "statement": "Traditional accounts place the teacher's passing in the late 6th century BCE.",
+      "certainty": "TraditionalAccount",
+      "interpretation": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000005"
+      ],
+      "sourceLocator": "Mahavamsa I"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000002",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000001",
+      "statement": "Scholarly reconstructions place the teacher's life around 480-400 BCE.",
+      "certainty": "Probable",
+      "interpretation": "ScholarlyInterpretation",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000010",
+        "61000000-0000-0000-0000-000000000009"
+      ],
+      "sourceLocator": "Bechert vols. 1-2"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000003",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000002",
+      "statement": "The edicts record imperial patronage of Buddhist institutions across South Asia.",
+      "certainty": "Documented",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000001"
+      ],
+      "sourceLocator": "Rock Edict XIII"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000004",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000002",
+      "statement": "Chronicle tradition remembers the emperor as patron of a major communal recitation.",
+      "certainty": "TraditionalAccount",
+      "interpretation": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000005"
+      ],
+      "sourceLocator": "Mahavamsa V"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000005",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000003",
+      "statement": "Attribution and dating of the Madhyamaka verses remain disputed among scholars.",
+      "certainty": "Disputed",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000011",
+        "61000000-0000-0000-0000-000000000009"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000006",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000004",
+      "statement": "The pilgrim's record describes monasteries between Chang'an and Sri Lanka.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000003"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000007",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000005",
+      "statement": "The pilgrim's record describes Nalanda and the western regions on his return.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000004"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000008",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000006",
+      "statement": "Translation teams at Chang'an produced Chinese versions of Madhyamaka and Lotus texts in 401-413 CE.",
+      "certainty": "Documented",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000009"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000009",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000007",
+      "statement": "Silla accounts remember the monk as a commentator active beyond court rank.",
+      "certainty": "TraditionalAccount",
+      "interpretation": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000008"
+      ],
+      "sourceLocator": "Samguk Yusa"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000010",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000008",
+      "statement": "Chronicles remember the regent as a patron of temples in the Asuka period.",
+      "certainty": "TraditionalAccount",
+      "interpretation": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000007"
+      ],
+      "sourceLocator": "Aston trans., vol. II"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000011",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000009",
+      "statement": "Excavation reports document a temple complex developed from the Mauryan period onward.",
+      "certainty": "Documented",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000002"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000012",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000010",
+      "statement": "An Ashokan edict at the site records imperial attention to communal discipline.",
+      "certainty": "Documented",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000001"
+      ],
+      "sourceLocator": "Sarnath edict"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000013",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000012",
+      "statement": "Cave 275 and associated deposits are dated to the early 5th century and later.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000013"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000014",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000016",
+      "statement": "Chronicle and survey literature identify the city as the Mahavihara seat.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000005"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000015",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000019",
+      "statement": "Pilgrim and survey literature records the mountain's multi-religious veneration.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000004",
+        "61000000-0000-0000-0000-000000000012"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000016",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000024",
+      "statement": "Visiting pilgrims describe a large teaching community with a noted library.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000004",
+        "61000000-0000-0000-0000-000000000009"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000017",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000025",
+      "statement": "Chronicles present the fraternity as custodian of the commentarial tradition.",
+      "certainty": "TraditionalAccount",
+      "interpretation": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000005"
+      ],
+      "sourceLocator": "Mahavamsa XXXIII"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000018",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000030",
+      "statement": "The discourse is transmitted as the first teaching in the Pali collection.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000009"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000019",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000031",
+      "statement": "Sanskrit Lotus manuscripts circulated in Central Asia and China in the early centuries CE.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000011",
+        "61000000-0000-0000-0000-000000000013"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000020",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000032",
+      "statement": "The short text circulated in Sanskrit and Chinese versions across the first millennium.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000011"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000021",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000033",
+      "statement": "The chronicle preserves the Sri Lankan traditional history of the teaching's arrival.",
+      "certainty": "TraditionalAccount",
+      "interpretation": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000005"
+      ],
+      "sourceLocator": "Geiger trans., chs. 1-37"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000022",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000034",
+      "statement": "The record describes monastic life from the Tarim basin to the island of Sri Lanka.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000003"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000023",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000035",
+      "statement": "The record describes Nalanda's community and the routes of the western regions.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000004"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000024",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000036",
+      "statement": "Readings of the verses as a single author's system remain a scholarly interpretation.",
+      "certainty": "Disputed",
+      "interpretation": "ScholarlyInterpretation",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000011",
+        "61000000-0000-0000-0000-000000000009"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000025",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000037",
+      "statement": "The chronicle's Buddhism passages underlie both the 538 and 552 introduction dates.",
+      "certainty": "TraditionalAccount",
+      "interpretation": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000007"
+      ],
+      "sourceLocator": "Aston trans., vol. II"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000026",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000038",
+      "statement": "Chronicles present the island fraternity as the custodian lineage.",
+      "certainty": "TraditionalAccount",
+      "interpretation": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000005"
+      ],
+      "sourceLocator": "Mahavamsa V"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000027",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000038",
+      "statement": "Scholars reconstruct the school's profile from Pali commentarial literature.",
+      "certainty": "Probable",
+      "interpretation": "ScholarlyInterpretation",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000009"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000028",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000039",
+      "statement": "Inscriptional and textual traces show bodhisattva-oriented movements across regions.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000011"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000029",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000040",
+      "statement": "Ritual manuals and commentaries document esoteric transmission from the 7th century.",
+      "certainty": "Probable",
+      "interpretation": "ScholarlyInterpretation",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000012"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000030",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000041",
+      "statement": "Early Chan genealogy mixes remembered teachers with retrospective lineage writing.",
+      "certainty": "Disputed",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000009"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000031",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000042",
+      "statement": "Later canonical accounts remember a first communal recitation at Rajagriha.",
+      "certainty": "TraditionalAccount",
+      "interpretation": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000005"
+      ],
+      "sourceLocator": "Mahavamsa III"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000032",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000042",
+      "statement": "No contemporaneous record of the gathering survives; reconstructions depend on later accounts.",
+      "certainty": "Probable",
+      "interpretation": "ScholarlyInterpretation",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000009"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000033",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000043",
+      "statement": "The edicts record imperial moral instruction across South Asia.",
+      "certainty": "Documented",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000001"
+      ],
+      "sourceLocator": "Rock Edicts II-XIII"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000034",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000044",
+      "statement": "The pilgrim's account dates the overland journey to 399-413 CE.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000003"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000035",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000045",
+      "statement": "Court-supported teams produced the Chang'an translations in 401-413 CE.",
+      "certainty": "Documented",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000009"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000036",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000046",
+      "statement": "The pilgrim's account dates the round journey to 629-645 CE.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000004"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000037",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000047",
+      "statement": "Catalogue literature dates the first caves to 366 CE.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000013"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000038",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000048",
+      "statement": "Survey literature places the start of carving after the court's move to Luoyang.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000009"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000039",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000049",
+      "statement": "Tibetan-period records place the founding in the late 8th century.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000012"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000040",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000050",
+      "statement": "One chronicle reading dates the court's reception to 538 CE.",
+      "certainty": "TraditionalAccount",
+      "interpretation": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000007"
+      ],
+      "sourceLocator": "Aston trans., vol. II"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000041",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000050",
+      "statement": "A second chronicle reading dates the reception to 552 CE.",
+      "certainty": "Disputed",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000007",
+        "61000000-0000-0000-0000-000000000009"
+      ],
+      "sourceLocator": "Aston trans., vol. II"
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000042",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000051",
+      "statement": "Kingdom records date the temple founding to 569 CE.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000008"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000043",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000052",
+      "statement": "Survey and pilgrim literature place the community's start in the 5th century.",
+      "certainty": "Probable",
+      "interpretation": "Historical",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000009",
+        "61000000-0000-0000-0000-000000000004"
+      ]
+    },
+    {
+      "id": "64000000-0000-0000-0000-000000000044",
+      "subjectEntityId": "62000000-0000-0000-0000-000000000053",
+      "statement": "Chronicles link the fraternity's founding to Devanampiya Tissa's reign.",
+      "certainty": "TraditionalAccount",
+      "interpretation": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000005"
+      ],
+      "sourceLocator": "Mahavamsa XI"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "65000000-0000-0000-0000-000000000001",
+      "fromEntityId": "62000000-0000-0000-0000-000000000005",
+      "toEntityId": "62000000-0000-0000-0000-000000000011",
+      "type": "visited",
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000004"
+      ]
+    },
+    {
+      "id": "65000000-0000-0000-0000-000000000002",
+      "fromEntityId": "62000000-0000-0000-0000-000000000005",
+      "toEntityId": "62000000-0000-0000-0000-000000000014",
+      "type": "visited",
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000004"
+      ]
+    },
+    {
+      "id": "65000000-0000-0000-0000-000000000003",
+      "fromEntityId": "62000000-0000-0000-0000-000000000004",
+      "toEntityId": "62000000-0000-0000-0000-000000000009",
+      "type": "visited",
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000003"
+      ]
+    },
+    {
+      "id": "65000000-0000-0000-0000-000000000004",
+      "fromEntityId": "62000000-0000-0000-0000-000000000006",
+      "toEntityId": "62000000-0000-0000-0000-000000000014",
+      "type": "translated-at",
+      "certainty": "Documented",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000009"
+      ]
+    },
+    {
+      "id": "65000000-0000-0000-0000-000000000005",
+      "fromEntityId": "62000000-0000-0000-0000-000000000002",
+      "toEntityId": "62000000-0000-0000-0000-000000000010",
+      "type": "patron-of",
+      "certainty": "Documented",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000001"
+      ]
+    },
+    {
+      "id": "65000000-0000-0000-0000-000000000006",
+      "fromEntityId": "62000000-0000-0000-0000-000000000002",
+      "toEntityId": "62000000-0000-0000-0000-000000000009",
+      "type": "patron-of",
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000002"
+      ]
+    },
+    {
+      "id": "65000000-0000-0000-0000-000000000007",
+      "fromEntityId": "62000000-0000-0000-0000-000000000024",
+      "toEntityId": "62000000-0000-0000-0000-000000000039",
+      "type": "associated-with",
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000009"
+      ]
+    },
+    {
+      "id": "65000000-0000-0000-0000-000000000008",
+      "fromEntityId": "62000000-0000-0000-0000-000000000025",
+      "toEntityId": "62000000-0000-0000-0000-000000000038",
+      "type": "associated-with",
+      "certainty": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000005"
+      ]
+    },
+    {
+      "id": "65000000-0000-0000-0000-000000000009",
+      "fromEntityId": "62000000-0000-0000-0000-000000000004",
+      "toEntityId": "62000000-0000-0000-0000-000000000034",
+      "type": "authored",
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000003"
+      ]
+    },
+    {
+      "id": "65000000-0000-0000-0000-000000000010",
+      "fromEntityId": "62000000-0000-0000-0000-000000000005",
+      "toEntityId": "62000000-0000-0000-0000-000000000035",
+      "type": "authored",
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000004"
+      ]
+    },
+    {
+      "id": "65000000-0000-0000-0000-000000000011",
+      "fromEntityId": "62000000-0000-0000-0000-000000000003",
+      "toEntityId": "62000000-0000-0000-0000-000000000036",
+      "type": "authored",
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000011"
+      ]
+    },
+    {
+      "id": "65000000-0000-0000-0000-000000000012",
+      "fromEntityId": "62000000-0000-0000-0000-000000000031",
+      "toEntityId": "62000000-0000-0000-0000-000000000039",
+      "type": "associated-with",
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000011"
+      ]
+    },
+    {
+      "id": "65000000-0000-0000-0000-000000000013",
+      "fromEntityId": "62000000-0000-0000-0000-000000000007",
+      "toEntityId": "62000000-0000-0000-0000-000000000021",
+      "type": "associated-with",
+      "certainty": "Probable",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000008"
+      ]
+    },
+    {
+      "id": "65000000-0000-0000-0000-000000000014",
+      "fromEntityId": "62000000-0000-0000-0000-000000000008",
+      "toEntityId": "62000000-0000-0000-0000-000000000027",
+      "type": "patron-of",
+      "certainty": "TraditionalAccount",
+      "sourceIds": [
+        "61000000-0000-0000-0000-000000000007"
+      ]
+    }
+  ]
+}

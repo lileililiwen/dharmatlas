@@ -34,6 +34,7 @@ public static class SeedManifestValidator
         foreach (var (source, index) in manifest.Sources.Select((value, index) => (value, index)))
         {
             if (string.IsNullOrWhiteSpace(source.Title)) errors.Add($"sources[{index}].title must not be empty.");
+            if (source.Tier is not null && !SourceTierParser.IsSupported(source.Tier)) errors.Add($"sources[{index}].tier '{source.Tier}' is unsupported (code: tier).");
         }
 
         foreach (var (entity, index) in manifest.Entities.Select((value, index) => (value, index)))
@@ -46,6 +47,7 @@ public static class SeedManifestValidator
             ValidateDate(entity.Date, $"{path}.date", errors);
             ValidateDate(entity.Activity, $"{path}.activity", errors);
             ValidateCertainty(entity.Certainty, $"{path}.certainty", errors);
+            foreach (var denied in SeedEditorialRules.ToneViolations(entity.Summary)) errors.Add($"{path}.summary uses denied tone '{denied}' (code: tone).");
             var placeId = Guid.Empty;
             if (entity.PlaceId is not null && !TryId(entity.PlaceId, out placeId)) errors.Add($"{path}.placeId '{entity.PlaceId}' is not a valid ID.");
             else if (entity.PlaceId is not null && !entityIds.Contains(placeId)) errors.Add($"{path}.placeId references unknown entity '{entity.PlaceId}'.");
@@ -73,6 +75,8 @@ public static class SeedManifestValidator
             if (!entityIds.Contains(ParseOrEmpty(claim.SubjectEntityId))) errors.Add($"{path}.subjectEntityId references an unknown entity.");
             if (string.IsNullOrWhiteSpace(claim.Statement)) errors.Add($"{path}.statement must not be empty.");
             ValidateCertainty(claim.Certainty, $"{path}.certainty", errors);
+            if (claim.Interpretation is not null && !Enum.TryParse<ClaimInterpretation>(claim.Interpretation, true, out _)) errors.Add($"{path}.interpretation '{claim.Interpretation}' is unsupported.");
+            foreach (var denied in SeedEditorialRules.ToneViolations(claim.Statement)) errors.Add($"{path}.statement uses denied tone '{denied}' (code: tone).");
             ValidateReferences(claim.SourceIds, sourceIds, $"{path}.sourceIds", errors);
         }
 

@@ -19,6 +19,8 @@ public sealed record SeedMetadata
     public required string LicenseUrl { get; init; }
     public string? DatasetVersion { get; init; }
     public string? EditorialNote { get; init; }
+    public string? Changelog { get; init; }
+    public string? DoiStub { get; init; }
 }
 
 public sealed record SeedSource
@@ -30,6 +32,7 @@ public sealed record SeedSource
     public string? PublisherOrCollection { get; init; }
     public string? Identifier { get; init; }
     public string? LicenseNote { get; init; }
+    public string? Tier { get; init; }
 }
 
 public sealed record SeedEntity
@@ -77,6 +80,8 @@ public sealed record SeedClaim
     public required string SubjectEntityId { get; init; }
     public required string Statement { get; init; }
     public required string Certainty { get; init; }
+    public string? Interpretation { get; init; }
+    public string? SourceLocator { get; init; }
     public IReadOnlyList<string> SourceIds { get; init; } = Array.Empty<string>();
 }
 

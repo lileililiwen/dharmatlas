@@ -137,6 +137,7 @@ public sealed class EntityDetailService : IEntityDetailService
         Title = s.Title,
         Author = s.Author,
         Date = s.Date,
-        Identifier = s.Identifier
+        Identifier = s.Identifier,
+        Tier = s.Tier?.ToString()
     };
 }

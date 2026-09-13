@@ -19,6 +19,7 @@ public class SourceConfiguration : IEntityTypeConfiguration<Source>
         builder.Property(s => s.Date).HasColumnName("date");
         builder.Property(s => s.PublisherOrCollection).HasColumnName("publisher_or_collection");
         builder.Property(s => s.Identifier).HasColumnName("identifier");
+        builder.Property(s => s.Tier).HasColumnName("tier").HasConversion<string?>();
         builder.HasIndex(s => s.Identifier, "ix_sources_identifier").IsUnique(false);
     }
 }
