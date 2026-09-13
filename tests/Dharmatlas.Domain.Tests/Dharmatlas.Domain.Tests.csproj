@@ -19,6 +19,7 @@
   <ItemGroup>
     <None Include="..\..\data\seed\v1\manifest.json" Link="data\seed\v1\manifest.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\data\seed\v2\manifest.json" Link="data\seed\v2\manifest.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="fixtures\multilingual.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,187 @@
+{
+  "version": 1,
+  "note": "Multilingual search fidelity benchmark. Every case resolves to one canonical entity; the runner asserts the expected id ranks first (or within minRank) and reports p50/p95 at limit=100 against the 250ms adoption gate. Scripts: latin, devanagari, hani (traditional + simplified), hangul, hiragana, tibetan. Romanizations: IAST, Pinyin (with tones), Wylie, Wade-Giles (plus Hepburn and McCune-Reischauer probes).",
+  "entities": [
+    {
+      "id": "buddha",
+      "canonical": "The Buddha",
+      "type": "Person",
+      "aliases": [
+        { "value": "Siddhattha Gotama", "language": "pli", "script": "latin", "romanization": "IAST" },
+        { "value": "Sakyamuni", "language": "san", "script": "latin", "romanization": "IAST" },
+        { "value": "शाक्यमुनि", "language": "san", "script": "devanagari", "romanization": "" },
+        { "value": "悉達多", "language": "zho", "script": "hani", "romanization": "" },
+        { "value": "釈迦", "language": "jpn", "script": "hani", "romanization": "" },
+        { "value": "Shakamuni", "language": "jpn", "script": "latin", "romanization": "Hepburn" },
+        { "value": "Sakya Thub pa", "language": "bod", "script": "latin", "romanization": "Wylie" },
+        { "value": "Shijiamouni", "language": "zho", "script": "latin", "romanization": "Pinyin" }
+      ]
+    },
+    {
+      "id": "ashoka",
+      "canonical": "Ashoka",
+      "type": "Person",
+      "aliases": [
+        { "value": "Aśoka", "language": "san", "script": "latin", "romanization": "IAST" },
+        { "value": "अशोक", "language": "san", "script": "devanagari", "romanization": "" },
+        { "value": "阿育王", "language": "zho", "script": "hani", "romanization": "" },
+        { "value": "Ayuwang", "language": "zho", "script": "latin", "romanization": "Pinyin" },
+        { "value": "Asoka", "language": "eng", "script": "latin", "romanization": "" }
+      ]
+    },
+    {
+      "id": "nagarjuna",
+      "canonical": "Nagarjuna",
+      "type": "Person",
+      "aliases": [
+        { "value": "Nāgārjuna", "language": "san", "script": "latin", "romanization": "IAST" },
+        { "value": "नागार्जुन", "language": "san", "script": "devanagari", "romanization": "" },
+        { "value": "龍樹", "language": "zho", "script": "hani", "romanization": "" },
+        { "value": "Longshu", "language": "zho", "script": "latin", "romanization": "Pinyin" },
+        { "value": "Ryūju", "language": "jpn", "script": "latin", "romanization": "Hepburn" }
+      ]
+    },
+    {
+      "id": "xuanzang",
+      "canonical": "Xuanzang",
+      "type": "Person",
+      "aliases": [
+        { "value": "Xuánzàng", "language": "zho", "script": "latin", "romanization": "Pinyin" },
+        { "value": "Hsüan-tsang", "language": "zho", "script": "latin", "romanization": "Wade-Giles" },
+        { "value": "玄奘", "language": "zho", "script": "hani", "romanization": "" },
+        { "value": "현장", "language": "kor", "script": "hangul", "romanization": "" },
+        { "value": "Genjō", "language": "jpn", "script": "latin", "romanization": "Hepburn" }
+      ]
+    },
+    {
+      "id": "kumarajiva",
+      "canonical": "Kumarajiva",
+      "type": "Person",
+      "aliases": [
+        { "value": "Kumārajīva", "language": "san", "script": "latin", "romanization": "IAST" },
+        { "value": "鳩摩羅什", "language": "zho", "script": "hani", "romanization": "" },
+        { "value": "鸠摩罗什", "language": "zho", "script": "hani", "romanization": "" },
+        { "value": "Jiumoluoshi", "language": "zho", "script": "latin", "romanization": "Pinyin" }
+      ]
+    },
+    {
+      "id": "faxian",
+      "canonical": "Faxian",
+      "type": "Person",
+      "aliases": [
+        { "value": "Fa-hsien", "language": "zho", "script": "latin", "romanization": "Wade-Giles" },
+        { "value": "Fǎxiǎn", "language": "zho", "script": "latin", "romanization": "Pinyin" },
+        { "value": "法顯", "language": "zho", "script": "hani", "romanization": "" },
+        { "value": "法显", "language": "zho", "script": "hani", "romanization": "" },
+        { "value": "법현", "language": "kor", "script": "hangul", "romanization": "" }
+      ]
+    },
+    {
+      "id": "wonhyo",
+      "canonical": "Wonhyo",
+      "type": "Person",
+      "aliases": [
+        { "value": "원효", "language": "kor", "script": "hangul", "romanization": "" },
+        { "value": "元曉", "language": "zho", "script": "hani", "romanization": "" },
+        { "value": "Wŏnhyo", "language": "kor", "script": "latin", "romanization": "McCune-Reischauer" }
+      ]
+    },
+    {
+      "id": "shotoku",
+      "canonical": "Shotoku Taishi",
+      "type": "Person",
+      "aliases": [
+        { "value": "聖徳太子", "language": "jpn", "script": "hani", "romanization": "" },
+        { "value": "しょうとくたいし", "language": "jpn", "script": "hiragana", "romanization": "" },
+        { "value": "Shōtoku Taishi", "language": "jpn", "script": "latin", "romanization": "Hepburn" }
+      ]
+    },
+    {
+      "id": "nalanda",
+      "canonical": "Nalanda",
+      "type": "Place",
+      "aliases": [
+        { "value": "Nālandā", "language": "san", "script": "latin", "romanization": "IAST" },
+        { "value": "नालंदा", "language": "san", "script": "devanagari", "romanization": "" },
+        { "value": "那爛陀", "language": "zho", "script": "hani", "romanization": "" }
+      ]
+    },
+    {
+      "id": "nalanda-mahavihara",
+      "canonical": "Nalanda Mahavihara",
+      "type": "Institution",
+      "aliases": [
+        { "value": "Nalanda", "language": "eng", "script": "latin", "romanization": "" }
+      ]
+    },
+    {
+      "id": "jokhang",
+      "canonical": "Jokhang",
+      "type": "Place",
+      "aliases": [
+        { "value": "Jo khang", "language": "bod", "script": "latin", "romanization": "Wylie" },
+        { "value": "འཇོ་ཁང་", "language": "bod", "script": "tibetan", "romanization": "" },
+        { "value": "大昭寺", "language": "zho", "script": "hani", "romanization": "" },
+        { "value": "Dazhaosi", "language": "zho", "script": "latin", "romanization": "Pinyin" }
+      ]
+    }
+  ],
+  "cases": [
+    { "query": "The Buddha", "expectedId": "buddha", "minRank": 1, "note": "exact primary" },
+    { "query": "Sakyamuni", "expectedId": "buddha", "minRank": 1, "note": "IAST alias without diacritics" },
+    { "query": "शाक्यमुनि", "expectedId": "buddha", "minRank": 1, "note": "devanagari script" },
+    { "query": "悉達多", "expectedId": "buddha", "minRank": 1, "note": "han script" },
+    { "query": "釈迦", "expectedId": "buddha", "minRank": 1, "note": "japanese han" },
+    { "query": "Sakya Thub pa", "expectedId": "buddha", "minRank": 1, "note": "wylie with spaces" },
+    { "query": "SakyaThubpa", "expectedId": "buddha", "minRank": 1, "note": "wylie without spaces (transliteration key)" },
+    { "query": "Ashoka", "expectedId": "ashoka", "minRank": 1, "note": "exact primary" },
+    { "query": "Aśoka", "expectedId": "ashoka", "minRank": 1, "note": "IAST diacritic" },
+    { "query": "अशोक", "expectedId": "ashoka", "minRank": 1, "note": "devanagari script" },
+    { "query": "阿育王", "expectedId": "ashoka", "minRank": 1, "note": "han script" },
+    { "query": "Asoka", "expectedId": "ashoka", "minRank": 1, "note": "spelling variant alias" },
+    { "query": "Ashkoa", "expectedId": "ashoka", "minRank": 1, "note": "transposed typo (fuzzy, distance 2)" },
+    { "query": "Nagarjuna", "expectedId": "nagarjuna", "minRank": 1, "note": "exact primary" },
+    { "query": "Nāgārjuna", "expectedId": "nagarjuna", "minRank": 1, "note": "IAST macrons" },
+    { "query": "नागार्जुन", "expectedId": "nagarjuna", "minRank": 1, "note": "devanagari script" },
+    { "query": "龍樹", "expectedId": "nagarjuna", "minRank": 1, "note": "han script" },
+    { "query": "Ryūju", "expectedId": "nagarjuna", "minRank": 1, "note": "hepburn macron" },
+    { "query": "Xuanzang", "expectedId": "xuanzang", "minRank": 1, "note": "exact primary" },
+    { "query": "Xuánzàng", "expectedId": "xuanzang", "minRank": 1, "note": "pinyin tone marks" },
+    { "query": "Hsüan-tsang", "expectedId": "xuanzang", "minRank": 1, "note": "wade-giles stored alias" },
+    { "query": "hsuantsang", "expectedId": "xuanzang", "minRank": 1, "note": "wade-giles without hyphen or diaeresis (transliteration key)" },
+    { "query": "玄奘", "expectedId": "xuanzang", "minRank": 1, "note": "han script" },
+    { "query": "현장", "expectedId": "xuanzang", "minRank": 1, "note": "hangul script" },
+    { "query": "Genjō", "expectedId": "xuanzang", "minRank": 1, "note": "hepburn macron" },
+    { "query": "Xuanzagn", "expectedId": "xuanzang", "minRank": 1, "note": "transposed typo (fuzzy, distance 2)" },
+    { "query": "Kumarajiva", "expectedId": "kumarajiva", "minRank": 1, "note": "exact primary" },
+    { "query": "Kumārajīva", "expectedId": "kumarajiva", "minRank": 1, "note": "IAST macrons" },
+    { "query": "鳩摩羅什", "expectedId": "kumarajiva", "minRank": 1, "note": "traditional han" },
+    { "query": "鸠摩罗什", "expectedId": "kumarajiva", "minRank": 1, "note": "simplified han" },
+    { "query": "Kumarajiv", "expectedId": "kumarajiva", "minRank": 1, "note": "truncated query (substring of the primary)" },
+    { "query": "Faxian", "expectedId": "faxian", "minRank": 1, "note": "exact primary" },
+    { "query": "Fa-hsien", "expectedId": "faxian", "minRank": 1, "note": "wade-giles stored alias" },
+    { "query": "fahsien", "expectedId": "faxian", "minRank": 1, "note": "wade-giles without hyphen (transliteration key)" },
+    { "query": "Fǎxiǎn", "expectedId": "faxian", "minRank": 1, "note": "pinyin tone marks" },
+    { "query": "法顯", "expectedId": "faxian", "minRank": 1, "note": "traditional han" },
+    { "query": "법현", "expectedId": "faxian", "minRank": 1, "note": "hangul script" },
+    { "query": "Wonhyo", "expectedId": "wonhyo", "minRank": 1, "note": "exact primary" },
+    { "query": "원효", "expectedId": "wonhyo", "minRank": 1, "note": "hangul script" },
+    { "query": "Wŏnhyo", "expectedId": "wonhyo", "minRank": 1, "note": "mcCune-reischauer breve" },
+    { "query": "Shotoku Taishi", "expectedId": "shotoku", "minRank": 1, "note": "exact primary" },
+    { "query": "Shōtoku Taishi", "expectedId": "shotoku", "minRank": 1, "note": "hepburn macron" },
+    { "query": "聖徳太子", "expectedId": "shotoku", "minRank": 1, "note": "han script" },
+    { "query": "しょうとくたいし", "expectedId": "shotoku", "minRank": 1, "note": "hiragana script" },
+    { "query": "Nalanda", "expectedId": "nalanda", "minRank": 1, "note": "exact primary outranks institution alias" },
+    { "query": "Nālandā", "expectedId": "nalanda", "minRank": 1, "note": "IAST macrons" },
+    { "query": "नालंदा", "expectedId": "nalanda", "minRank": 1, "note": "devanagari script" },
+    { "query": "那爛陀", "expectedId": "nalanda", "minRank": 1, "note": "han script" },
+    { "query": "Jokhang", "expectedId": "jokhang", "minRank": 1, "note": "exact primary" },
+    { "query": "Jo khang", "expectedId": "jokhang", "minRank": 1, "note": "wylie with space" },
+    { "query": "Jokhang Temple", "expectedId": "jokhang", "minRank": 1, "note": "longer query containing the name (substring)" },
+    { "query": "འཇོ་ཁང་", "expectedId": "jokhang", "minRank": 1, "note": "tibetan script" },
+    { "query": "大昭寺", "expectedId": "jokhang", "minRank": 1, "note": "han script" }
+  ],
+  "ambiguous": [
+    { "query": "Nalanda", "expectedIds": ["nalanda", "nalanda-mahavihara"], "note": "shared name stays two separate hits" }
+  ]
+}

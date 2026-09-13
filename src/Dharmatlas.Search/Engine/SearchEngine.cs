@@ -1,5 +1,3 @@
-using System.Globalization;
-using System.Text;
 using Dharmatlas.Domain;
 using Dharmatlas.Domain.Entities;
 using Dharmatlas.Search.Models;
@@ -12,12 +10,28 @@ namespace Dharmatlas.Search.Engine;
 /// romanizations, ranks the matches, and returns one stable hit per entity so a
 /// single identity never appears multiple times for its several aliases. Kept
 /// independent of EF Core so it can be unit tested without a database.
+/// Pipeline per name, best wins: exact normalized match, transliteration-key
+/// match (Wade-Giles/Pinyin/Wylie tolerant), substring, then bounded
+/// edit-distance fuzzy (distance at most 2). Primary names outrank aliases at
+/// every layer. Results are capped at 100 items with stable ordering; ambiguous
+/// terms surface every candidate as a separate hit instead of merging.
 /// </summary>
 public static class SearchEngine
 {
+    /// <summary>Hard result cap: no query returns more than 100 hits.</summary>
+    public const int MaxResults = 100;
+
+    private const int MaxFuzzyDistance = 2;
+    private const int MinFuzzyLength = 3;
+
     private const int ExactPrimaryScore = 100;
     private const int ExactAliasScore = 80;
-    private const int SubstringScore = 40;
+    private const int TransliterationPrimaryScore = 70;
+    private const int TransliterationAliasScore = 60;
+    private const int SubstringPrimaryScore = 40;
+    private const int SubstringAliasScore = 30;
+    private const int FuzzyPrimaryScore = 20;
+    private const int FuzzyAliasScore = 15;
 
     /// <summary>
     /// Runs a search over the supplied (already materialized) entities. Returns a
@@ -31,8 +45,14 @@ public static class SearchEngine
             return new SearchResult { Term = term, Hits = Array.Empty<EntitySearchHit>() };
         }
 
-        var normalizedTerm = Normalize(term);
+        var normalizedTerm = NameNormalizer.Normalize(term);
+        var keyTerm = NameNormalizer.FoldTransliteration(normalizedTerm);
         var allowedTypes = query.Types;
+        var limit = Math.Min(query.Limit ?? MaxResults, MaxResults);
+        if (limit < 0)
+        {
+            limit = 0;
+        }
 
         var hits = new List<EntitySearchHit>();
 
@@ -49,7 +69,7 @@ public static class SearchEngine
                 continue;
             }
 
-            var best = BestMatch(entity, normalizedTerm);
+            var best = BestMatch(entity, normalizedTerm, keyTerm);
             if (best is null)
             {
                 continue;
@@ -62,6 +82,7 @@ public static class SearchEngine
                 CanonicalName = EntityNameReadModel.CanonicalName(entity.Names) ?? entity.Id.ToString(),
                 MatchedName = best.Value.Name.Value,
                 MatchedForm = Classify(best.Value.Name),
+                MatchKind = best.Value.Kind,
                 Region = entity.Region,
                 ActivePeriod = entity.ActivePeriod,
                 Certainty = entity.Certainty,
@@ -93,34 +114,46 @@ public static class SearchEngine
             return string.CompareOrdinal(a.CanonicalName, b.CanonicalName);
         });
 
-        var limited = query.Limit is { } limit && limit >= 0
-            ? hits.Take(limit).ToList()
-            : hits;
-
-        return new SearchResult { Term = term, Hits = limited };
+        return new SearchResult { Term = term, Hits = hits.Take(limit).ToList() };
     }
 
-    private static (EntityName Name, int Score)? BestMatch(SearchEntity entity, string normalizedTerm)
+    private static (EntityName Name, int Score, MatchKind Kind)? BestMatch(
+        SearchEntity entity, string normalizedTerm, string keyTerm)
     {
-        (EntityName Name, int Score)? best = null;
+        (EntityName Name, int Score, MatchKind Kind)? best = null;
 
         foreach (var name in entity.Names)
         {
-            var normalizedName = Normalize(name.Value);
+            var normalizedName = NameNormalizer.Normalize(name.Value);
             if (normalizedName.Length == 0)
             {
                 continue;
             }
 
+            MatchKind kind;
             int score;
+            var primary = name.IsPrimary;
             if (normalizedName == normalizedTerm)
             {
-                score = name.IsPrimary ? ExactPrimaryScore : ExactAliasScore;
+                kind = MatchKind.Exact;
+                score = primary ? ExactPrimaryScore : ExactAliasScore;
+            }
+            else if (keyTerm.Length > 0 &&
+                     NameNormalizer.FoldTransliteration(normalizedName) == keyTerm)
+            {
+                kind = MatchKind.Transliteration;
+                score = primary ? TransliterationPrimaryScore : TransliterationAliasScore;
             }
             else if (normalizedName.Contains(normalizedTerm, StringComparison.Ordinal) ||
                      normalizedTerm.Contains(normalizedName, StringComparison.Ordinal))
             {
-                score = SubstringScore;
+                kind = MatchKind.Substring;
+                score = primary ? SubstringPrimaryScore : SubstringAliasScore;
+            }
+            else if (IsFuzzyMatch(normalizedName, normalizedTerm))
+            {
+                kind = MatchKind.Fuzzy;
+                score = primary ? FuzzyPrimaryScore : FuzzyAliasScore;
             }
             else
             {
@@ -129,11 +162,26 @@ public static class SearchEngine
 
             if (best is null || score > best.Value.Score)
             {
-                best = (name, score);
+                best = (name, score, kind);
             }
         }
 
         return best;
+    }
+
+    internal static bool IsFuzzyMatch(string normalizedName, string normalizedTerm)
+    {
+        if (normalizedName.Length < MinFuzzyLength || normalizedTerm.Length < MinFuzzyLength)
+        {
+            return false;
+        }
+
+        if (Math.Abs(normalizedName.Length - normalizedTerm.Length) > MaxFuzzyDistance)
+        {
+            return false;
+        }
+
+        return NameNormalizer.LevenshteinDistance(normalizedName, normalizedTerm) <= MaxFuzzyDistance;
     }
 
     private static NameForm Classify(EntityName name)
@@ -151,24 +199,8 @@ public static class SearchEngine
     /// <summary>
     /// Case- and diacritic-insensitive normalization for matching across scripts
     /// and romanizations (e.g. "Hsuan-tsang" matches "Xuanzang", "玄奘").
+    /// Delegates to <see cref="NameNormalizer"/> so persistence and search share
+    /// one definition.
     /// </summary>
-    internal static string Normalize(string value)
-    {
-        if (value is null)
-        {
-            return string.Empty;
-        }
-
-        var decomposed = value.Trim().ToLowerInvariant().Normalize(NormalizationForm.FormD);
-        var builder = new StringBuilder(decomposed.Length);
-        foreach (var ch in decomposed)
-        {
-            if (CharUnicodeInfo.GetUnicodeCategory(ch) != UnicodeCategory.NonSpacingMark)
-            {
-                builder.Append(ch);
-            }
-        }
-
-        return builder.ToString().Normalize(NormalizationForm.FormC);
-    }
+    internal static string Normalize(string value) => NameNormalizer.Normalize(value);
 }

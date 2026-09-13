@@ -58,7 +58,7 @@ public static class PublicApiEndpoints
                 Hits = result.Hits.Select(h => new SearchHitView
                 {
                     Id = h.Id.ToString(), Type = h.Type.ToString(), CanonicalName = h.CanonicalName,
-                    MatchedName = h.MatchedName, MatchedForm = h.MatchedForm.ToString(), Region = h.Region,
+                    MatchedName = h.MatchedName, MatchedForm = h.MatchedForm.ToString(), MatchKind = h.MatchKind.ToString(), Region = h.Region,
                     ActivePeriod = h.ActivePeriod, Certainty = h.Certainty.ToString(), Score = h.Score,
                     DetailRoute = DetailRoute(h.Type, h.Id)
                 }).ToList()

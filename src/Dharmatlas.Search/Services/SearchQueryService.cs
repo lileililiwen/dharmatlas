@@ -16,6 +16,9 @@ namespace Dharmatlas.Search.Services;
 /// </summary>
 public sealed class SearchQueryService : ISearchQueryService
 {
+    /// <summary>Candidate cap before precise engine ranking (results cap at 100).</summary>
+    internal const int MaxCandidates = 1000;
+
     private readonly DharmatlasDbContext _db;
 
     public SearchQueryService(DharmatlasDbContext db) => _db = db;
@@ -28,17 +31,31 @@ public sealed class SearchQueryService : ISearchQueryService
             return new SearchResult { Term = term, Hits = Array.Empty<EntitySearchHit>() };
         }
 
+        // Candidate selection mirrors the engine's match layers: the raw form
+        // (alternate scripts), the base-normalized form (diacritic-insensitive),
+        // and the transliteration key (Wade-Giles/Pinyin/Wylie tolerant). The
+        // engine re-scores every candidate precisely, so an over-broad
+        // candidate set only costs work, never correctness. Capped so
+        // adversarial terms cannot materialize the whole table.
+        var normalizedTerm = NameNormalizer.Normalize(term);
+        var keyTerm = NameNormalizer.FoldTransliteration(normalizedTerm);
         IQueryable<EntityName> namesQuery = _db.EntityNames.AsNoTracking();
         if (_db.Database.IsRelational())
         {
-            namesQuery = namesQuery.Where(n => EF.Functions.ILike(n.Value, $"%{term}%"));
+            namesQuery = namesQuery.Where(n =>
+                EF.Functions.ILike(n.Value, $"%{term}%") ||
+                EF.Functions.ILike(EF.Property<string>(n, "NormalizedValue"), $"%{normalizedTerm}%") ||
+                EF.Functions.ILike(EF.Property<string>(n, "NormalizedValue"), $"%{keyTerm}%"));
         }
         else
         {
-            namesQuery = namesQuery.Where(n => n.Value.Contains(term, StringComparison.OrdinalIgnoreCase));
+            namesQuery = namesQuery.Where(n =>
+                n.Value.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                EF.Property<string>(n, "NormalizedValue").Contains(normalizedTerm, StringComparison.Ordinal) ||
+                EF.Property<string>(n, "NormalizedValue").Contains(keyTerm, StringComparison.Ordinal));
         }
 
-        var candidateIds = await namesQuery.Select(n => n.EntityId).Distinct().ToListAsync(cancellationToken);
+        var candidateIds = await namesQuery.Select(n => n.EntityId).Distinct().Take(MaxCandidates).ToListAsync(cancellationToken);
         var entitiesQuery = _db.Entities.AsNoTracking().Where(e => candidateIds.Contains(e.Id));
         if (query.Types is { Count: > 0 }) entitiesQuery = entitiesQuery.Where(e => query.Types.Contains(e.Type));
         var entities = await entitiesQuery.ToListAsync(cancellationToken);

@@ -23,6 +23,9 @@ public sealed record EntitySearchHit
     /// <summary>Which kind of name form matched (canonical / romanization / alternate script).</summary>
     public required NameForm MatchedForm { get; init; }
 
+    /// <summary>How the term matched (exact / transliteration / substring / fuzzy).</summary>
+    public required MatchKind MatchKind { get; init; }
+
     /// <summary>Resolved region, when the entity has one.</summary>
     public string? Region { get; init; }
 

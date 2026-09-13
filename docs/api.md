@@ -12,7 +12,22 @@ GET /api/v1/search?q=Xuanzang&type=Person&limit=20
 
 Each hit includes the matched name form, canonical name, certainty, and a
 `detailRoute` such as `/persons/{id}`. Query terms may use alternate scripts or
-romanizations.
+romanizations. `matchKind` explains the match (`Exact`, `Transliteration`,
+`Substring`, or `Fuzzy`); `matchedName` is the exact stored form that matched,
+so transliteration and fuzzy hits stay transparent. Example hit:
+
+```json
+{
+  "id": "{xuanzang-id}",
+  "type": "Person",
+  "canonicalName": "Xuanzang",
+  "matchedName": "Hsüan-tsang",
+  "matchedForm": "Romanization",
+  "matchKind": "Transliteration",
+  "score": 60,
+  "detailRoute": "/persons/{xuanzang-id}"
+}
+```
 
 ## Explore uncertain dates
 

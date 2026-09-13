@@ -22,6 +22,12 @@ public class EntityNameConfiguration : IEntityTypeConfiguration<EntityName>
         builder.Property(n => n.Value).HasColumnName("value").HasMaxLength(512).IsRequired();
         builder.Property(n => n.IsPrimary).HasColumnName("is_primary");
 
+        // Storage-only normalized form for diacritic-insensitive candidate
+        // selection. Populated by DharmatlasDbContext on save via the shared
+        // NameNormalizer; the authored Value remains the display source of truth.
+        builder.Property<string>("NormalizedValue").HasColumnName("normalized_value").IsRequired();
+        builder.HasIndex("NormalizedValue").HasDatabaseName("ix_entity_names_normalized_value");
+
         builder.HasIndex(n => new { n.Language, n.Value }, "ix_entity_names_lang_value");
         builder.HasIndex(n => n.Value, "ix_entity_names_value");
         builder.HasIndex(n => new { n.Value, n.EntityId }, "ix_entity_names_value_entity");

@@ -17,6 +17,7 @@ public sealed record SearchHitView
     public required string CanonicalName { get; init; }
     public required string MatchedName { get; init; }
     public required string MatchedForm { get; init; }
+    public required string MatchKind { get; init; }
     public string? Region { get; init; }
     public string? ActivePeriod { get; init; }
     public required string Certainty { get; init; }

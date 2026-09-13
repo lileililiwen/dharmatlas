@@ -27,6 +27,7 @@ public class DharmatlasDbContext : DbContext
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
+        PopulateNormalizedNames();
         ValidateEntityNames();
         return base.SaveChanges(acceptAllChangesOnSuccess);
     }
@@ -35,6 +36,7 @@ public class DharmatlasDbContext : DbContext
         bool acceptAllChangesOnSuccess,
         CancellationToken cancellationToken = default)
     {
+        PopulateNormalizedNames();
         ValidateEntityNames();
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
@@ -43,6 +45,18 @@ public class DharmatlasDbContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(DharmatlasDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
+    }
+
+    private void PopulateNormalizedNames()
+    {
+        foreach (var entry in ChangeTracker.Entries<EntityName>())
+        {
+            if (entry.State is EntityState.Added or EntityState.Modified)
+            {
+                entry.Property("NormalizedValue").CurrentValue =
+                    NameNormalizer.Normalize(entry.Entity.Value);
+            }
+        }
     }
 
     private void ValidateEntityNames()
