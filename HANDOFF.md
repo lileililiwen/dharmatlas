@@ -235,12 +235,43 @@ for offline builds).
 - `openspec validate --all --strict --no-interactive` -> **22 passed, 0 failed**.
 - `git diff --check` passed.
 
+`multilingual-search-fidelity` was archived as
+`2026-09-13-multilingual-search-fidelity`. It upgrades search to script-aware,
+transliteration-tolerant retrieval: pure `NameNormalizer` in
+`Dharmatlas.Domain` (NFKC, casefold, diacritic strip with kana-voicing guard,
+compatibility folds, Wade-Giles/Pinyin `hs`→`x`/`ts`→`z`/`-ien`→`-ian` key,
+CJK bigrams, bounded Levenshtein), ranking pipeline
+exact(100/80) > transliteration(70/60) > substring(40/30) > fuzzy(20/15,
+distance ≤ 2) with primary-over-alias at every layer, hard cap 100 results
+(1000 candidates), additive `MatchKind` on hits and the public search DTO
+(`matchedName`/`matchedForm`/`matchKind`), `entity_names.normalized_value`
+storage populated on save plus migration with backfill and `pg_trgm` GIN
+indexes, normalized+key candidate prefilter in `SearchQueryService`,
+`tests/.../fixtures/multilingual.json` (11 entities, 53 cases, 6 scripts ×
+4 romanizations, ambiguous multi-hit case), and `docs/search-fidelity.md`
+with the 250 ms p95 adoption gate.
+
+- New tests: **56 passed, 0 failed** (normalizer vectors, engine
+  transliteration/fuzzy/caps/no-merge, shadow-column, storage-backed
+  diacritic/variant/script resolution); full .NET suite: **238 passed, 0 failed**.
+- Benchmark: **53/53 pass, p50 0.92 ms, p95 2.46 ms** at limit=100 over
+  511 entities (500 distractors); gate p95 ≤ 250 ms.
+- PostgreSQL: migration applied; `normalized_value` + btree + both GIN trigram
+  indexes verified; CLI double import idempotent (53/75/13/44/14 twice);
+  85/85 names populated; EXPLAIN uses the trigram bitmap when selective
+  (85-row corpus seq-scans by planner choice — expected, not a regression).
+- Live host spot-checks on Postgres: `q=Xuanzang` → 200;
+  `q=hsuantsang` → `Transliteration` hits (score 70) on both coexisting v1+v2
+  rows; `q=玄奘` → empty because the seed stores latin values under `hani`
+  script (corpus gap, engine covered by fixture CJK cases).
+- `openspec validate --all --strict --no-interactive` -> **21 passed, 0 failed**.
+- `git diff --check` passed.
+
 ## Next change
 
-Four active maturity follow-up changes remain unimplemented (all tasks
+Three active maturity follow-up changes remain unimplemented (all tasks
 unchecked). `openspec list` shows:
 
-- `multilingual-search-fidelity` (0/6 tasks)
 - `atlas-visual-parity` (0/6 tasks)
 - `public-web-productization` (0/6 tasks)
 - `operations-and-release-maturity` (0/6 tasks)
@@ -251,13 +282,11 @@ Implement strictly one change at a time through the exact delivery workflow:
 
 1. `genuine-historical-corpus` — DONE (archived 2026-09-13).
 2. `open-governance-and-production-security` — DONE (archived 2026-09-13).
-3. `multilingual-search-fidelity` next — normalization, ranking, and the
-   benchmark fixture decide whether PostgreSQL remains sufficient; needs real
-   corpus names to measure against.
-4. `atlas-visual-parity` fourth — MapLibre, D3, and Cytoscape.js on bounded
+3. `multilingual-search-fidelity` — DONE (archived 2026-09-13).
+4. `atlas-visual-parity` next — MapLibre, D3, and Cytoscape.js on bounded
    read APIs with list fallbacks; needs real corpus + search ranking to be
    meaningful.
-5. `public-web-productization` fifth — router, SEO/sitemap, i18n shell, PWA
+5. `public-web-productization` — router, SEO/sitemap, i18n shell, PWA
    visited-read cache, onboarding, PII-free telemetry; needs stable routes and
    visual panes underneath.
 6. `operations-and-release-maturity` last — OTel traces, Sentry hook, SLOs,
