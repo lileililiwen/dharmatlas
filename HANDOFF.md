@@ -178,10 +178,62 @@ search, detail, API, export, and seed validation paths.
 - `openspec validate --all --strict --no-interactive` -> **15 passed, 0 failed**.
 - `git diff --check` passed.
 
+`genuine-historical-corpus` was archived as
+`2026-09-13-genuine-historical-corpus`. It replaces the v1 placeholder seed
+with a real 500 BCE–1000 CE corpus (`data/seed/v2/manifest.json`:
+**53 entities, 75 names, 13 sources, 44 claims, 14 relationships**),
+`docs/editorial-handbook.md`, source tiers persisted via migration
+`20260913232755_SourceTiers` (nullable `sources.tier`) and surfaced in
+detail/API/export views, claim interpretation + source-locator import mapping,
+tone/tier validation, `SeedPublicationReadiness` resolvability gate,
+`SeedCoverage` region/type matrix, `--dry-run` coverage/rejection report,
+review-only `CitationChecker`, dataset version `seed-2026-Q4` with
+`data/seed/v2/CHANGELOG.md` and DOI stub. Competing claims (Buddha dates,
+Japan 538 vs 552, First Council) persist as separate records.
+
+- New corpus tests: **11 passed, 0 failed**; full .NET suite: **159 passed, 0 failed**.
+- PostgreSQL: migration applied; CLI double import idempotent
+  (53/75/13/44/14 twice, no duplication); tier/interpretation/locator columns verified.
+- API spot-checks: Ashoka (Documented/Primary edict + TraditionalAccount chronicle
+  as separate claims), Xuanzang (Probable/Traditional), Nalanda institution sources.
+- Operator note: importer upserts by stable ID and never deletes; v1 rows coexist
+  in old databases, so production cutover should import v2 into a fresh database.
+- `openspec validate --all --strict --no-interactive` -> **21 passed, 0 failed**.
+- `git diff --check` passed.
+
 ## Next change
 
-There are no remaining active implementation changes. `openspec list` should
-show an empty change queue; future work should begin with a new audited proposal:
+Five active maturity follow-up changes remain unimplemented (all tasks
+unchecked). `openspec list` shows:
+
+- `open-governance-and-production-security` (0/6 tasks)
+- `multilingual-search-fidelity` (0/6 tasks)
+- `atlas-visual-parity` (0/6 tasks)
+- `public-web-productization` (0/6 tasks)
+- `operations-and-release-maturity` (0/6 tasks)
+
+## Build order
+
+Implement strictly one change at a time through the exact delivery workflow:
+
+1. `genuine-historical-corpus` — DONE (archived 2026-09-13).
+2. `open-governance-and-production-security` next — license, contribution
+   terms, OIDC reference, headers, non-root image, and secret/scan gates must
+   exist before opening contributions or deploying beyond local Compose.
+3. `multilingual-search-fidelity` third — normalization, ranking, and the
+   benchmark fixture decide whether PostgreSQL remains sufficient; needs real
+   corpus names to measure against.
+4. `atlas-visual-parity` fourth — MapLibre, D3, and Cytoscape.js on bounded
+   read APIs with list fallbacks; needs real corpus + search ranking to be
+   meaningful.
+5. `public-web-productization` fifth — router, SEO/sitemap, i18n shell, PWA
+   visited-read cache, onboarding, PII-free telemetry; needs stable routes and
+   visual panes underneath.
+6. `operations-and-release-maturity` last — OTel traces, Sentry hook, SLOs,
+   signed promotion with SBOM, nightly restore drill, Playwright/axe/k6 gates;
+   needs the full product surface to observe and gate.
+
+Start with:
 
 ```bash
 openspec list
