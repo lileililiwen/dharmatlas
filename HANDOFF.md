@@ -201,12 +201,45 @@ Japan 538 vs 552, First Council) persist as separate records.
 - `openspec validate --all --strict --no-interactive` -> **21 passed, 0 failed**.
 - `git diff --check` passed.
 
+`open-governance-and-production-security` was archived as
+`2026-09-13-open-governance-and-production-security`. It makes the repo
+adoptable and deployable: `LICENSE` (MIT code; data CC-BY-4.0 in
+`data/seed/v2/manifest.json` `metadata.license`), `CONTRIBUTING.md` (OpenSpec
+one-change workflow, DCO sign-off, seed licensing), `CODE_OF_CONDUCT.md`,
+`SECURITY.md` (7-day acknowledgement, 90-day remediation target), all linked
+from README; a dependency-free OIDC JWT-bearer reference handler
+(`OidcReferenceHandler` + cached `JwksKeyProvider` with rotation, `sub` to
+`NameIdentifier`/`sub` mapping for the existing contributor resolver,
+contributor/reviewer role mapping, unsigned/alien tokens rejected); a
+dev-only loopback handler gated to `DHARMATLAS_AUTH_MODE=dev-loopback` +
+Development (refused otherwise); fail-closed startup naming missing DB/OIDC
+keys; CSP/HSTS(HTTPS-only)/CORS-allowlist middleware; non-root container
+(`USER app`, verified `whoami` -> `app`); tiered rate limits
+(search 60/write 30/export 10 per minute) over `IRateLimitStore` with the
+in-memory default plus a Postgres-backed shared-budget option
+(`rate_limit_hits` table, no contributor/content data); `Directory.Build.props`
+NuGet audit, `npm audit --audit-level=high`, gitleaks secret scan, and
+Dependabot (NuGet + npm) in CI with `TreatWarningsAsErrors` (NU1801 exempt
+for offline builds).
+
+- New governance tests: **21 passed, 0 failed**; full .NET suite: **180 passed, 0 failed**.
+- Host build: passed with 0 warnings and 0 errors, including the
+  `TreatWarningsAsErrors` gate (NU1801 exempt).
+- Container `dharmatlas:governance` builds; fail-closed verified inside the
+  image for missing DB and for `oidc` mode with missing OIDC keys.
+- Burst verified over HTTP: third request at SearchPerMinute=2 -> 429 with
+  `Retry-After`; denied export -> 429 with empty body (no partial export).
+- Deny coverage: anonymous contribution write denied (existing host smoke),
+  self-approval denied (existing contribution service test), expired/wrong-
+  audience/wrong-issuer/tampered/unsigned OIDC tokens denied (new).
+- `openspec validate --all --strict --no-interactive` -> **22 passed, 0 failed**.
+- `git diff --check` passed.
+
 ## Next change
 
-Five active maturity follow-up changes remain unimplemented (all tasks
+Four active maturity follow-up changes remain unimplemented (all tasks
 unchecked). `openspec list` shows:
 
-- `open-governance-and-production-security` (0/6 tasks)
 - `multilingual-search-fidelity` (0/6 tasks)
 - `atlas-visual-parity` (0/6 tasks)
 - `public-web-productization` (0/6 tasks)
@@ -217,10 +250,8 @@ unchecked). `openspec list` shows:
 Implement strictly one change at a time through the exact delivery workflow:
 
 1. `genuine-historical-corpus` — DONE (archived 2026-09-13).
-2. `open-governance-and-production-security` next — license, contribution
-   terms, OIDC reference, headers, non-root image, and secret/scan gates must
-   exist before opening contributions or deploying beyond local Compose.
-3. `multilingual-search-fidelity` third — normalization, ranking, and the
+2. `open-governance-and-production-security` — DONE (archived 2026-09-13).
+3. `multilingual-search-fidelity` next — normalization, ranking, and the
    benchmark fixture decide whether PostgreSQL remains sufficient; needs real
    corpus names to measure against.
 4. `atlas-visual-parity` fourth — MapLibre, D3, and Cytoscape.js on bounded
