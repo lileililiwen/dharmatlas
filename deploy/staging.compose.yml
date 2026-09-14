@@ -1,0 +1,21 @@
+services:
+  host:
+    image: dharmatlas:${IMAGE_TAG:-staging}
+    user: app
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 128M
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      DHARMATLAS_OTLP_ENDPOINT: ${DHARMATLAS_OTLP_ENDPOINT:-}
+      DHARMATLAS_SENTRY_DSN: ${DHARMATLAS_SENTRY_DSN:-}
+    env_file:
+      - staging.env
+    depends_on:
+      postgres:
+        condition: service_healthy

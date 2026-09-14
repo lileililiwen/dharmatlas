@@ -1,0 +1,55 @@
+name: Release promotion
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  staging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Migration pre-check
+        run: bash scripts/migration-precheck.sh
+      - name: Build image
+        run: docker build -t dharmatlas:${{ github.ref_name }}-staging .
+      - name: SBOM attestation
+        uses: anchore/sbom-action@v0
+        with:
+          image: dharmatlas:${{ github.ref_name }}-staging
+          output-file: sbom-staging.spdx.json
+      - name: Sign staging image
+        uses: sigstore/cosign-installer@v3
+      - run: cosign sign --yes dharmatlas:${{ github.ref_name }}-staging
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+      - name: Journey gates against staging
+        run: |
+          npx playwright test
+          npx k6 run k6/load.js
+
+  promote-prod:
+    runs-on: ubuntu-latest
+    needs: staging
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Retain previous prod image
+        run: docker pull dharmatlas:prod || true
+      - name: Promote signed image to prod
+        run: |
+          docker tag dharmatlas:${{ github.ref_name }}-staging dharmatlas:prod
+          cosign copy dharmatlas:${{ github.ref_name }}-staging dharmatlas:prod || true
+      - name: SBOM attestation for prod
+        uses: anchore/sbom-action@v0
+        with:
+          image: dharmatlas:prod
+          output-file: sbom-prod.spdx.json
+      - name: Health gate after promotion
+        run: |
+          curl --fail "$PROD_BASE_URL/health/ready"
+          curl --fail "$PROD_BASE_URL/metrics"

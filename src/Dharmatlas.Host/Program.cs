@@ -53,6 +53,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddScoped<ITimelineQueryService, TimelineQueryService>();
 builder.Services.AddScoped<IMapQueryService, MapQueryService>();
 builder.Services.AddScoped<ISearchQueryService, SearchQueryService>();
+builder.Services.AddSingleton<IErrorReporter, LoggingErrorReporter>();
 builder.Services.AddPublicApi(builder.Configuration);
 
 // Postgres-backed shared budgets when selected; fail closed without a

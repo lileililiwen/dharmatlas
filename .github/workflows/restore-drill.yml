@@ -1,0 +1,41 @@
+name: Nightly restore drill
+
+on:
+  schedule:
+    - cron: 0 3 * * *
+  workflow_dispatch:
+
+jobs:
+  restore-drill:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: dharmatlas_drill
+          POSTGRES_USER: dharmatlas
+          POSTGRES_PASSWORD: dharmatlas-drill
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dharmatlas -d dharmatlas_drill"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet restore Dharmatlas.slnx --nologo
+      - name: Backup, disposable restore, migrate, verify
+        env:
+          DHARMATLAS_DATABASE_CONNECTION: Host=localhost;Port=5432;Database=dharmatlas_drill;Username=dharmatlas;Password=dharmatlas-drill
+          DRILL_DATABASE: dharmatlas_restore_verify
+          HOST_BASE_URL: http://localhost:18080
+        run: bash scripts/restore-drill.sh
+      - name: Report drill metric
+        if: always()
+        run: echo "dharmatlas_restore_drill_success ${{ job.status == 'success' && 1 || 0 }}"

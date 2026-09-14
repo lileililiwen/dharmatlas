@@ -93,9 +93,18 @@ down-migrated.
 
 Every request receives an `X-Correlation-ID` response header. If a valid
 `X-Correlation-ID` request header is supplied, it is preserved; otherwise the
-host generates one. Structured request logs include only method, route, status,
+host generates one. The host starts an `Activity` on the `Dharmatlas.Host`
+trace source tagged with the correlation ID, so structured logs, W3C traces,
+and scrubbed error reports join on one key. Point the deployment's OTLP
+collector at `DHARMATLAS_OTLP_ENDPOINT`; Sentry reporting is opt-in via
+`DHARMATLAS_SENTRY_DSN` and always passes through the PII scrub first.
+
+Structured request logs include only method, route, status,
 duration, and correlation ID. They must not include source text, contributor
-email, authentication claims, or private payloads.
+email, authentication claims, or private payloads. `TelemetryScrubber` drops
+identity and content keys (`email`, `claim_text`, `source_text`,
+`authorization`, `sub`, tokens) and redacts email addresses in free text
+before any transmission.
 
 The `/metrics` endpoint exposes vendor-neutral counters. The stable metric names
 are `dharmatlas_http_requests_total`, `dharmatlas_http_request_duration_ms`,
@@ -105,6 +114,29 @@ are `dharmatlas_http_requests_total`, `dharmatlas_http_request_duration_ms`,
 forward these metrics using the deployment's approved monitoring system, with
 short retention for request metrics and longer retention for aggregate release
 and failure counters.
+
+## SLOs and alerts
+
+Thresholds and PromQL live in `docs/slo.md`; alert rules with `runbook_url`
+annotations live in `ops/prometheus-alerts.yml`; response procedures live in
+`docs/runbook.md`; dashboard queries live in `ops/dashboard.md`.
+
+- Public read p95 < 300 ms; search p95 < 250 ms (ties to the engine gate in
+  `docs/search-fidelity.md`).
+- Readiness success > 99.9%; export success > 99%; 5xx rate < 0.1%.
+
+## Release train
+
+Tagged releases promote `staging` to `prod` through
+`.github/workflows/release.yml`: migration pre-check
+(`scripts/migration-precheck.sh`), image build, SBOM attestation (syft),
+cosign signing, then Playwright journeys, axe, and k6 gates against staging.
+Only a green staging image promotes; the previous prod image is retained and
+production stays on it when staging checks fail. Production data rollback is
+restore-from-backup only; the train never auto-down-migrates. Minimal
+deployment shapes live in `deploy/staging.compose.yml`,
+`deploy/prod.compose.yml`, and `deploy/k8s/deployment.yaml` (non-root,
+resource limits, secret refs).
 
 ## Backup, restore, and rollback verification
 
@@ -123,6 +155,17 @@ migration, import, export, or public journey checks fail, stop promotion and
 restore the previous image. Do not automatically down-migrate production; use
 the reviewed migration's `Down` path only in the disposable verification
 database, then repeat the restore drill before resuming deployment.
+
+The nightly drill (`.github/workflows/restore-drill.yml` on a cron schedule,
+manual dispatch supported) runs `scripts/restore-drill.sh`: logical backup,
+restore into a disposable database, current migrations, then assertions on
+`/health/ready`, one published entity, and the export checksum. Promotion is
+blocked until the drill is green.
+
+## Cost
+
+See `docs/cost.md` for the Postgres, tile, telemetry-retention, and CI cost
+note.
 
 ## Release checklist
 
