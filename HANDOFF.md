@@ -269,11 +269,36 @@ with the 250 ms p95 adoption gate.
 
 ## Next change
 
-Two active maturity follow-up changes remain unimplemented (all tasks
+One active maturity follow-up change remains unimplemented (all tasks
 unchecked). `openspec list` shows:
 
-- `public-web-productization` (0/6 tasks)
 - `operations-and-release-maturity` (0/6 tasks)
+
+`public-web-productization` was archived as
+`2026-09-14-public-web-productization`. It adds history-API deep links with
+API `detailRoute` parity (`web/src/routes.js`) and a sourced 404, per-entity
+title/description/canonical/OG via client `meta.js` plus host meta injection
+on the index fallback and `/sitemap.xml` over published `Entities` only
+(`src/Dharmatlas.Host/Web/ProductizationEndpoints.cs`), an en + stub zh/ja
+chrome catalog with English fallback (`web/src/i18n.js`), a service worker
+caching the shell plus visited reads with 7-day TTL and a localStorage
+visited-read fallback with stale indicator (`web/public/sw.js`,
+`web/src/offline.js`), and a dismissible onboarding card with 3-step year
+tour plus anonymous PII-free telemetry with schema tests
+(`web/src/onboarding.js`, `web/src/telemetry.js`).
+
+- New productization tests: **6 passed, 0 failed** (router parity,
+  i18n fallback, telemetry PII rejection, meta, offline TTL, tour);
+  full web suite: **14 passed, 0 failed**; production Vite build passed.
+- New .NET productization tests: **3 passed, 0 failed** (entity-path
+  parity, sitemap published-only, meta injection); full .NET suite:
+  **241 passed, 0 failed**.
+- Host build: passed with 0 warnings and 0 errors.
+- Deep-link reload survives via the host index fallback (replacing
+  `MapFallbackToFile`); unknown IDs render the sourced 404 without draft
+  leaks; claim text is never auto-translated.
+- `openspec validate --all --strict --no-interactive` -> **21 passed, 0 failed**.
+- `git diff --check` passed.
 
 `atlas-visual-parity` was archived as
 `2026-09-14-atlas-visual-parity`. It wires a MapLibre time-filtered map
@@ -310,10 +335,8 @@ Implement strictly one change at a time through the exact delivery workflow:
 2. `open-governance-and-production-security` — DONE (archived 2026-09-13).
 3. `multilingual-search-fidelity` — DONE (archived 2026-09-13).
 4. `atlas-visual-parity` next — DONE (archived 2026-09-14).
-5. `public-web-productization` — router, SEO/sitemap, i18n shell, PWA
-   visited-read cache, onboarding, PII-free telemetry; needs stable routes and
-   visual panes underneath.
-6. `operations-and-release-maturity` last — OTel traces, Sentry hook, SLOs,
+5. `public-web-productization` — DONE (archived 2026-09-14).
+6. `operations-and-release-maturity` next last — OTel traces, Sentry hook, SLOs,
    signed promotion with SBOM, nightly restore drill, Playwright/axe/k6 gates;
    needs the full product surface to observe and gate.
 
