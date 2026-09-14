@@ -24,6 +24,6 @@ export default function () {
     'search p95 under 250ms': (r) => r.timings.duration < 250,
   });
 
-  const timeline = http.get(`${BASE}/api/v1/timeline?from=-500&to=1000`);
+  const timeline = http.get(`${BASE}/api/v1/timeline?fromYear=-500&toYear=1000`);
   check(timeline, { 'timeline 200': (r) => r.status === 200 });
 }

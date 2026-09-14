@@ -16,7 +16,7 @@ The first release covers approximately 500 BCE–1000 CE across India, Central A
 - Search across entities
 - Source records and historical certainty
 
-The initial target is curated, source-linked data rather than a large volume of articles. The repository currently includes a representative reviewed seed manifest; its exact counts are recorded in `HANDOFF.md` and should not be confused with the future coverage target.
+The initial target is curated, source-linked data rather than a large volume of articles. The repository currently ships the versioned `seed-2026-Q4` corpus (`data/seed/v2/manifest.json`: 53 entities, 75 names, 13 sources, 44 claims, 14 relationships); exact state is recorded in `HANDOFF.md` and should not be confused with the future coverage target.
 
 ## Principles
 
@@ -29,7 +29,7 @@ The initial target is curated, source-linked data rather than a large volume of 
 
 ## Stack
 
-ASP.NET Core, PostgreSQL, React/Vite, and provider-neutral PostgreSQL-backed queries. The public UI is served by the ASP.NET host. MapLibre, D3, Cytoscape.js, and Elasticsearch remain deferred until separately justified by an approved change and real usage evidence.
+ASP.NET Core, PostgreSQL, React/Vite, and provider-neutral PostgreSQL-backed queries. The public UI is served by the ASP.NET host. The map pane uses MapLibre, the timeline pane D3, and the relationship graph Cytoscape.js; a dedicated search engine (Elasticsearch/OpenSearch) remains deferred until separately justified by the adoption gate in `docs/search-fidelity.md`.
 
 ## Status
 
@@ -47,7 +47,7 @@ The product is implemented and verified incrementally through the OpenSpec workf
 - A React/Vite public atlas with accessible list fallbacks, plus host health,
   correlation IDs, structured logs, metrics, CI gates, and operational runbooks.
 
-All fifteen OpenSpec changes are archived. There are no active OpenSpec changes;
+All twenty-three OpenSpec changes are archived. There are no active OpenSpec changes;
 future work should begin with a new audited proposal. See [ROADMAP.md](ROADMAP.md)
 for product direction and [HANDOFF.md](HANDOFF.md) for verified current state.
 

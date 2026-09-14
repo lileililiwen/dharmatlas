@@ -7,7 +7,9 @@ set -euo pipefail
 : "${DHARMATLAS_DATABASE_CONNECTION:?source connection is required}"
 : "${DRILL_DATABASE:?disposable drill database name is required}"
 : "${HOST_BASE_URL:?host base URL is required}"
-: "${DRILL_ENTITY_ID:=ashoka}"
+# Entity IDs are GUIDs (Dharmatlas.Domain.EntityId); the default is the seeded
+# Mauryan emperor person record in data/seed/v2/manifest.json.
+: "${DRILL_ENTITY_ID:=62000000-0000-0000-0000-000000000002}"
 
 DUMP_FILE="${DUMP_FILE:-/tmp/dharmatlas.drill.dump}"
 

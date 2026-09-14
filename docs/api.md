@@ -85,5 +85,8 @@ reviewer IDs from request bodies.
 - `POST /api/v1/contributions/{id}/review` — reviewer role; requires a decision
   reason, rejects self-approval by default, and records a server correlation ID.
 
-Approval is transactional on relational providers and uses a submission version
-token so concurrent decisions fail safely instead of overwriting history.
+Approval is transactional on relational providers. Concurrency is enforced
+server-side: `Submission.Version` is an EF concurrency token, so a stale
+concurrent decision fails with 400 ("changed while it was being reviewed")
+instead of overwriting history. The review request itself carries no version
+token — only decision and reason.

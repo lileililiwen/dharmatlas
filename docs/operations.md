@@ -108,12 +108,16 @@ before any transmission.
 
 The `/metrics` endpoint exposes vendor-neutral counters. The stable metric names
 are `dharmatlas_http_requests_total`, `dharmatlas_http_request_duration_ms`,
-`dharmatlas_readiness_failures_total`, `dharmatlas_slow_queries_total`,
-`dharmatlas_import_rejections_total`, `dharmatlas_moderation_decisions_total`,
-`dharmatlas_ai_drafts_total`, and `dharmatlas_export_jobs_total`. Scrape or
-forward these metrics using the deployment's approved monitoring system, with
-short retention for request metrics and longer retention for aggregate release
-and failure counters.
+`dharmatlas_http_server_duration_seconds` (OTel histogram on the
+`Dharmatlas.Host` meter), `dharmatlas_readiness_failures_total`,
+`dharmatlas_slow_queries_total`, `dharmatlas_import_rejections_total`,
+`dharmatlas_moderation_decisions_total`, `dharmatlas_ai_drafts_total`, and
+`dharmatlas_export_jobs_total`. The `/metrics` text snapshot carries the
+request and readiness-failure counters; histogram buckets and the remaining
+counters flow through the OTel meter to the deployment's collector at
+`DHARMATLAS_OTLP_ENDPOINT`. Scrape or forward these metrics using the
+deployment's approved monitoring system, with short retention for request
+metrics and longer retention for aggregate release and failure counters.
 
 ## SLOs and alerts
 
@@ -182,17 +186,23 @@ note.
 CI restores and builds the solution, runs tests against the repository test
 project, applies migrations to a disposable PostgreSQL service, runs frontend
 tests and a production build, validates all OpenSpec artifacts, and checks
-whitespace. Browser smoke and accessibility review remain release-checklist
-gates for the deployed public journey.
+whitespace. Tagged releases additionally run migration pre-check, SBOM
+attestation, cosign signing, and the Playwright journeys, axe check, and k6
+load gate against staging (`.github/workflows/release.yml`; journeys in
+`web/e2e/atlas.spec.js`, runner config in `web/playwright.config.js`,
+thresholds in `k6/load.js`). The restore drill runs nightly
+(`.github/workflows/restore-drill.yml` invoking `scripts/restore-drill.sh`).
 
 ## Seed import
 
-After applying migrations, load the reviewed seed snapshot with the import CLI:
+After applying migrations, load the reviewed seed snapshot with the import CLI
+(current dataset `seed-2026-Q4` in `data/seed/v2/`, see
+`data/seed/v2/CHANGELOG.md`):
 
 ```bash
 DHARMATLAS_DATABASE_CONNECTION='Host=localhost;Port=55434;Database=dharmatlas;Username=dharmatlas;Password=dharmatlas-local-only' \
   dotnet run --project src/Dharmatlas.Import/Dharmatlas.Import.csproj -- \
-  --file data/seed/v1/manifest.json
+  --file data/seed/v2/manifest.json
 ```
 
 The importer validates the complete manifest before writing and replaces only

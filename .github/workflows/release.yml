@@ -28,6 +28,7 @@ jobs:
           COSIGN_EXPERIMENTAL: "1"
       - name: Journey gates against staging
         run: |
+          npx playwright install --with-deps chromium
           npx playwright test
           npx k6 run k6/load.js
 

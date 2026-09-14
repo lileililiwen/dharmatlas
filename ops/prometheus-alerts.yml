@@ -9,7 +9,7 @@ groups:
           severity: page
         annotations:
           summary: Dharmatlas readiness checks are failing
-          runbook_url: https://github.com/anomalyco/dharmatlas/blob/main/docs/runbook.md#readiness-failure
+          runbook_url: https://github.com/lileililiwen/dharmatlas/blob/main/docs/runbook.md#readiness-failure
       - alert: DharmatlasHigh5xxRate
         expr: rate(dharmatlas_http_requests_total{status=~"5.."}[5m]) / rate(dharmatlas_http_requests_total[5m]) > 0.001
         for: 5m
@@ -17,7 +17,7 @@ groups:
           severity: page
         annotations:
           summary: Dharmatlas 5xx rate exceeds 0.1 percent
-          runbook_url: https://github.com/anomalyco/dharmatlas/blob/main/docs/runbook.md#5xx-spike
+          runbook_url: https://github.com/lileililiwen/dharmatlas/blob/main/docs/runbook.md#5xx-spike
       - alert: DharmatlasSlowReads
         expr: histogram_quantile(0.95, rate(dharmatlas_http_server_duration_seconds_bucket[5m])) > 0.3
         for: 10m
@@ -25,7 +25,7 @@ groups:
           severity: ticket
         annotations:
           summary: Dharmatlas public read p95 above 300ms
-          runbook_url: https://github.com/anomalyco/dharmatlas/blob/main/docs/runbook.md#slow-queries--slow-search
+          runbook_url: https://github.com/lileililiwen/dharmatlas/blob/main/docs/runbook.md#slow-queries--slow-search
       - alert: DharmatlasSlowSearch
         expr: histogram_quantile(0.95, rate(dharmatlas_http_server_duration_seconds_bucket{route=~".*search.*"}[5m])) > 0.25
         for: 10m
@@ -33,7 +33,7 @@ groups:
           severity: ticket
         annotations:
           summary: Dharmatlas search p95 above 250ms
-          runbook_url: https://github.com/anomalyco/dharmatlas/blob/main/docs/runbook.md#slow-queries--slow-search
+          runbook_url: https://github.com/lileililiwen/dharmatlas/blob/main/docs/runbook.md#slow-queries--slow-search
       - alert: DharmatlasExportFailures
         expr: rate(dharmatlas_export_jobs_total{outcome="failure"}[15m]) > 0
         for: 15m
@@ -41,7 +41,7 @@ groups:
           severity: ticket
         annotations:
           summary: Dharmatlas export jobs are failing
-          runbook_url: https://github.com/anomalyco/dharmatlas/blob/main/docs/runbook.md#export-failure
+          runbook_url: https://github.com/lileililiwen/dharmatlas/blob/main/docs/runbook.md#export-failure
       - alert: DharmatlasRestoreDrillFailing
         expr: dharmatlas_restore_drill_success != 1
         for: 30m
@@ -49,4 +49,4 @@ groups:
           severity: ticket
         annotations:
           summary: Dharmatlas nightly restore drill is not green
-          runbook_url: https://github.com/anomalyco/dharmatlas/blob/main/docs/runbook.md#nightly-restore-drill-failure
+          runbook_url: https://github.com/lileililiwen/dharmatlas/blob/main/docs/runbook.md#nightly-restore-drill-failure

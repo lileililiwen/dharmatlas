@@ -17,6 +17,7 @@ All queries join to traces and logs via the `correlation_id` / `X-Correlation-ID
 - Moderation decisions: `rate(dharmatlas_moderation_decisions_total[15m])`
 - AI drafts by kind: `rate(dharmatlas_ai_drafts_total[15m])`
 - Export success ratio: `rate(dharmatlas_export_jobs_total{outcome="success"}[30d]) / rate(dharmatlas_export_jobs_total[30d])`
-- Restore drill: `dharmatlas_restore_drill_success` (1 = green, pushed by the nightly drill job)
+- Restore drill: `dharmatlas_restore_drill_success` (1 = green, reported in the
+  nightly drill workflow log and forwarded by the deployment)
 
 See `docs/slo.md` for thresholds and `docs/runbook.md` for response steps.

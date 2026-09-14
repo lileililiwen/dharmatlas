@@ -16,6 +16,5 @@ services:
       DHARMATLAS_SENTRY_DSN: ${DHARMATLAS_SENTRY_DSN:-}
     env_file:
       - prod.env
-    depends_on:
-      postgres:
-        condition: service_healthy
+    # Production uses the externally managed database referenced by prod.env;
+    # there is intentionally no local postgres service here.

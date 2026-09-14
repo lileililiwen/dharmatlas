@@ -22,6 +22,13 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 12
+    env:
+      DHARMATLAS_DATABASE_CONNECTION: Host=localhost;Port=5432;Database=dharmatlas_drill;Username=dharmatlas;Password=dharmatlas-drill
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: dharmatlas
+      PGPASSWORD: dharmatlas-drill
+      ASPNETCORE_URLS: http://localhost:18080
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,9 +37,24 @@ jobs:
         with:
           dotnet-version: 10.0.x
       - run: dotnet restore Dharmatlas.slnx --nologo
+      - name: Migrate source database
+        run: >-
+          dotnet ef database update
+          --project src/Dharmatlas.Persistence/Dharmatlas.Persistence.csproj
+          --startup-project src/Dharmatlas.Host/Dharmatlas.Host.csproj
+      - name: Import reviewed seed snapshot
+        run: >-
+          dotnet run --project src/Dharmatlas.Import/Dharmatlas.Import.csproj --no-restore --
+          --file data/seed/v2/manifest.json
+      - name: Start host in background
+        run: |
+          nohup dotnet run --project src/Dharmatlas.Host/Dharmatlas.Host.csproj --no-restore > /tmp/dharmatlas-host.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            curl --fail --show-error http://localhost:18080/health/ready && break
+            sleep 2
+          done
       - name: Backup, disposable restore, migrate, verify
         env:
-          DHARMATLAS_DATABASE_CONNECTION: Host=localhost;Port=5432;Database=dharmatlas_drill;Username=dharmatlas;Password=dharmatlas-drill
           DRILL_DATABASE: dharmatlas_restore_verify
           HOST_BASE_URL: http://localhost:18080
         run: bash scripts/restore-drill.sh

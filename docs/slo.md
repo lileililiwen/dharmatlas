@@ -13,6 +13,14 @@ Full procedures live in `docs/runbook.md`.
 
 Notes:
 
+- Latency PromQL reads histogram buckets from the OTel `Dharmatlas.Host`
+  meter via the deployment's collector at `DHARMATLAS_OTLP_ENDPOINT`. The
+  `/metrics` text snapshot carries only the request and readiness-failure
+  counters, not buckets.
+- The restore-drill signal (`dharmatlas_restore_drill_success`, 1 = green) is
+  reported in the nightly drill workflow log; forwarding it to the alerting
+  system (e.g. Pushgateway) is deployment configuration.
+
 - Cardinality stays low: labels are method, route template, status, and
   bounded outcome/reason only. Query text, user IDs, emails, and claim text
   never appear as labels.

@@ -174,6 +174,35 @@ public sealed class OperationsMaturityTests
     }
 
     [Fact]
+    public void Restore_drill_default_entity_is_a_parseable_guid_person()
+    {
+        // EntityId is GUID-only: a slug default would make /persons/{id} return
+        // 400 and fail the drill. The default must parse.
+        var root = FindRepositoryRoot();
+        var script = File.ReadAllText(Path.Combine(root, "scripts", "restore-drill.sh"));
+        var marker = "DRILL_ENTITY_ID:=";
+        var start = script.IndexOf(marker, StringComparison.Ordinal);
+        Assert.True(start >= 0, "DRILL_ENTITY_ID default is missing.");
+
+        var value = script[(start + marker.Length)..].Split('}')[0];
+        Assert.True(Dharmatlas.Domain.EntityId.TryParse(value, out _),
+            $"Drill default entity '{value}' is not a valid entity id.");
+    }
+
+    [Fact]
+    public void Deploy_compose_files_reference_no_undefined_services()
+    {
+        var root = FindRepositoryRoot();
+        foreach (var file in new[] { "staging.compose.yml", "prod.compose.yml" })
+        {
+            var compose = File.ReadAllText(Path.Combine(root, "deploy", file));
+            Assert.DoesNotContain("depends_on", compose, StringComparison.Ordinal);
+        }
+
+        Assert.True(File.Exists(Path.Combine(root, "deploy", "k8s", "deployment.yaml")));
+    }
+
+    [Fact]
     public void Restore_drill_is_scheduled_nightly()
     {
         var root = FindRepositoryRoot();
@@ -192,6 +221,8 @@ public sealed class OperationsMaturityTests
         Assert.Contains("p(95)<300", load, StringComparison.Ordinal);
         Assert.Contains("250", load, StringComparison.Ordinal);
         Assert.Contains("http_req_failed", load, StringComparison.Ordinal);
+        Assert.Contains("fromYear", load, StringComparison.Ordinal);
+        Assert.Contains("toYear", load, StringComparison.Ordinal);
     }
 
     [Fact]

@@ -16,6 +16,5 @@ services:
       DHARMATLAS_SENTRY_DSN: ${DHARMATLAS_SENTRY_DSN:-}
     env_file:
       - staging.env
-    depends_on:
-      postgres:
-        condition: service_healthy
+    # Staging uses the externally managed database referenced by staging.env;
+    # there is intentionally no local postgres service here.
