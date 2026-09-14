@@ -269,12 +269,38 @@ with the 250 ms p95 adoption gate.
 
 ## Next change
 
-Three active maturity follow-up changes remain unimplemented (all tasks
+Two active maturity follow-up changes remain unimplemented (all tasks
 unchecked). `openspec list` shows:
 
-- `atlas-visual-parity` (0/6 tasks)
 - `public-web-productization` (0/6 tasks)
 - `operations-and-release-maturity` (0/6 tasks)
+
+`atlas-visual-parity` was archived as
+`2026-09-14-atlas-visual-parity`. It wires a MapLibre time-filtered map
+pane to `/api/v1/map` (configurable `VITE_TILE_URL` + attribution,
+clustering beyond 60 features, 500-cap refinement prompt, unknown-activity
+opt-in default off, tile-outage list fallback with notice), a D3 timeline
+pane rendering interval dates as bands (approximate dashed + `ca.` label,
+traditional `◈` glyph + tooltip, zoom in/out/reset with keyboard arrows,
+region/category filters), and a Cytoscape.js relationship graph pane
+(1-hop default, max 2-hop bounded to 5 first-hop neighbors, disputed
+relations as parallel edges, 25-per-page pagination with show-more). Every
+pane ships an identical semantic list fallback; reduced-motion disables
+transitions; controls are focus-visible with ARIA roles. Pure helpers
+(`geo.js`, `timelineBands.js`, `graph.js`) covered by
+`web/src/visualParity.test.js`; Playwright journeys + axe gate in
+`web/e2e/atlas.spec.js`; production container takes tile config via
+`ARG VITE_TILE_URL` / `VITE_TILE_ATTRIBUTION` with no secrets.
+
+- New visual-parity tests: **5 passed, 0 failed** (cap, clustering,
+  band/approximate/traditional, filter parity, disputed-split + pagination);
+  full web suite: **8 passed, 0 failed**; production Vite build passed
+  (maplibre-gl **6.9.0**, d3 **7.9.0**, cytoscape **3.34.3**).
+- Full .NET suite: **238 passed, 0 failed**.
+- Frontend audit: **0 vulnerabilities** (upgraded maplibre-gl 4.7.1 ->
+  6.9.0 to clear GHSA-jrc7-96c5-q579).
+- `openspec validate --all --strict --no-interactive` -> **21 passed, 0 failed**.
+- `git diff --check` passed.
 
 ## Build order
 
@@ -283,9 +309,7 @@ Implement strictly one change at a time through the exact delivery workflow:
 1. `genuine-historical-corpus` — DONE (archived 2026-09-13).
 2. `open-governance-and-production-security` — DONE (archived 2026-09-13).
 3. `multilingual-search-fidelity` — DONE (archived 2026-09-13).
-4. `atlas-visual-parity` next — MapLibre, D3, and Cytoscape.js on bounded
-   read APIs with list fallbacks; needs real corpus + search ranking to be
-   meaningful.
+4. `atlas-visual-parity` next — DONE (archived 2026-09-14).
 5. `public-web-productization` — router, SEO/sitemap, i18n shell, PWA
    visited-read cache, onboarding, PII-free telemetry; needs stable routes and
    visual panes underneath.
