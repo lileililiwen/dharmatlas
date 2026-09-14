@@ -269,10 +269,40 @@ with the 250 ms p95 adoption gate.
 
 ## Next change
 
-One active maturity follow-up change remains unimplemented (all tasks
-unchecked). `openspec list` shows:
+All maturity changes are implemented and archived. `openspec list` shows no
+remaining active changes.
 
-- `operations-and-release-maturity` (0/6 tasks)
+`operations-and-release-maturity` was archived as
+`2026-09-14-operations-and-release-maturity`. It closes the
+prototype-to-product operations gap with dependency-free traced telemetry
+(`DharmatlasActivitySource` W3C activities joining `X-Correlation-ID`,
+`IErrorReporter`/`LoggingErrorReporter` Sentry-compatible hook behind
+`TelemetryScrubber` PII redaction, `DHARMATLAS_OTLP_ENDPOINT` /
+`DHARMATLAS_SENTRY_DSN` env wiring), additive OTel-style instruments
+(`dharmatlas_http_server_duration_seconds` plus slow-query, import,
+moderation, AI-draft, and export counters), SLOs and PromQL
+(`docs/slo.md`: read p95 < 300 ms, search p95 < 250 ms, readiness > 99.9%,
+export > 99%), six alert rules with runbook URLs
+(`ops/prometheus-alerts.yml`), response procedures (`docs/runbook.md`),
+dashboard queries (`ops/dashboard.md`), cost note (`docs/cost.md`),
+staging→prod promotion with migration pre-check, SBOM attestation, and
+cosign signing (`.github/workflows/release.yml`, previous-image retention,
+no prod auto-down-migration), minimal staging/prod compose plus K8s
+manifests (`deploy/`), nightly backup→disposable-restore drill
+(`scripts/restore-drill.sh` asserting `/health/ready`, one entity, and
+export checksum; `.github/workflows/restore-drill.yml` on cron), and
+Playwright/axe/k6 gates (`web/playwright.config.js`, existing
+`web/e2e/atlas.spec.js` axe coverage, `k6/load.js` thresholds
+p95 < 300 ms / search 250 ms / errors < 1%).
+
+- New operations tests: **14 passed, 0 failed** (scrub, trace propagation,
+  SLO/alert/runbook, promotion, drill, load-gate file gates); full .NET
+  suite: **255 passed, 0 failed**.
+- Full web suite: **14 passed, 0 failed**; production Vite build passed.
+- Host build: passed with 0 warnings and 0 errors
+  (`TreatWarningsAsErrors`, NU1801 exempt).
+- `openspec validate --all --strict --no-interactive` -> **21 passed, 0 failed**.
+- `git diff --check` passed.
 
 `public-web-productization` was archived as
 `2026-09-14-public-web-productization`. It adds history-API deep links with
@@ -336,9 +366,7 @@ Implement strictly one change at a time through the exact delivery workflow:
 3. `multilingual-search-fidelity` — DONE (archived 2026-09-13).
 4. `atlas-visual-parity` next — DONE (archived 2026-09-14).
 5. `public-web-productization` — DONE (archived 2026-09-14).
-6. `operations-and-release-maturity` next last — OTel traces, Sentry hook, SLOs,
-   signed promotion with SBOM, nightly restore drill, Playwright/axe/k6 gates;
-   needs the full product surface to observe and gate.
+6. `operations-and-release-maturity` — DONE (archived 2026-09-14).
 
 Start with:
 
