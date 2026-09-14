@@ -3,6 +3,12 @@ WORKDIR /web
 COPY web/package*.json ./
 RUN npm ci
 COPY web/ ./
+# Configurable public tile style without secrets. Override at build time with
+# --build-arg VITE_TILE_URL=... and VITE_TILE_ATTRIBUTION=...
+ARG VITE_TILE_URL=https://demotiles.maplibre.org/style.json
+ARG VITE_TILE_ATTRIBUTION=© OpenStreetMap contributors © MapLibre demotiles
+ENV VITE_TILE_URL=$VITE_TILE_URL
+ENV VITE_TILE_ATTRIBUTION=$VITE_TILE_ATTRIBUTION
 RUN npm run build
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
