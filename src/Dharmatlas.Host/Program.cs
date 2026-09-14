@@ -5,6 +5,7 @@ using Dharmatlas.Host.Auth;
 using Dharmatlas.Host.Security;
 using Dharmatlas.Host.Startup;
 using Dharmatlas.Host.Observability;
+using Dharmatlas.Host.Web;
 using Dharmatlas.Map.Services;
 using Dharmatlas.Persistence;
 using Dharmatlas.Search.Services;
@@ -91,7 +92,8 @@ app.MapHealthChecks("/health/ready", new Microsoft.AspNetCore.Diagnostics.Health
 });
 app.MapObservability();
 app.MapPublicApi();
-app.MapFallbackToFile("index.html");
+app.MapProductization();
+app.MapFallback(ProductizationEndpoints.ServeIndexWithMetaAsync);
 
 if (string.Equals(rateLimits.Mode, RateLimitOptions.PostgresMode, StringComparison.OrdinalIgnoreCase))
 {

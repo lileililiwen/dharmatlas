@@ -5,12 +5,40 @@ import { displayDate, uncertaintyLabel } from './formatters.js';
 import { applyFeatureCap } from './geo.js';
 import { toBands, filterBands } from './timelineBands.js';
 import { buildNeighborhood, paginateEdges, GRAPH_PAGE_SIZE, GRAPH_MAX_DEPTH } from './graph.js';
+import { parseRoute, buildRoute, detailRouteToApi } from './routes.js';
+import { t, resolveLocale, supportedLocales } from './i18n.js';
+import { buildMeta, updateDocumentMeta } from './meta.js';
+import { saveVisit, loadVisit } from './offline.js';
+import { TOUR_STEPS, nextTourStep } from './onboarding.js';
+import { recordLocal } from './telemetry.js';
 import MapPane from './mapPane.jsx';
 import TimelinePane from './timelinePane.jsx';
 import GraphPane from './graphPane.jsx';
 import './styles.css';
 
 const modes = ['overview', 'timeline', 'map', 'graph'];
+
+function navigate(path) {
+  window.history.pushState({}, '', path);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+}
+
+function telemetryEnabled() {
+  try {
+    return localStorage.getItem('dharmatlas.telemetry.optout') !== '1';
+  } catch {
+    return true;
+  }
+}
+
+function count(kind, fields) {
+  if (!telemetryEnabled()) return;
+  try {
+    recordLocal(kind, fields);
+  } catch {
+    // Telemetry never breaks the surface.
+  }
+}
 
 function Badge({ children, tone = '' }) {
   return <span className={`badge ${tone}`}><span aria-hidden="true">·</span> {children}</span>;
@@ -24,7 +52,7 @@ function SourceList({ sources = [] }) {
   </li>)}</ul>;
 }
 
-function Search({ onSelect }) {
+function Search({ onSelect, locale }) {
   const [term, setTerm] = useState('');
   const [state, setState] = useState({ status: 'idle', hits: [] });
   useEffect(() => {
@@ -32,16 +60,19 @@ function Search({ onSelect }) {
     const controller = new AbortController();
     setState(current => ({ ...current, status: 'loading' }));
     const timer = setTimeout(() => get('search', { q: term.trim(), limit: 8 }, controller.signal)
-      .then(data => setState({ status: 'ready', hits: data.hits || [] }))
+      .then(data => {
+        setState({ status: 'ready', hits: data.hits || [] });
+        if (!(data.hits || []).length) count('search_no_hit', {});
+      })
       .catch(error => { if (error.name !== 'AbortError') setState({ status: 'error', hits: [], error: error.message }); }), 180);
     return () => { clearTimeout(timer); controller.abort(); };
   }, [term]);
   return <div className="search-wrap">
-    <label htmlFor="global-search">Search names and aliases</label>
-    <input id="global-search" value={term} onChange={event => setTerm(event.target.value)} placeholder="Try a person, place, text, or alias" autoComplete="off" />
+    <label htmlFor="global-search">{t(locale, 'search.label')}</label>
+    <input id="global-search" value={term} onChange={event => setTerm(event.target.value)} placeholder={t(locale, 'search.placeholder')} autoComplete="off" />
     {state.status === 'loading' ? <p className="status" aria-live="polite">Searching…</p> : null}
     {state.status === 'error' ? <p className="error" role="alert">{state.error}</p> : null}
-    {state.status === 'ready' && !state.hits.length ? <p className="status">No published match. Try another spelling or language.</p> : null}
+    {state.status === 'ready' && !state.hits.length ? <p className="status">{t(locale, 'search.noHit')}</p> : null}
     {state.hits.length ? <ul className="search-results" aria-label="Search results">{state.hits.map(hit => <li key={`${hit.type}-${hit.id}`}>
       <button type="button" onClick={() => onSelect(hit.detailRoute)}><span className="result-name">{hit.canonicalName}</span><span>{hit.matchedName} · {hit.type} · {uncertaintyLabel(hit.certainty)}</span></button>
     </li>)}</ul> : null}
@@ -223,24 +254,130 @@ function Explorer({ mode, onMode, onSelect, graphCenter, onGraphCenter }) {
   </section>;
 }
 
-function Detail({ route, onBack, onGraph }) {
-  const [state, setState] = useState({ status: 'loading', data: null });
-  useEffect(() => { const controller = new AbortController(); get(route.replace(/^\//, '').replace(/^api\/v1\//, ''), {}, controller.signal).then(data => setState({ status: 'ready', data })).catch(error => { if (error.name !== 'AbortError') setState({ status: 'error', error: error.message }); }); return () => controller.abort(); }, [route]);
+function Onboarding({ locale, step, onStep, onDismiss }) {
+  return <section className="notice" aria-labelledby="onboarding-title">
+    <h2 id="onboarding-title">{t(locale, 'onboarding.title')}</h2>
+    <p>{t(locale, 'onboarding.body')}</p>
+    <ol>{TOUR_STEPS.map((tStep, index) => <li key={tStep.id} aria-current={step === index ? 'step' : undefined}>{t(locale, tStep.textKey)}</li>)}</ol>
+    <div className="filter-row">
+      <button type="button" className="primary" onClick={() => { const next = nextTourStep(step); if (next === null) onDismiss(); else onStep(next); }}>{step === null ? t(locale, 'onboarding.dismiss') : 'Next step'}</button>
+      <button type="button" className="text-button" onClick={onDismiss}>{t(locale, 'onboarding.dismiss')}</button>
+    </div>
+    <p className="muted">{t(locale, 'telemetry.note')}</p>
+  </section>;
+}
+
+function NotFound({ locale, onHome }) {
+  return <main className="content"><p className="kicker">404</p><h1>{t(locale, 'notfound.title')}</h1><p className="lead">{t(locale, 'notfound.body')}</p><button className="primary" onClick={onHome}>{t(locale, 'detail.back')}</button></main>;
+}
+
+function Detail({ route, locale, onBack, onGraph }) {
+  const [state, setState] = useState({ status: 'loading', data: null, offline: false });
+  useEffect(() => {
+    const controller = new AbortController();
+    const apiPath = detailRouteToApi(route);
+    get(apiPath, {}, controller.signal)
+      .then(data => {
+        setState({ status: 'ready', data, offline: false });
+        saveVisit(route, data);
+        updateDocumentMeta(buildMeta(data, route, window.location.origin));
+        count('page_view_by_type', { entityType: data.type || 'Unknown' });
+      })
+      .catch(error => {
+        if (error.name === 'AbortError') return;
+        const cached = loadVisit(route);
+        if (cached.status === 'stale-ok' || cached.status === 'fresh') {
+          setState({ status: 'ready', data: cached.data, offline: true });
+          updateDocumentMeta(buildMeta(cached.data, route, window.location.origin));
+          count('offline_reuse', { entityType: cached.data?.type || 'Unknown' });
+        } else {
+          setState({ status: 'error', error: error.message });
+        }
+      });
+    return () => controller.abort();
+  }, [route]);
   if (state.status === 'loading') return <main className="content"><div className="skeleton" aria-label="Loading entity" /></main>;
-  if (state.status === 'error') return <main className="content"><p className="error" role="alert">{state.error}</p><button className="text-button" onClick={onBack}>Return to exploration</button></main>;
+  if (state.status === 'error') return <main className="content"><p className="kicker">404</p><h1>{t(locale, 'notfound.title')}</h1><p className="error" role="alert">{state.error}</p><p className="lead">{t(locale, 'notfound.body')}</p><button className="text-button" onClick={onBack}>{t(locale, 'detail.back')}</button></main>;
   const entity = state.data;
   const entityId = entity.id || route.split('/').pop();
-  return <main className="content detail"><button className="text-button" onClick={onBack}>← Back to exploration</button><p className="kicker">{entity.type}</p><h1>{entity.canonicalName}</h1><div className="badge-row"><Badge tone={entity.certainty}>{uncertaintyLabel(entity.certainty)}</Badge>{entity.region ? <Badge>{entity.region}</Badge> : null}</div>{entity.summary ? <p className="lead">{entity.summary}</p> : null}<button className="primary" onClick={() => onGraph(entityId)}>Open relationship graph</button><section><h2>Names</h2><ul className="name-list">{(entity.names || []).map(name => <li key={`${name.value}-${name.language}`}><strong>{name.value}</strong><span>{name.language} · {name.script}{name.isPrimary ? ' · primary' : ''}</span></li>)}</ul></section><section><h2>Public evidence</h2>{(entity.claims || []).length ? <ul className="claim-list">{entity.claims.map(claim => <li key={claim.id}><p>{claim.statement}</p><Badge tone={claim.interpretation}>{claim.interpretation}</Badge>{claim.sourceLocator ? <small>Locator: {claim.sourceLocator}</small> : null}<SourceList sources={claim.sources} /></li>)}</ul> : <p className="muted">No published claims with resolvable sources.</p>}</section><section><h2>Sources</h2><SourceList sources={entity.sources} /></section></main>;
+  return <main className="content detail">
+    <button className="text-button" onClick={onBack}>← {t(locale, 'detail.back')}</button>
+    {state.offline ? <p className="notice" role="status">{t(locale, 'offline.stale')}</p> : null}
+    <p className="kicker">{entity.type}</p><h1>{entity.canonicalName}</h1>
+    <div className="badge-row"><Badge tone={entity.certainty}>{uncertaintyLabel(entity.certainty)}</Badge>{entity.region ? <Badge>{entity.region}</Badge> : null}</div>
+    {entity.summary ? <p className="lead">{entity.summary}</p> : null}
+    <button className="primary" onClick={() => onGraph(entityId)}>Open relationship graph</button>
+    <section><h2>Names</h2><ul className="name-list">{(entity.names || []).map(name => <li key={`${name.value}-${name.language}`}><strong>{name.value}</strong><span>{name.language} · {name.script}{name.isPrimary ? ' · primary' : ''}</span></li>)}</ul></section>
+    <section><h2>{t(locale, 'detail.evidence')}</h2>{(entity.claims || []).length ? <ul className="claim-list">{entity.claims.map(claim => <li key={claim.id}><p>{claim.statement}</p><Badge tone={claim.interpretation}>{claim.interpretation}</Badge>{claim.sourceLocator ? <small>Locator: {claim.sourceLocator}</small> : null}<SourceList sources={claim.sources} /></li>)}</ul> : <p className="muted">{t(locale, 'detail.noClaims')}</p>}</section>
+    <section><h2>{t(locale, 'detail.sources')}</h2><SourceList sources={entity.sources} /></section>
+  </main>;
 }
 
 function App() {
-  const [mode, setMode] = useState('overview'); const [detailRoute, setDetailRoute] = useState(null);
+  const [path, setPath] = useState(() => window.location.pathname);
   const [graphCenter, setGraphCenter] = useState(null);
-  function openGraph(centerId) { setGraphCenter(centerId); setDetailRoute(null); setMode('graph'); }
-  if (detailRoute) return <><Header onSearch={() => setDetailRoute(null)} /><Detail route={detailRoute} onBack={() => setDetailRoute(null)} onGraph={openGraph} /></>;
-  return <><Header onSearch={() => document.getElementById('global-search')?.focus()} /><main><section className="hero"><div><p className="kicker">An open historical atlas of Buddhism</p><h1>Follow people, places, and texts across time.</h1><p className="lead">Source-first history with uncertainty left visible.</p></div><div className="hero-rail"><span>500 BCE</span><div className="hero-line" /><span>1000 CE</span></div></section><section className="search-panel"><Search onSelect={setDetailRoute} /></section><Explorer mode={mode} onMode={setMode} onSelect={setDetailRoute} graphCenter={graphCenter} onGraphCenter={setGraphCenter} /><nav className="view-links" aria-label="Explore sections">{modes.filter(item => item !== 'overview').map(item => <button key={item} onClick={() => setMode(item)}>{item === 'timeline' ? 'Timeline' : item === 'map' ? 'Map and list' : 'Graph'} <span aria-hidden="true">↗</span></button>)}</nav></main><footer><span>Dharmatlas</span><a href="/api/v1/meta">Public API</a><span>Source-first · non-sectarian · open</span></footer></>;
+  const [locale, setLocale] = useState(() => resolveLocale(typeof navigator !== 'undefined' ? navigator.language : 'en'));
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    try {
+      return localStorage.getItem('dharmatlas.onboarded') !== '1';
+    } catch {
+      return true;
+    }
+  });
+  const [tourStep, setTourStep] = useState(0);
+  useEffect(() => {
+    const onPop = () => setPath(window.location.pathname);
+    window.addEventListener('popstate', onPop);
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+  function go(next) {
+    navigate(next);
+    setPath(next);
+    window.scrollTo(0, 0);
+  }
+  function dismissOnboarding() {
+    setShowOnboarding(false);
+    try {
+      localStorage.setItem('dharmatlas.onboarded', '1');
+    } catch {
+      // Private mode: onboarding reappears, product still works.
+    }
+  }
+  const parsed = parseRoute(path);
+  function openGraph(centerId) {
+    setGraphCenter(centerId);
+    go('/graph');
+  }
+  const header = <Header locale={locale} onLocale={setLocale} onSearch={() => go('/')} onHome={() => go('/')} />;
+  if (parsed.kind === 'entity') {
+    return <>{header}{showOnboarding ? <main><Onboarding locale={locale} step={tourStep} onStep={setTourStep} onDismiss={dismissOnboarding} /></main> : null}<Detail route={parsed.path} locale={locale} onBack={() => go('/')} onGraph={openGraph} /><Footer locale={locale} /></>;
+  }
+  if (parsed.kind === 'notfound') {
+    return <>{header}<NotFound locale={locale} onHome={() => go('/')} /><Footer locale={locale} /></>;
+  }
+  const mode = parsed.kind === 'home' ? 'overview' : parsed.kind;
+  function onMode(next) {
+    go(next === 'overview' ? '/' : `/${next}`);
+  }
+  return <>{header}<main>
+    <section className="hero"><div><p className="kicker">An open historical atlas of Buddhism</p><h1>Follow people, places, and texts across time.</h1><p className="lead">{t(locale, 'app.lede')}</p></div><div className="hero-rail"><span>500 BCE</span><div className="hero-line" /><span>1000 CE</span></div></section>
+    {showOnboarding ? <Onboarding locale={locale} step={tourStep} onStep={setTourStep} onDismiss={dismissOnboarding} /> : null}
+    <section className="search-panel"><Search onSelect={go} locale={locale} /></section>
+    <Explorer mode={mode} onMode={onMode} onSelect={go} graphCenter={graphCenter} onGraphCenter={setGraphCenter} />
+    <nav className="view-links" aria-label="Explore sections">{modes.filter(item => item !== 'overview').map(item => <button key={item} onClick={() => onMode(item)}>{item === 'timeline' ? t(locale, 'nav.timeline') : item === 'map' ? t(locale, 'nav.map') : t(locale, 'nav.graph')} <span aria-hidden="true">↗</span></button>)}</nav>
+  </main><Footer locale={locale} /></>;
 }
 
-function Header({ onSearch }) { return <header><a className="wordmark" href="/" onClick={event => { event.preventDefault(); window.location.reload(); }}>DHARMATLAS</a><button className="header-search" onClick={onSearch}>Search the atlas <span aria-hidden="true">/</span></button><span className="header-note">History with its uncertainties intact</span></header>; }
+function Header({ locale, onLocale, onSearch, onHome }) {
+  return <header><a className="wordmark" href="/" onClick={event => { event.preventDefault(); onHome(); }}>DHARMATLAS</a><button className="header-search" onClick={onSearch}>{t(locale, 'search.label')} <span aria-hidden="true">/</span></button><label className="muted">Language <select value={locale} onChange={event => onLocale(resolveLocale(event.target.value))} aria-label="Language">{supportedLocales().map(code => <option key={code} value={code}>{code}</option>)}</select></label><span className="header-note">{t(locale, 'app.tagline')}</span></header>;
+}
+
+function Footer({ locale }) {
+  return <footer><span>Dharmatlas</span><a href="/api/v1/meta">Public API</a><a href="/sitemap.xml">Sitemap</a><span>{t(locale, 'telemetry.note')}</span></footer>;
+}
 
 createRoot(document.getElementById('root')).render(<App />);
+export { buildRoute };
